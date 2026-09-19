@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { headshotUrl, shiftEt, teamAbbrFromName, todayEt } from "./format";
 import { generateCrazyStats } from "./crazy-stats";
 import { aggregateHits, aggregatePitches, hitFromApi, lastN, pitchFromApi } from "./stats";
@@ -218,6 +219,10 @@ export async function getHome(): Promise<HomePayload> {
     heaters: { homeRuns, ops, stolenBases, era, strikeouts },
   };
 }
+
+export const getHomeCached = unstable_cache(getHome, ["mlb-home"], {
+  revalidate: 60,
+});
 
 export async function searchPlayers(query: string): Promise<PlayerRef[]> {
   const q = query.trim();

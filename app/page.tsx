@@ -1,9 +1,9 @@
 import { HomeClient } from "@/components/HomeClient";
-import { getHome } from "@/lib/mlb";
+import { getHomeCached } from "@/lib/mlb";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function HomePage() {
-  const initial = await getHome();
+  const initial = await getHomeCached();
   return <HomeClient initial={initial} />;
 }

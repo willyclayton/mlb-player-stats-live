@@ -71,7 +71,8 @@ img {
 
 .kicker {
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
+  word-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--gold);
   font-weight: 700;
@@ -80,8 +81,9 @@ img {
 .brand {
   font-family: var(--font-display);
   font-size: 42px;
-  letter-spacing: 0.02em;
-  line-height: 0.85;
+  letter-spacing: 0.04em;
+  word-spacing: 0.16em;
+  line-height: 0.92;
   margin: 4px 0 0;
 }
 
@@ -170,7 +172,8 @@ img {
 .section h2 {
   font-family: var(--font-display);
   font-size: 26px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  word-spacing: 0.18em;
   margin: 0 0 4px;
 }
 
@@ -294,8 +297,10 @@ img {
 
 .hero h1 {
   font-family: var(--font-display);
-  font-size: 40px;
-  line-height: 0.88;
+  font-size: 36px;
+  letter-spacing: 0.04em;
+  word-spacing: 0.16em;
+  line-height: 0.94;
   margin: 6px 0 8px;
 }
 
@@ -347,8 +352,10 @@ img {
 
 .take h2 {
   font-family: var(--font-display);
-  font-size: 34px;
-  line-height: 0.92;
+  font-size: 32px;
+  letter-spacing: 0.04em;
+  word-spacing: 0.16em;
+  line-height: 0.96;
   margin: 14px 0 10px;
 }
 
@@ -361,7 +368,7 @@ img {
 
 .receipts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-top: 16px;
 }
@@ -412,6 +419,10 @@ img {
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-top: 16px;
+}
+
+.strip.three {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .stat {
@@ -465,7 +476,8 @@ img {
   display: block;
   font-family: var(--font-display);
   font-size: 22px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  word-spacing: 0.16em;
   margin-bottom: 4px;
 }
 

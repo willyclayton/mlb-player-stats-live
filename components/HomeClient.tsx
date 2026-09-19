@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { Headshot } from "./Headshot";
 import { LeaderCard, PlayerCard } from "./PlayerCard";
 import type { HomePayload, PlayerRef } from "@/lib/types";
 
@@ -62,10 +63,13 @@ export function HomeClient({ initial }: { initial: HomePayload }) {
           placeholder="Search any MLB player"
           aria-label="Search players"
         />
-        {(results.length > 0 || searching) && query.trim().length >= 2 ? (
+        {query.trim().length >= 2 ? (
           <div className="search-list" role="listbox">
             {searching && results.length === 0 ? (
               <div className="search-item muted">Searching live roster…</div>
+            ) : null}
+            {!searching && results.length === 0 ? (
+              <div className="search-item muted">No players found</div>
             ) : null}
             {results.map((player) => (
               <Link
@@ -73,7 +77,7 @@ export function HomeClient({ initial }: { initial: HomePayload }) {
                 className="search-item"
                 href={`/player/${player.id}?name=${encodeURIComponent(player.name)}&pos=${encodeURIComponent(player.position ?? "")}`}
               >
-                <img src={`https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_80,q_auto:best/v1/people/${player.id}/headshot/silo/current`} alt="" width={36} height={36} />
+                <Headshot id={player.id} name={player.name} size={80} />
                 <div>
                   <div className="name">{player.name}</div>
                   <div className="muted">{player.position || "MLB"}</div>

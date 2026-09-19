@@ -4,6 +4,9 @@ export default function Loading() {
       <div className="kicker">MLB 2026 · Live feed</div>
       <h1 className="brand">Crazy Stats</h1>
       <p className="lede">Pulling today’s slate…</p>
+      <div className="search">
+        <input disabled placeholder="Search any MLB player" aria-label="Search players" />
+      </div>
     </div>
   );
 }

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { fmtAvg, fmtEra, fmtIp, fmtOps, headshotUrl, prettyDate, slash } from "@/lib/format";
+import { Headshot } from "./Headshot";
+import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate, slash } from "@/lib/format";
 import type { CrazyStat, PlayerPayload } from "@/lib/types";
 
 const FEED_LINES = [
@@ -108,7 +109,7 @@ export function PlayerClient({
       </div>
 
       <div className="hero">
-        <img src={headshotUrl(id, 360)} alt={name} />
+        <Headshot id={id} name={name} size={360} />
         <div>
           <div className="kicker">{team || "MLB"}</div>
           <h1>{name}</h1>
@@ -177,8 +178,11 @@ export function PlayerClient({
                 <Stat label="RBI" value={String(data.seasonHit.rbi)} />
                 <Stat label="BB" value={String(data.seasonHit.walks)} />
                 <Stat label="SO" value={String(data.seasonHit.strikeOuts)} />
-                <Stat label="Slash" value={slash(data.seasonHit)} />
+                <Stat label="H" value={String(data.seasonHit.hits)} />
               </div>
+              <p className="hint" style={{ marginTop: 10 }}>
+                Slash {slash(data.seasonHit)}
+              </p>
             </section>
           ) : null}
 

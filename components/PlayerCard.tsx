@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { headshotUrl } from "@/lib/format";
+import { Headshot } from "./Headshot";
 import type { PlayerRef } from "@/lib/types";
 
 function hrefFor(player: PlayerRef) {
@@ -20,7 +20,7 @@ export function PlayerCard({
 }) {
   return (
     <Link className="player-card" href={hrefFor(player)}>
-      <img src={headshotUrl(player.id)} alt="" />
+      <Headshot id={player.id} name={player.name} />
       <div>
         <div className="name">{player.name}</div>
         <div className="sub">
@@ -41,7 +41,7 @@ export function LeaderCard({
 }) {
   return (
     <Link className="leader" href={hrefFor(player)}>
-      <img src={headshotUrl(player.id, 180)} alt="" />
+      <Headshot id={player.id} name={player.name} size={180} />
       <div>
         <div className="val">{value ?? player.value}</div>
         <div className="name" style={{ fontWeight: 700, fontSize: 13 }}>{player.name}</div>
