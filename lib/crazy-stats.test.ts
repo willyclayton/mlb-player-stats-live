@@ -165,6 +165,29 @@ describe("crazy stat engine", () => {
     assert.equal(crazy.some((s) => s.id === "team-lead"), false);
   });
 
+  it("joins a Nationals 30-30 against the franchise last before 2026", () => {
+    const crazy = generateCrazyStats({
+      id: 1,
+      name: "CJ Abrams",
+      team: "Washington Nationals",
+      seasonHit: hit({
+        homeRuns: 30,
+        stolenBases: 30,
+        avg: 0.26,
+        obp: 0.33,
+        slg: 0.45,
+        ops: 0.78,
+        atBats: 520,
+      }),
+      hitGames: [],
+      pitchGames: [],
+    });
+    const since = crazy.find((s) => s.id === "franchise-since-30-30");
+    assert.ok(since);
+    assert.match(since!.body, /Alfonso Soriano \(2006\)/);
+    assert.equal(crazy.some((s) => s.id === "franchise-first-30-30"), false);
+  });
+
   it("does not emit a restated slash team-lead", () => {
     const crazy = generateCrazyStats({
       id: 1,
@@ -583,6 +606,26 @@ describe("game crazy stat engine", () => {
     assert.match(feat!.headline, /5 hits and 1 SB/);
     assert.match(feat!.body, /First since/);
     assert.match(feat!.body, /2025/);
+  });
+
+  it("names the last Cubs cycle when someone hits one", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      opponent: "Rockies",
+      isHome: true,
+      date: "2026-06-15",
+      hit: hit({
+        atBats: 5,
+        hits: 4,
+        doubles: 1,
+        triples: 1,
+        homeRuns: 1,
+      }),
+    });
+    const cycle = crazy.find((s) => s.id === "game-cycle");
+    assert.ok(cycle);
+    assert.match(cycle!.body, /Carson Kelly/);
   });
 
   it("names the last home run instead of restating the box", () => {

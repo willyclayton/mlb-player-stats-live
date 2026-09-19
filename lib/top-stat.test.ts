@@ -48,6 +48,8 @@ describe("top stat", () => {
     assert.equal(isTopTake(take({ id: "mlb-lead-homeRuns", stamp: "MLB HR" })), true);
     assert.equal(isTopTake(take({ id: "mlb-lead-ops", stamp: "MLB OPS" })), true);
     assert.equal(isTopTake(take({ id: "career-first-30-30", stamp: "FIRST 30-30" })), true);
+    assert.equal(isTopTake(take({ id: "franchise-first-30-30", stamp: "FIRST 30-30" })), true);
+    assert.equal(isTopTake(take({ id: "franchise-since-30-30", stamp: "30-30" })), true);
   });
 
   it("does not flag a 2-homer or 4-hit take", () => {

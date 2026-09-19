@@ -97,6 +97,27 @@ export function rarity(stat: CrazyStat): number {
     case "career-first-30-30":
       score = 91;
       break;
+    case "franchise-first-40-40":
+      score = 98;
+      break;
+    case "franchise-first-50-hr":
+      score = 96;
+      break;
+    case "franchise-first-30-30":
+      score = 94;
+      break;
+    case "franchise-first-40-hr":
+      score = 91;
+      break;
+    case "franchise-since-40-40":
+      score = 94;
+      break;
+    case "franchise-since-50-hr":
+      score = 90;
+      break;
+    case "franchise-since-30-30":
+      score = 88;
+      break;
     case "career-first-strikeOuts":
       score = 88;
       break;
