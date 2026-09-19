@@ -164,6 +164,12 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
       rbi?.place === 1 ? `RBI (${hit.rbi})` : null,
     ].filter(Boolean) as string[];
     if (leads.length) {
+      const list =
+        leads.length === 1
+          ? leads[0]
+          : leads.length === 2
+            ? `${leads[0]} and ${leads[1]}`
+            : `${leads.slice(0, -1).join(", ")}, and ${leads[leads.length - 1]}`;
       const next =
         hr?.place === 1 && hr.next
           ? `${lastName(hr.next.name)} is next in HR with ${hr.next.line.homeRuns}.`
@@ -176,7 +182,7 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
           score: 70 + leads.length * 8,
           stamp: `LEADS ${team.toUpperCase()}`,
           category: "rare",
-          headline: `Leads the ${team} in ${leads.join(" and ")}`,
+          headline: `Leads the ${team} in ${list}`,
           body: next || `${full} sits first on the ${team} official leaderboard.`,
           receipts: leads.map((label) => {
             const [k, v] = label.split(" ");
