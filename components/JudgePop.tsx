@@ -1,20 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { JUDGE_PAIRS } from "@/lib/judge-pairs";
+import {
+  GAME_STATS,
+  JUDGE_ITEMS,
+  SEASON_STATS,
+  type JudgeItem,
+} from "@/lib/judge-pairs";
 
-type Pick = "A" | "B";
+type Pick = "Y" | "N";
 
-function line(picks: Pick[]): string {
-  return picks.map((pick, i) => `${i + 1}${pick}`).join(" ");
+function line(items: JudgeItem[], picks: Pick[]): string {
+  return items.map((item, i) => `${item.id}${picks[i] ?? ""}`).join(" ");
 }
 
 export function JudgePop() {
   const [index, setIndex] = useState(0);
   const [picks, setPicks] = useState<Pick[]>([]);
   const [copied, setCopied] = useState(false);
-  const done = picks.length >= JUDGE_PAIRS.length;
-  const pair = JUDGE_PAIRS[index];
+  const done = picks.length >= JUDGE_ITEMS.length;
+  const item = JUDGE_ITEMS[index];
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -25,13 +30,14 @@ export function JudgePop() {
   }, []);
 
   function choose(pick: Pick) {
-    if (done || !pair) return;
+    if (done || !item) return;
     const next = [...picks, pick];
     setPicks(next);
-    setIndex((i) => Math.min(i + 1, JUDGE_PAIRS.length));
-    if (next.length === JUDGE_PAIRS.length) {
+    setIndex((i) => Math.min(i + 1, JUDGE_ITEMS.length));
+    if (next.length === JUDGE_ITEMS.length) {
+      const text = `${line(SEASON_STATS, next.slice(0, SEASON_STATS.length))} | ${line(GAME_STATS, next.slice(SEASON_STATS.length))}`;
       try {
-        localStorage.setItem("judge-votes", line(next));
+        localStorage.setItem("judge-votes-3", text);
       } catch {
         /* ignore */
       }
@@ -39,7 +45,7 @@ export function JudgePop() {
   }
 
   async function copy() {
-    const text = line(picks);
+    const text = `${line(SEASON_STATS, picks.slice(0, SEASON_STATS.length))} | ${line(GAME_STATS, picks.slice(SEASON_STATS.length))}`;
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -49,45 +55,47 @@ export function JudgePop() {
   }
 
   if (done) {
-    const text = line(picks);
+    const season = line(SEASON_STATS, picks.slice(0, SEASON_STATS.length));
+    const game = line(GAME_STATS, picks.slice(SEASON_STATS.length));
     return (
       <div className="judge-pop">
         <p className="judge-kicker">Done</p>
         <h1>Send this</h1>
-        <p className="judge-code">{text}</p>
+        <p className="judge-code">{season}</p>
+        <p className="judge-code">{game}</p>
         <button className="btn judge-copy" type="button" onClick={copy}>
           {copied ? "Copied" : "Copy"}
         </button>
-        <ol className="judge-log">
-          {JUDGE_PAIRS.map((item, i) => (
-            <li key={item.id}>
-              <b>{i + 1}{picks[i]}</b> {(picks[i] === "A" ? item.a : item.b).fact}
-            </li>
-          ))}
-        </ol>
       </div>
     );
   }
 
-  if (!pair) return null;
+  if (!item) return null;
+
+  const inGame = item.section === "game";
+  const n = inGame ? index - SEASON_STATS.length + 1 : index + 1;
+  const of = inGame ? GAME_STATS.length : SEASON_STATS.length;
 
   return (
     <div className="judge-pop">
       <p className="judge-kicker">
-        {index + 1} / {JUDGE_PAIRS.length} · better stat
+        {inGame ? "Game" : "Season"} {n} / {of} · keep this?
       </p>
-      <button className="judge-card" type="button" onClick={() => choose("A")}>
-        <span className="judge-letter">A</span>
-        {pair.a.who ? <span className="judge-who">{pair.a.who}</span> : null}
-        <strong>{pair.a.fact}</strong>
-        {pair.a.note ? <span className="judge-note">{pair.a.note}</span> : null}
-      </button>
-      <button className="judge-card" type="button" onClick={() => choose("B")}>
-        <span className="judge-letter">B</span>
-        {pair.b.who ? <span className="judge-who">{pair.b.who}</span> : null}
-        <strong>{pair.b.fact}</strong>
-        {pair.b.note ? <span className="judge-note">{pair.b.note}</span> : null}
-      </button>
+      <div className="judge-card judge-stat">
+        <span className="judge-who">{item.who}</span>
+        <strong>{item.fact}</strong>
+        {item.note ? <span className="judge-note">{item.note}</span> : null}
+      </div>
+      <div className="judge-actions">
+        <button className="judge-card" type="button" onClick={() => choose("Y")}>
+          <span className="judge-letter">Y</span>
+          <strong>Keep</strong>
+        </button>
+        <button className="judge-card" type="button" onClick={() => choose("N")}>
+          <span className="judge-letter">N</span>
+          <strong>Skip</strong>
+        </button>
+      </div>
     </div>
   );
 }
