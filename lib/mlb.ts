@@ -14,7 +14,6 @@ import type {
   GamePayload,
   GamePitch,
   GameSide,
-  Heater,
   HomeGame,
   HomePayload,
   PlayerPayload,
@@ -25,14 +24,6 @@ import type {
 
 const MLB = "https://statsapi.mlb.com/api/v1";
 const SEASON = 2026;
-
-const LEADER_LABEL: Record<string, string> = {
-  homeRuns: "HR",
-  onBasePlusSlugging: "OPS",
-  stolenBases: "SB",
-  earnedRunAverage: "ERA",
-  strikeouts: "K",
-};
 
 async function mlb<T>(path: string, revalidate = 60): Promise<T> {
   const res = await fetch(`${MLB}${path}`, {
@@ -115,58 +106,74 @@ async function scheduleRange(start: string, end: string): Promise<{ date: string
   }));
 }
 
-async function heaters(): Promise<Heater[]> {
-  const query =
-    `season=${SEASON}&sportId=1&playerPool=qualified&limit=4`;
-  const [hit, pitch] = await Promise.all([
-    mlb<{
-      leagueLeaders?: {
-        leaderCategory?: string;
-        leaders?: { value?: string; person?: Record<string, unknown>; team?: Record<string, unknown> }[];
-      }[];
-    }>(
-      `/stats/leaders?leaderCategories=homeRuns,onBasePlusSlugging,stolenBases&statGroup=hitting&${query}`,
+async function seasonRares(): Promise<TopStatCard[]> {
+  const hydrate = encodeURIComponent(
+    `currentTeam,stats(group=[hitting,pitching],type=[season],season=${SEASON})`,
+  );
+  const [board, twp] = await Promise.all([
+    mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
+      `/stats?stats=season&group=hitting&season=${SEASON}&sportIds=1&playerPool=qualified&limit=80`,
       300,
     ),
-    mlb<{
-      leagueLeaders?: {
-        leaderCategory?: string;
-        leaders?: { value?: string; person?: Record<string, unknown>; team?: Record<string, unknown> }[];
-      }[];
-    }>(
-      `/stats/leaders?leaderCategories=earnedRunAverage,strikeouts&statGroup=pitching&${query}`,
-      300,
+    mlb<{ people?: Record<string, unknown>[] }>(`/people/660271?hydrate=${hydrate}`, 300).catch(
+      () => ({ people: [] }),
     ),
   ]);
 
-  const out: Heater[] = [];
+  const out: TopStatCard[] = [];
   const seen = new Set<number>();
-  const order = Object.keys(LEADER_LABEL);
-  const blocks = [...(hit.leagueLeaders ?? []), ...(pitch.leagueLeaders ?? [])].sort(
-    (a, b) =>
-      order.indexOf(String(a.leaderCategory ?? "")) -
-      order.indexOf(String(b.leaderCategory ?? "")),
-  );
-  for (const block of blocks) {
-    const label = LEADER_LABEL[String(block.leaderCategory ?? "")] ?? String(block.leaderCategory ?? "");
-    for (const row of block.leaders ?? []) {
-      const person = rec(row.person);
-      const id = Number(person.id);
-      if (!id || seen.has(id)) continue;
-      seen.add(id);
-      const team = rec(row.team);
+
+  for (const split of board.stats?.[0]?.splits ?? []) {
+    const person = rec(split.player);
+    const line = hitFromApi(rec(split.stat));
+    const id = Number(person.id);
+    if (!id || !line || line.homeRuns < 30 || line.stolenBases < 30) continue;
+    const feat = line.homeRuns >= 40 && line.stolenBases >= 40 ? "40-40" : "30-30";
+    const team = rec(split.team);
+    seen.add(id);
+    out.push({
+      ...playerRef(person, {
+        team: team.name ? String(team.name) : undefined,
+        teamId: team.id ? Number(team.id) : undefined,
+        teamAbbr: team.abbreviation ? String(team.abbreviation) : teamAbbrFromName(String(team.name ?? "")),
+        topStat: feat,
+      }),
+      feat,
+      scope: "season",
+    });
+  }
+
+  const ohtani = twp.people?.[0];
+  if (ohtani) {
+    const player = playerRef(ohtani);
+    let seasonHit;
+    let seasonPitch;
+    for (const raw of (ohtani.stats as unknown[] | undefined) ?? []) {
+      const block = rec(raw);
+      const group = String(rec(block.group).displayName ?? "").toLowerCase();
+      const type = String(rec(block.type).displayName ?? "").toLowerCase();
+      const splits = Array.isArray(block.splits) ? block.splits : [];
+      if (type.includes("season") && group === "hitting") {
+        seasonHit = hitFromApi(rec(rec(splits[0]).stat));
+      } else if (type.includes("season") && group === "pitching") {
+        seasonPitch = pitchFromApi(rec(rec(splits[0]).stat));
+      }
+    }
+    if (
+      !seen.has(player.id) &&
+      seasonHit &&
+      seasonPitch &&
+      (player.position === "TWP" || (seasonHit.homeRuns >= 10 && seasonPitch.innings >= 20))
+    ) {
       out.push({
-        ...playerRef(person, {
-          team: team.name ? String(team.name) : undefined,
-          teamId: team.id ? Number(team.id) : undefined,
-          teamAbbr: team.abbreviation ? String(team.abbreviation) : undefined,
-        }),
-        value: String(row.value ?? ""),
-        label,
+        ...player,
+        topStat: "Two-way",
+        feat: "Two-way",
+        scope: "season",
       });
-      if (out.length >= 6) return out;
     }
   }
+
   return out;
 }
 
@@ -174,9 +181,9 @@ export async function getHome(): Promise<HomePayload> {
   const today = todayEt();
   const yesterday = shiftEt(-1);
   const tomorrow = shiftEt(1);
-  const [days, board] = await Promise.all([
+  const [days, seasonTop] = await Promise.all([
     scheduleRange(yesterday, tomorrow),
-    heaters(),
+    seasonRares(),
   ]);
   const byDate = new Map(days.map((day) => [day.date, day.games]));
   const blocks = slateBlocks({
@@ -193,8 +200,7 @@ export async function getHome(): Promise<HomePayload> {
       ...block,
       games: block.games.map((game) => byPk.get(game.gamePk) ?? game),
     })),
-    heaters: board,
-    top: marked.top,
+    top: [...marked.top, ...seasonTop],
   };
 }
 
@@ -638,14 +644,14 @@ function packHit(games: GameHit[], n: number) {
 }
 
 async function markTopOnBoard(games: HomeGame[]): Promise<{
-  top?: TopStatCard;
+  top: TopStatCard[];
   games: HomeGame[];
 }> {
   const playable = games.filter((game) => isLive(game) || game.abstractState === "Final");
   const live = playable.filter(isLive);
   const rest = playable.filter((game) => !isLive(game));
-  const scan = [...live, ...rest].slice(0, 6);
-  if (!scan.length) return { games };
+  const scan = [...live, ...rest];
+  if (!scan.length) return { top: [], games };
 
   const boxes = await Promise.all(
     scan.map(async (game) => {
@@ -660,8 +666,8 @@ async function markTopOnBoard(games: HomeGame[]): Promise<{
     }),
   );
 
-  let best: { card: TopStatCard; score: number } | null = null;
-  const byGame = new Map<number, string>();
+  const cards: { card: TopStatCard; score: number }[] = [];
+  const namesByGame = new Map<number, string[]>();
 
   for (const { game, box } of boxes) {
     if (!box?.teams) continue;
@@ -677,33 +683,33 @@ async function markTopOnBoard(games: HomeGame[]): Promise<{
         if (!person.id) continue;
         const found = featFromBoxRow(row);
         if (!found) continue;
-        if (!byGame.has(game.gamePk)) byGame.set(game.gamePk, String(person.fullName ?? person.name ?? ""));
-        if (!best || found.score > best.score) {
-          best = {
-            score: found.score,
-            card: {
-              ...playerRef(person, {
-                team: team.name,
-                teamId: team.id,
-                teamAbbr: team.abbr,
-                topStat: found.feat,
-              }),
-              feat: found.feat,
-              gamePk: game.gamePk,
-            },
-          };
-          byGame.set(game.gamePk, best.card.name);
-        }
+        const card: TopStatCard = {
+          ...playerRef(person, {
+            team: team.name,
+            teamId: team.id,
+            teamAbbr: team.abbr,
+            topStat: found.feat,
+          }),
+          feat: found.feat,
+          gamePk: game.gamePk,
+          scope: "game",
+        };
+        cards.push({ card, score: found.score });
+        const names = namesByGame.get(game.gamePk) ?? [];
+        names.push(card.name);
+        namesByGame.set(game.gamePk, names);
       }
     }
   }
 
-  if (!best) return { games };
+  cards.sort((a, b) => b.score - a.score);
 
   return {
-    top: best.card,
+    top: cards.map((row) => row.card),
     games: games.map((game) =>
-      byGame.has(game.gamePk) ? { ...game, topPlayer: byGame.get(game.gamePk) } : game,
+      namesByGame.has(game.gamePk)
+        ? { ...game, topPlayer: namesByGame.get(game.gamePk)?.join(", ") }
+        : game,
     ),
   };
 }

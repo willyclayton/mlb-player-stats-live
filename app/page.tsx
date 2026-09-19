@@ -1,4 +1,4 @@
-import { LeaderCard, TopCard } from "@/components/PlayerCard";
+import { TopCard } from "@/components/PlayerCard";
 import { Slate } from "@/components/Slate";
 import { getHome } from "@/lib/mlb";
 
@@ -9,10 +9,14 @@ export default async function HomePage() {
 
   return (
     <>
-      {data.top ? (
+      {data.top.length ? (
         <section className="section">
           <h2>Top stat</h2>
-          <TopCard player={data.top} />
+          <div className="top-list">
+            {data.top.map((player) => (
+              <TopCard key={`${player.id}-${player.feat}-${player.gamePk ?? "szn"}`} player={player} />
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -21,17 +25,6 @@ export default async function HomePage() {
       ) : (
         <Slate blocks={data.blocks} />
       )}
-
-      {data.heaters.length ? (
-        <section className="section">
-          <h2>Leaders</h2>
-          <div className="grid">
-            {data.heaters.map((player) => (
-              <LeaderCard key={`${player.id}-${player.label}`} player={player} />
-            ))}
-          </div>
-        </section>
-      ) : null}
     </>
   );
 }

@@ -76,7 +76,28 @@ describe("home slate", () => {
     ]);
     assert.deepEqual(
       teams.map((t) => t.abbr),
-      ["CHC", "CIN"],
+      ["ATL", "CHC", "CIN"],
+    );
+    assert.equal(teams[0]?.name, "Atlanta Braves");
+  });
+
+  it("keeps Braves first when they are already on the slate", () => {
+    const teams = uniqueTeams([
+      {
+        label: "Today",
+        games: [
+          game({
+            gamePk: 2,
+            abstractState: "Preview",
+            away: { id: 144, name: "Atlanta Braves", abbr: "ATL" },
+            home: { id: 1, name: "Chicago Cubs", abbr: "CHC" },
+          }),
+        ],
+      },
+    ]);
+    assert.deepEqual(
+      teams.map((t) => t.abbr),
+      ["ATL", "CHC"],
     );
   });
 });

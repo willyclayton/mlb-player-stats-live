@@ -136,16 +136,14 @@ export type GamePayload = {
   away: GameSide;
 };
 
-export type Heater = PlayerRef & { value: string; label: string };
-
 export type TopStatCard = PlayerRef & {
   feat: string;
-  gamePk: number;
+  gamePk?: number;
+  scope?: "game" | "season";
 };
 
 export type HomePayload = {
   asOf: string;
   blocks: SlateBlock[];
-  heaters: Heater[];
-  top?: TopStatCard;
+  top: TopStatCard[];
 };

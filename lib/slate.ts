@@ -1,6 +1,12 @@
 import { shortTeamName } from "./format";
 import type { HomeGame, SlateBlock, TeamSide } from "./types";
 
+export const BRAVES: TeamSide = {
+  id: 144,
+  name: "Atlanta Braves",
+  abbr: "ATL",
+};
+
 export function isLive(game: { abstractState: string; status: string }): boolean {
   if (game.abstractState === "Live") return true;
   return /in progress|warmup|delayed|challenge|review/i.test(game.status);
@@ -67,7 +73,8 @@ export function uniqueTeams(blocks: SlateBlock[]): TeamSide[] {
       });
     }
   }
-  return [...map.values()].sort((a, b) =>
-    shortTeamName(a.name).localeCompare(shortTeamName(b.name)),
-  );
+  const rest = [...map.values()]
+    .filter((team) => team.id !== BRAVES.id)
+    .sort((a, b) => shortTeamName(a.name).localeCompare(shortTeamName(b.name)));
+  return [map.get(BRAVES.id) ?? BRAVES, ...rest];
 }
