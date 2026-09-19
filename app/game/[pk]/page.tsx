@@ -76,7 +76,7 @@ export default async function GamePage({
         </div>
       </div>
 
-      <p className="lede">Tap a name for the live take.</p>
+      <p className="lede">Tap a name for the season take and the this-game take.</p>
 
       <Lineup side={game.away} gamePk={game.gamePk} />
       <Lineup side={game.home} gamePk={game.gamePk} />

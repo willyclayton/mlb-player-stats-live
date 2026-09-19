@@ -436,7 +436,7 @@ img {
 .takes {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
   margin: 8px 0 8px;
 }
 
@@ -462,22 +462,6 @@ img {
   font-size: 13px;
 }
 
-.take-slot-game .take {
-  background:
-    linear-gradient(180deg, rgba(61, 155, 110, 0.16), transparent 40%),
-    var(--card-2);
-  border-color: rgba(61, 155, 110, 0.42);
-}
-
-.take-slot-game .take::before {
-  border-color: rgba(61, 155, 110, 0.22);
-}
-
-.take-slot-game .stamp {
-  background: var(--grass);
-  color: var(--cream);
-}
-
 .take {
   position: relative;
   background:
@@ -485,7 +469,7 @@ img {
     var(--card-2);
   border: 1px solid rgba(240, 193, 75, 0.38);
   border-radius: 22px;
-  padding: 20px 18px 16px;
+  padding: 16px 16px 14px;
   box-shadow: var(--shadow);
   overflow: hidden;
 }
@@ -508,6 +492,22 @@ img {
   background: var(--gold);
   border-radius: 999px;
   padding: 5px 9px;
+}
+
+.take-slot-game .take {
+  background:
+    linear-gradient(180deg, rgba(61, 155, 110, 0.16), transparent 40%),
+    var(--card-2);
+  border-color: rgba(61, 155, 110, 0.42);
+}
+
+.take-slot-game .take::before {
+  border-color: rgba(61, 155, 110, 0.22);
+}
+
+.take-slot-game .take .stamp {
+  background: var(--grass);
+  color: var(--cream);
 }
 
 .take h2 {

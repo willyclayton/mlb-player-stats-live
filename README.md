@@ -1,6 +1,6 @@
 # MLB Player Stats Live
 
-Tap a game, then a player. The app pulls official MLB numbers and writes one crazy stat.
+Tap a game, then a player. Official season stat, official this-game stat, and Another for a new fact.
 
 ```bash
 npm install
