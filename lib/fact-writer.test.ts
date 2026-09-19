@@ -70,6 +70,41 @@ describe("career fact writer", () => {
     assert.match(first!.body, /9 in 2025/);
   });
 
+  it("writes a first 30-30 season of a career", () => {
+    const facts = writeCareerFacts({
+      seasonHit: hit({ homeRuns: 30, stolenBases: 30, games: 140 }),
+      years: [year(2024, { homeRuns: 18, stolenBases: 22 }), year(2025, { homeRuns: 19, stolenBases: 28 })],
+    });
+    const first = facts.find((s) => s.id === "career-first-30-30");
+    assert.ok(first);
+    assert.equal(first!.headline, "First 30-30 season of his career");
+    assert.equal(first!.body, "30 HR, 30 SB.");
+  });
+
+  it("skips first 30-30 when a prior year already hit it", () => {
+    const facts = writeCareerFacts({
+      seasonHit: hit({ homeRuns: 44, stolenBases: 37, games: 150 }),
+      years: [year(2025, { homeRuns: 31, stolenBases: 32 })],
+    });
+    assert.equal(facts.some((s) => s.id === "career-first-30-30"), false);
+  });
+
+  it("writes a first 200-strikeout season of a career", () => {
+    const facts = writeCareerFacts({
+      seasonPitch: {
+        ...emptyPitch(),
+        innings: 166,
+        era: 1.89,
+        strikeOuts: 243,
+      },
+      years: [{ year: 2025, pitch: { ...emptyPitch(), innings: 47, era: 2.87, strikeOuts: 87 } }],
+    });
+    const first = facts.find((s) => s.id === "career-first-strikeOuts");
+    assert.ok(first);
+    assert.equal(first!.headline, "First 200-strikeout season of his career");
+    assert.match(first!.body, /87 in 2025/);
+  });
+
   it("writes a career-best ERA against prior seasons", () => {
     const pitch = {
       ...emptyPitch(),

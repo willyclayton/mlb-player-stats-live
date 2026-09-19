@@ -114,4 +114,11 @@ describe("Will's A/B playbook", () => {
     assert.ok(rarity(b) > rarity(a));
     assert.ok(nearTie(a, b));
   });
+
+  it("keep/skip: MLB HR lead and first 30-30 outrank a restated two-way line", () => {
+    assert.ok(rarity(stat("mlb-lead-homeRuns")) > rarity(stat("two-way")));
+    assert.ok(rarity(stat("career-first-30-30")) > rarity(stat("club-20-20", { stamp: "30-30" })));
+    assert.ok(rarity(stat("game-hr-sb")) > rarity(stat("game-hr", { receipts: [{ label: "HR", value: "2" }] })));
+    assert.ok(rarity(stat("game-ohfer")) > rarity(stat("game-dnp")));
+  });
 });

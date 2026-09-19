@@ -32,7 +32,8 @@ export function rareGameFeat(
 
 export function isTopTake(stat: CrazyStat): boolean {
   if (stat.id === "club-20-20") return /30-30|40-40/.test(stat.stamp);
-  if (stat.id === "two-way") return true;
+  if (stat.id === "career-first-30-30") return true;
+  if (stat.id === "mlb-lead-homeRuns" || stat.id === "mlb-lead-ops") return true;
   if (stat.id === "game-hit-high") return /[5-9]-HIT/.test(stat.stamp);
   if (stat.id === "game-hr") {
     const hr = Number(stat.receipts.find((row) => row.label === "HR")?.value ?? 0);

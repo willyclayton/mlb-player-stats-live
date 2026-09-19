@@ -6,6 +6,7 @@ import {
   generateCrazyStats,
   generateGameCrazyStats,
   type BoxMate,
+  type LeagueBoard,
   type TeamHitter,
 } from "./crazy-stats";
 import { aggregateHits, hitFromApi, mostRecent, pitchFromApi } from "./stats";
@@ -107,75 +108,93 @@ async function scheduleRange(start: string, end: string): Promise<{ date: string
   }));
 }
 
+function cardFromSplit(
+  split: Record<string, unknown>,
+  feat: string,
+): TopStatCard | null {
+  const person = rec(split.player);
+  const line = hitFromApi(rec(split.stat));
+  const id = Number(person.id);
+  if (!id || !line) return null;
+  const team = rec(split.team);
+  return {
+    ...playerRef(person, {
+      team: team.name ? String(team.name) : undefined,
+      teamId: team.id ? Number(team.id) : undefined,
+      teamAbbr: team.abbreviation ? String(team.abbreviation) : teamAbbrFromName(String(team.name ?? "")),
+      topStat: feat,
+    }),
+    feat,
+    scope: "season",
+  };
+}
+
 async function seasonRares(): Promise<TopStatCard[]> {
-  const hydrate = encodeURIComponent(
-    `currentTeam,stats(group=[hitting,pitching],type=[season],season=${SEASON})`,
+  const board = await mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
+    `/stats?stats=season&group=hitting&season=${SEASON}&sportIds=1&playerPool=qualified&limit=200`,
+    300,
   );
-  const [board, twp] = await Promise.all([
-    mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
-      `/stats?stats=season&group=hitting&season=${SEASON}&sportIds=1&playerPool=qualified&limit=80`,
-      300,
-    ),
-    mlb<{ people?: Record<string, unknown>[] }>(`/people/660271?hydrate=${hydrate}`, 300).catch(
-      () => ({ people: [] }),
-    ),
-  ]);
 
   const out: TopStatCard[] = [];
   const seen = new Set<number>();
+  let hrLead: { split: Record<string, unknown>; hr: number } | undefined;
+  let opsLead: { split: Record<string, unknown>; ops: number } | undefined;
 
   for (const split of board.stats?.[0]?.splits ?? []) {
     const person = rec(split.player);
     const line = hitFromApi(rec(split.stat));
     const id = Number(person.id);
-    if (!id || !line || line.homeRuns < 30 || line.stolenBases < 30) continue;
-    const feat = line.homeRuns >= 40 && line.stolenBases >= 40 ? "40-40" : "30-30";
-    const team = rec(split.team);
-    seen.add(id);
-    out.push({
-      ...playerRef(person, {
-        team: team.name ? String(team.name) : undefined,
-        teamId: team.id ? Number(team.id) : undefined,
-        teamAbbr: team.abbreviation ? String(team.abbreviation) : teamAbbrFromName(String(team.name ?? "")),
-        topStat: feat,
-      }),
-      feat,
-      scope: "season",
-    });
-  }
-
-  const ohtani = twp.people?.[0];
-  if (ohtani) {
-    const player = playerRef(ohtani);
-    let seasonHit;
-    let seasonPitch;
-    for (const raw of (ohtani.stats as unknown[] | undefined) ?? []) {
-      const block = rec(raw);
-      const group = String(rec(block.group).displayName ?? "").toLowerCase();
-      const type = String(rec(block.type).displayName ?? "").toLowerCase();
-      const splits = Array.isArray(block.splits) ? block.splits : [];
-      if (type.includes("season") && group === "hitting") {
-        seasonHit = hitFromApi(rec(rec(splits[0]).stat));
-      } else if (type.includes("season") && group === "pitching") {
-        seasonPitch = pitchFromApi(rec(rec(splits[0]).stat));
+    if (!id || !line) continue;
+    if (line.homeRuns >= 30 && line.stolenBases >= 30) {
+      const feat = line.homeRuns >= 40 && line.stolenBases >= 40 ? "40-40" : "30-30";
+      const card = cardFromSplit(split, feat);
+      if (card) {
+        seen.add(id);
+        out.push(card);
       }
     }
-    if (
-      !seen.has(player.id) &&
-      seasonHit &&
-      seasonPitch &&
-      (player.position === "TWP" || (seasonHit.homeRuns >= 10 && seasonPitch.innings >= 20))
-    ) {
-      out.push({
-        ...player,
-        topStat: "Two-way",
-        feat: "Two-way",
-        scope: "season",
-      });
+    if (!hrLead || line.homeRuns > hrLead.hr) hrLead = { split, hr: line.homeRuns };
+    if (!opsLead || line.ops > opsLead.ops) opsLead = { split, ops: line.ops };
+  }
+
+  if (hrLead && hrLead.hr >= 20) {
+    const card = cardFromSplit(hrLead.split, "MLB HR");
+    if (card && !seen.has(card.id)) {
+      seen.add(card.id);
+      out.push(card);
+    }
+  }
+  if (opsLead && opsLead.ops >= 0.9) {
+    const card = cardFromSplit(opsLead.split, "MLB OPS");
+    if (card && !seen.has(card.id)) {
+      seen.add(card.id);
+      out.push(card);
     }
   }
 
   return out;
+}
+
+async function leadValue(sortStat: string, key: keyof LeagueBoard): Promise<number> {
+  const data = await mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
+    `/stats?stats=season&group=hitting&season=${SEASON}&sportIds=1&playerPool=qualified&sortStat=${sortStat}&order=desc&limit=1`,
+    300,
+  );
+  const line = hitFromApi(rec(rec(data.stats?.[0]?.splits?.[0]).stat));
+  return Number(line?.[key] ?? 0);
+}
+
+async function getLeagueBoard(): Promise<LeagueBoard | undefined> {
+  const [homeRuns, stolenBases, rbi, triples, avg, ops] = await Promise.all([
+    leadValue("homeRuns", "homeRuns"),
+    leadValue("stolenBases", "stolenBases"),
+    leadValue("rbi", "rbi"),
+    leadValue("triples", "triples"),
+    leadValue("avg", "avg"),
+    leadValue("ops", "ops"),
+  ]);
+  if (homeRuns <= 0 && ops <= 0 && avg <= 0) return undefined;
+  return { homeRuns, stolenBases, rbi, triples, avg, ops };
 }
 
 export async function getHome(): Promise<HomePayload> {
@@ -538,7 +557,7 @@ async function getHitLog(id: number, season: number): Promise<GameHit[]> {
 
 export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayload> {
   const hydrate = `currentTeam,stats(group=[hitting,pitching],type=[season,gameLog],season=${SEASON})`;
-  const [data, priorHits, boxedEarly, years] = await Promise.all([
+  const [data, priorHits, boxedEarly, years, league] = await Promise.all([
     mlb<{ people?: Record<string, unknown>[] }>(
       `/people/${id}?hydrate=${encodeURIComponent(hydrate)}`,
       45,
@@ -546,6 +565,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     getHitLog(id, SEASON - 1).catch(() => [] as GameHit[]),
     gamePk ? lineFromBox(gamePk, id) : Promise.resolve(null),
     getYearLines(id).catch(() => [] as YearLine[]),
+    getLeagueBoard().catch(() => undefined),
   ]);
   const person = data.people?.[0];
   if (!person) throw new Error(`Player ${id} not found`);
@@ -601,6 +621,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     pitchGames: recentPitches,
     teamHitters,
     years,
+    league,
   }).slice(0, 6);
 
   const lastHit = recentHits[recentHits.length - 1];

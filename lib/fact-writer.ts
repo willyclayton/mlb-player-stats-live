@@ -190,7 +190,49 @@ export function writeCareerFacts(input: CareerInput): CrazyStat[] {
     }
   }
 
+  if (hit && hit.homeRuns >= 30 && hit.stolenBases >= 30 && priorHit.length >= 1) {
+    const had = priorHit.some((row) => row.line.homeRuns >= 30 && row.line.stolenBases >= 30);
+    if (!had) {
+      stats.push(
+        take({
+          id: "career-first-30-30",
+          stamp: "FIRST 30-30",
+          category: "rare",
+          headline: `First 30-30 season of his career`,
+          body: `${hit.homeRuns} HR, ${hit.stolenBases} SB.`,
+          receipts: [
+            { label: "HR", value: String(hit.homeRuns) },
+            { label: "SB", value: String(hit.stolenBases) },
+          ],
+        }),
+      );
+    }
+  }
+
   const priorPitch = priorPitchYears(years);
+  if (pitch && pitch.strikeOuts >= 200 && priorPitch.length >= 1) {
+    const bestK = priorPitch.reduce(
+      (top, row) => (row.line.strikeOuts > top.line.strikeOuts ? row : top),
+      priorPitch[0]!,
+    );
+    if (bestK.line.strikeOuts < 200) {
+      stats.push(
+        take({
+          id: "career-first-strikeOuts",
+          stamp: "FIRST K",
+          category: "pitching",
+          headline: `First 200-strikeout season of his career`,
+          body: `${bestK.line.strikeOuts} in ${bestK.year}.`,
+          receipts: [
+            { label: "K", value: String(pitch.strikeOuts) },
+            { label: "Prev", value: `${bestK.line.strikeOuts} ${bestK.year}` },
+            { label: "Bar", value: "200" },
+          ],
+        }),
+      );
+    }
+  }
+
   if (pitch && pitch.innings >= 40 && priorPitch.length >= 2) {
     const best = priorPitch.reduce(
       (top, row) => (row.line.era > 0 && row.line.era < top.line.era ? row : top),
