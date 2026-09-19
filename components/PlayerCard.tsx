@@ -35,7 +35,7 @@ export function TopCard({ player }: { player: TopStatCard }) {
     <Link className="top-card" href={playerHref(player, player.gamePk)}>
       <Headshot id={player.id} name={player.name} size={180} />
       <div>
-        <div className="top-tag">{player.scope === "season" ? "Season" : "Top stat"}</div>
+        <div className="top-tag">Top stat</div>
         <div className="name">{player.name}</div>
         <div className="feat">{player.feat}</div>
         <div className="muted">

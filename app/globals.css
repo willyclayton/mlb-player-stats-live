@@ -503,6 +503,11 @@ html[data-names="full"] .score-teams {
   background: var(--top-bg);
 }
 
+.top-toggle {
+  display: flex;
+  gap: 6px;
+}
+
 .top-list {
   display: flex;
   flex-direction: column;
