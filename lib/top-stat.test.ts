@@ -40,11 +40,14 @@ describe("top stat", () => {
     assert.equal(rareGameFeat(undefined, { strikeOuts: 8, innings: 8, earnedRuns: 0 }), null);
   });
 
-  it("treats 30-30, 40-40, and two-way takes as top", () => {
+  it("treats 30-30, 40-40, MLB HR/OPS, and first 30-30 as top", () => {
     assert.equal(isTopTake(take({ id: "club-20-20", stamp: "30-30", score: 90 })), true);
     assert.equal(isTopTake(take({ id: "club-20-20", stamp: "40-40", score: 96 })), true);
     assert.equal(isTopTake(take({ id: "club-20-20", stamp: "20-20", score: 78 })), false);
-    assert.equal(isTopTake(take({ id: "two-way", score: 98 })), true);
+    assert.equal(isTopTake(take({ id: "two-way", score: 98 })), false);
+    assert.equal(isTopTake(take({ id: "mlb-lead-homeRuns", stamp: "MLB HR" })), true);
+    assert.equal(isTopTake(take({ id: "mlb-lead-ops", stamp: "MLB OPS" })), true);
+    assert.equal(isTopTake(take({ id: "career-first-30-30", stamp: "FIRST 30-30" })), true);
   });
 
   it("does not flag a 2-homer or 4-hit take", () => {

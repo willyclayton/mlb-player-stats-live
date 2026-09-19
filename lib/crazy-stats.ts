@@ -1,11 +1,19 @@
 import { writeCareerFacts } from "./fact-writer";
 import { rankFacts } from "./fact-ranker";
-import { fmtAvg, fmtEra, fmtIp, slash, prettyDate, shortTeamName } from "./format";
+import { fmtAvg, fmtEra, fmtIp, fmtOps, slash, prettyDate, shortTeamName } from "./format";
 import { aggregateHits, hittingStreak, homerStreak, lastN } from "./stats";
 import type { CrazyStat, GameHit, GamePitch, HitLine, PitchLine, YearLine } from "./types";
 
 export type TeamHitter = { id: number; name: string; line: HitLine };
 export type BoxMate = { id: number; name: string; hit?: HitLine };
+export type LeagueBoard = {
+  homeRuns: number;
+  stolenBases: number;
+  rbi: number;
+  triples: number;
+  avg: number;
+  ops: number;
+};
 
 const SEASON = 2026;
 
@@ -20,6 +28,7 @@ type Input = {
   pitchGames: GamePitch[];
   teamHitters?: TeamHitter[];
   years?: YearLine[];
+  league?: LeagueBoard;
 };
 
 type GameInput = {
@@ -127,22 +136,11 @@ function dayReceipt(prev: { date: string } | undefined, date?: string) {
   return [{ label: "Days", value: String(daysBetween(prev.date, date)) }];
 }
 
-function joinList(items: string[]): string {
-  if (items.length === 1) return items[0] ?? "";
-  if (items.length === 2) return `${items[0]} and ${items[1]}`;
-  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
-}
-
 function rankOnTeam(team: TeamHitter[], id: number, key: keyof HitLine) {
   const ordered = [...team].sort((a, b) => Number(b.line[key]) - Number(a.line[key]));
   const place = ordered.findIndex((p) => p.id === id);
   if (place < 0) return null;
   return { place: place + 1, next: ordered[place + 1], lead: ordered[0] };
-}
-
-function gapBack(name: string, gap: number, label: string): string {
-  if (gap <= 0) return `${name} is tied in ${label}.`;
-  return `${name} is ${gap} back in ${label}.`;
 }
 
 export function generateCrazyStats(input: Input): CrazyStat[] {
@@ -155,26 +153,9 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
     .sort((a, b) => a.date.localeCompare(b.date));
   const last15 = seasonGames.length ? aggregateHits(lastN(seasonGames, 15)) : undefined;
   const teamHitters = input.teamHitters ?? [];
+  const league = input.league;
   const id = input.id ?? 0;
-
-  if (hit && pitch && (input.position === "TWP" || (hit.homeRuns >= 10 && pitch.innings >= 20))) {
-    stats.push(
-      take({
-        id: "two-way",
-        score: 98,
-        stamp: "TWO-WAY",
-        category: "two-way",
-        headline: `${slash(hit)}, ${hit.homeRuns} HR and a ${fmtEra(pitch.era)} ERA`,
-        body: `${hit.homeRuns} HR and ${fmtIp(pitch.innings)} IP, ${pitch.strikeOuts} K.`,
-        receipts: [
-          { label: "Slash", value: slash(hit) },
-          { label: "HR", value: String(hit.homeRuns) },
-          { label: "ERA", value: fmtEra(pitch.era) },
-          { label: "IP", value: fmtIp(pitch.innings) },
-        ],
-      }),
-    );
-  }
+  const lastYearHit = (input.years ?? []).find((y) => y.year === SEASON - 1)?.hit;
 
   if (hit && hit.homeRuns >= 30 && hit.stolenBases >= 30) {
     const clubLabel = hit.homeRuns >= 40 && hit.stolenBases >= 40 ? "40-40" : "30-30";
@@ -207,65 +188,151 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
     );
   }
 
-  if (hit && id && teamHitters.length) {
-    const hr = rankOnTeam(teamHitters, id, "homeRuns");
-    const sb = rankOnTeam(teamHitters, id, "stolenBases");
-    const rbi = rankOnTeam(teamHitters, id, "rbi");
-    const leadsHr = Boolean(
-      hr?.place === 1 && hit.homeRuns >= 1 && (!hr.next || hit.homeRuns > hr.next.line.homeRuns),
-    );
-    const leadsSb = Boolean(
-      sb?.place === 1 &&
-        hit.stolenBases >= 1 &&
-        (!sb.next || hit.stolenBases > sb.next.line.stolenBases),
-    );
-    const leadsRbi = Boolean(
-      rbi?.place === 1 && hit.rbi >= 1 && (!rbi.next || hit.rbi > rbi.next.line.rbi),
-    );
-    const leads = [
-      leadsHr ? "HR" : null,
-      leadsSb ? "SB" : null,
-      leadsRbi ? "RBI" : null,
-    ].filter(Boolean) as string[];
-    if (leads.length) {
-      const gaps = [
-        leadsHr && hr?.next
-          ? { name: lastName(hr.next.name), gap: hit.homeRuns - hr.next.line.homeRuns, label: "HR" }
-          : null,
-        leadsSb && sb?.next
-          ? {
-              name: lastName(sb.next.name),
-              gap: hit.stolenBases - sb.next.line.stolenBases,
-              label: "SB",
-            }
-          : null,
-        leadsRbi && rbi?.next
-          ? { name: lastName(rbi.next.name), gap: hit.rbi - rbi.next.line.rbi, label: "RBI" }
-          : null,
-      ].filter(Boolean) as { name: string; gap: number; label: string }[];
-      const pick =
-        gaps.find((g) => g.label === "HR") ??
-        gaps.find((g) => g.label === "SB") ??
-        gaps[0];
-      const next = pick ? gapBack(pick.name, pick.gap, pick.label) : "";
+  if (hit && league) {
+    if (league.homeRuns > 0 && hit.homeRuns >= 20 && hit.homeRuns >= league.homeRuns) {
       stats.push(
         take({
-          id: "team-lead",
-          score: 70 + leads.length * 8,
-          stamp: slash(hit),
+          id: "mlb-lead-homeRuns",
+          score: 93,
+          stamp: "MLB HR",
+          category: "power",
+          headline: `${hit.homeRuns} HR, MLB lead`,
+          body: "",
+          receipts: [{ label: "HR", value: String(hit.homeRuns) }],
+        }),
+      );
+    }
+    if (league.ops > 0 && hit.ops >= 0.9 && hit.ops >= league.ops) {
+      stats.push(
+        take({
+          id: "mlb-lead-ops",
+          score: 90,
+          stamp: "MLB OPS",
           category: "rare",
-          headline: `${slash(hit)}, ${hit.homeRuns} HR, ${hit.rbi} RBI`,
-          body: next || `Leads the ${team} in ${joinList(leads)}.`,
+          headline: `MLB-best OPS ${fmtOps(hit.ops)}`,
+          body: `${slash(hit)}.`,
+          receipts: [{ label: "OPS", value: hit.ops.toFixed(3) }],
+        }),
+      );
+    }
+    if (league.avg > 0 && hit.avg >= 0.3 && hit.atBats >= 300 && hit.avg >= league.avg) {
+      stats.push(
+        take({
+          id: "mlb-lead-avg",
+          score: 87,
+          stamp: "MLB AVG",
+          category: "heater",
+          headline: `${fmtAvg(hit.avg)}, MLB batting lead`,
+          body: `${hit.hits} hits.`,
+          receipts: [{ label: "AVG", value: fmtAvg(hit.avg) }],
+        }),
+      );
+    }
+    if (league.rbi > 0 && hit.rbi >= 80 && hit.rbi >= league.rbi) {
+      stats.push(
+        take({
+          id: "mlb-lead-rbi",
+          score: 89,
+          stamp: "MLB RBI",
+          category: "power",
+          headline: `${hit.rbi} RBI, MLB lead`,
+          body: "",
+          receipts: [{ label: "RBI", value: String(hit.rbi) }],
+        }),
+      );
+    }
+    if (league.stolenBases > 0 && hit.stolenBases >= 20 && hit.stolenBases >= league.stolenBases) {
+      stats.push(
+        take({
+          id: "mlb-lead-stolenBases",
+          score: 85,
+          stamp: "MLB SB",
+          category: "speed",
+          headline: `${hit.stolenBases} SB, MLB lead`,
+          body: "",
+          receipts: [{ label: "SB", value: String(hit.stolenBases) }],
+        }),
+      );
+    }
+    if (league.triples > 0 && hit.triples >= 8 && hit.triples >= league.triples) {
+      stats.push(
+        take({
+          id: "mlb-lead-triples",
+          score: 85,
+          stamp: "MLB 3B",
+          category: "speed",
+          headline: `${hit.triples} triples, MLB lead`,
+          body: "",
+          receipts: [{ label: "3B", value: String(hit.triples) }],
+        }),
+      );
+    }
+  }
+
+  if (hit && lastYearHit && lastYearHit.games >= 80) {
+    const delta = hit.homeRuns - lastYearHit.homeRuns;
+    if (delta >= 8) {
+      stats.push(
+        take({
+          id: "year-delta-homeRuns",
+          score: 72,
+          stamp: "VS LAST YEAR",
+          category: "power",
+          headline: `${delta} more HR than last year`,
+          body: `${lastYearHit.homeRuns} in ${SEASON - 1}.`,
           receipts: [
-            { label: "AVG", value: fmtAvg(hit.avg) },
             { label: "HR", value: String(hit.homeRuns) },
-            { label: "RBI", value: String(hit.rbi) },
-            { label: "Leads", value: String(leads.length) },
+            { label: "Prev", value: String(lastYearHit.homeRuns) },
           ],
         }),
       );
     }
+  }
 
+  if (hit && hit.homeRuns >= 40 && (lastYearHit?.homeRuns ?? 0) >= 40) {
+    const streak =
+      1 +
+      [...(input.years ?? [])]
+        .filter((y) => y.year < SEASON)
+        .sort((a, b) => b.year - a.year)
+        .reduce((n, row, i, rows) => {
+          if (n !== i) return n;
+          return (row.hit?.homeRuns ?? 0) >= 40 ? n + 1 : n;
+        }, 0);
+    stats.push(
+      take({
+        id: "consecutive-40-hr",
+        score: 83,
+        stamp: "40-HR",
+        category: "power",
+        headline: `${hit.homeRuns} HR`,
+        body: `${streak} straight 40-HR seasons.`,
+        receipts: [{ label: "HR", value: String(hit.homeRuns) }],
+      }),
+    );
+  }
+
+  if (pitch && pitch.saves >= 25 && pitch.era > 0 && pitch.era <= 2.5) {
+    stats.push(
+      take({
+        id: "closer-line",
+        score: 74,
+        stamp: "CLOSER",
+        category: "pitching",
+        headline: `${pitch.saves} SV, ${fmtEra(pitch.era)} ERA`,
+        body: `${pitch.strikeOuts} K in ${fmtIp(pitch.innings)} IP.`,
+        receipts: [
+          { label: "SV", value: String(pitch.saves) },
+          { label: "ERA", value: fmtEra(pitch.era) },
+        ],
+      }),
+    );
+  }
+
+  if (hit && id && teamHitters.length) {
+    const hr = rankOnTeam(teamHitters, id, "homeRuns");
+    const sb = rankOnTeam(teamHitters, id, "stolenBases");
+    const rbi = rankOnTeam(teamHitters, id, "rbi");
     const chase =
       hr?.place === 2 && hit.homeRuns >= 15 && hr.lead && hr.lead.id !== id
         ? {
@@ -584,6 +651,45 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         ],
       }),
     );
+    if (hit.triples >= 1) {
+      stats.push(
+        take({
+          id: "game-hr-3b",
+          score: 85,
+          stamp: "HR + 3B",
+          category: "rare",
+          headline: `${hit.homeRuns} HR and a triple ${vs}`,
+          body: since(prev, "multi-homer game with a triple"),
+          receipts: [
+            { label: "HR", value: String(hit.homeRuns) },
+            { label: "3B", value: String(hit.triples) },
+            ...dayReceipt(prev, input.date),
+          ],
+        }),
+      );
+    }
+    if (hit.stolenBases >= 2) {
+      const prevMix = lastMatch(
+        logs,
+        (g) => g.homeRuns >= 2 && g.stolenBases >= 2,
+        input.date,
+      );
+      stats.push(
+        take({
+          id: "game-hr-sb",
+          score: 86,
+          stamp: "HR + SB",
+          category: "rare",
+          headline: `${hit.homeRuns} HR and ${hit.stolenBases} SB ${vs}`,
+          body: since(prevMix, "multi-homer game with 2 steals"),
+          receipts: [
+            { label: "HR", value: String(hit.homeRuns) },
+            { label: "SB", value: String(hit.stolenBases) },
+            ...dayReceipt(prevMix, input.date),
+          ],
+        }),
+      );
+    }
   }
 
   const bag = hit
@@ -616,22 +722,22 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         .filter((p) => p.name !== full)
         .sort((a, b) => (b.hit?.hits ?? 0) - (a.hit?.hits ?? 0))[0];
       const nextHits = next?.hit?.hits ?? 0;
-      stats.push(
-        take({
-          id: "game-team-hits",
-          score: 60 + hit.hits * 4,
-          stamp: "BOX",
-          category: "heater",
-          headline: boxLine(hit),
-          body:
-            next && nextHits === hit.hits
-              ? `Tied with ${lastName(next.name)} for the ${team} hit lead.`
-              : next && nextHits > 0
-                ? `Team-high hits. ${lastName(next.name)} had ${nextHits}.`
+      if (nextHits < hit.hits) {
+        stats.push(
+          take({
+            id: "game-team-hits",
+            score: 60 + hit.hits * 4,
+            stamp: "BOX",
+            category: "heater",
+            headline: boxLine(hit),
+            body:
+              next && nextHits > 0
+                ? `Team-high ${hit.hits} hits. ${lastName(next.name)} had ${nextHits}.`
                 : `Team-high ${hit.hits} hits for the ${team}.`,
-          receipts: [{ label: "H", value: String(hit.hits) }],
-        }),
-      );
+            receipts: [{ label: "H", value: String(hit.hits) }],
+          }),
+        );
+      }
     }
 
     if (hit.stolenBases >= 1 && withSb.length === 1) {
@@ -674,7 +780,8 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
   if (pitch && pitch.innings > 0) {
     const gem = pitch.innings >= 6 && pitch.earnedRuns <= 2;
     const punch = pitch.strikeOuts >= 8;
-    if (gem || punch) {
+    const close = pitch.innings > 0 && pitch.innings <= 2 && pitch.strikeOuts >= 3;
+    if (gem || punch || close) {
       const prev = punch
         ? lastMatch(pitchLogs, (g) => g.strikeOuts >= pitch.strikeOuts, input.date)
         : lastMatch(
@@ -692,7 +799,9 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
           headline: `${line} ${vs}`,
           body: punch
             ? sincePitch(prev, `${pitch.strikeOuts}-strikeout game`)
-            : sincePitch(prev, "start of 6+ IP with 2 ER or fewer"),
+            : close
+              ? sincePitch(prev, `${pitch.strikeOuts}-strikeout outing`)
+              : sincePitch(prev, "start of 6+ IP with 2 ER or fewer"),
           receipts: [
             { label: "IP", value: fmtIp(pitch.innings) },
             { label: "ER", value: String(pitch.earnedRuns) },
@@ -706,8 +815,6 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
 
   const quiet = Boolean(hit && isOhfer(hit));
   if (quiet && hit) {
-    const prevOhfer = lastMatch(logs, (g) => isOhfer(g, hit.atBats), input.date);
-    const firstWindow = !prevOhfer || daysBetween(prevOhfer.date, input.date) >= 14;
     const teamShut = mates.length > 0 && withHits.length === 0;
     const prevMulti = lastMatch(logs, (g) => g.hits >= 2, input.date);
     const bestMate = [...mates]
@@ -724,22 +831,6 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
           headline: `Nobody had a hit ${vs}`,
           body: "",
           receipts: [{ label: "H", value: "0" }],
-        }),
-      );
-    } else if (firstWindow) {
-      stats.push(
-        take({
-          id: "game-ohfer-first",
-          score: 44,
-          stamp: "0-FER",
-          category: "split",
-          headline: `First 0-for-${hit.atBats} in the last two weeks`,
-          body: "",
-          receipts: [
-            { label: "AB", value: String(hit.atBats) },
-            { label: "K", value: String(hit.strikeOuts) },
-            ...dayReceipt(prevOhfer, input.date),
-          ],
         }),
       );
     } else {
@@ -785,25 +876,14 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
       s.id === "game-only-sb" ||
       s.id === "game-only-hr" ||
       s.id === "game-pitch" ||
-      s.id === "game-season-high",
+      s.id === "game-season-high" ||
+      s.id === "game-hr-3b" ||
+      s.id === "game-hr-sb",
   );
   if (played && hit && (!feat || quiet)) {
-    const prevHr = lastMatch(logs, (g) => g.homeRuns >= 1, input.date);
     const prevMulti = lastMatch(logs, (g) => g.hits >= 2, input.date);
     const footnotedMulti = stats.some((s) => s.id === "game-ohfer");
-    if (prevHr) {
-      stats.push(
-        take({
-          id: "game-last-hr",
-          score: 36,
-          stamp: "LAST HR",
-          category: "power",
-          headline: lastHrLine(prevHr),
-          body: "",
-          receipts: [],
-        }),
-      );
-    } else if (prevMulti && !footnotedMulti) {
+    if (prevMulti && !footnotedMulti) {
       stats.push(
         take({
           id: "game-last-multi",

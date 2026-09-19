@@ -14,12 +14,18 @@ import type { CrazyStat } from "./types";
  * 5. A positive event, not an 0-fer headline.
  * 6. Prestige: HR and ERA beat doubles, steals, and OPS splits.
  *
+ * Keep/skip catalog
+ * (S1Y S2N S3Y–S8Y S9N S10Y S11Y S12N S13N S14Y–S22Y S23N S24Y S25Y |
+ * G1Y–G11Y G12N G13Y–G15Y G16N G17Y–G22Y G23N G24N G25Y).
+ * Emit Y types. Drop N: team-lead slash, two-way restated line, home/platoon/BB
+ * splits, hit-lead ties, first 0-for-4, game last-HR leftover, 0-BB extra gem.
+ *
  * Quiet leftovers
  * 1. Season: last multi > last HR. Last HR only if that’s all we have.
- * 2. Game: last HR > last multi. Fill the slot; don’t lead an 0-fer.
+ * 2. Game: 0-fer with last-multi footnote (G22Y). No last-HR leftover (G23N).
  * 3. 0-fer footnote is last multi, short. Teammate is its own take.
- * 4. Nobody had a hit if the team is 0. First 0-for-4 in two weeks if the window.
- * 5. Last-15 / team-chase / multi-HR / slash beat a leftover last HR.
+ * 4. Nobody had a hit if the team is 0.
+ * 5. Last-15 / team-chase / multi-HR beat a leftover last HR.
  *
  * Copy: short except last-15 slash + OPS vs season.
  *
@@ -88,6 +94,39 @@ export function rarity(stat: CrazyStat): number {
     case "career-first-homeRuns":
       score = numReceipt(stat, "Bar") >= 40 ? 90 : numReceipt(stat, "Bar") >= 30 ? 86 : 84;
       break;
+    case "career-first-30-30":
+      score = 91;
+      break;
+    case "career-first-strikeOuts":
+      score = 88;
+      break;
+    case "mlb-lead-homeRuns":
+      score = 93;
+      break;
+    case "mlb-lead-ops":
+      score = 90;
+      break;
+    case "mlb-lead-avg":
+      score = 87;
+      break;
+    case "mlb-lead-rbi":
+      score = 89;
+      break;
+    case "mlb-lead-stolenBases":
+      score = 85;
+      break;
+    case "mlb-lead-triples":
+      score = 85;
+      break;
+    case "consecutive-40-hr":
+      score = 83;
+      break;
+    case "year-delta-homeRuns":
+      score = 72;
+      break;
+    case "closer-line":
+      score = 74;
+      break;
     case "career-first-stolenBases":
       score = numReceipt(stat, "Bar") >= 30 ? 85 : 81;
       break;
@@ -99,6 +138,12 @@ export function rarity(stat: CrazyStat): number {
       break;
     case "game-hr":
       score = numReceipt(stat, "HR") >= 3 ? 94 : 80;
+      break;
+    case "game-hr-sb":
+      score = 86;
+      break;
+    case "game-hr-3b":
+      score = 85;
       break;
     case "career-high-stolenBases":
       score = 84;

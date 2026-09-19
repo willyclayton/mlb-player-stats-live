@@ -5,6 +5,7 @@ import { fmtAvg, parseInnings, shortTeamName, startEt } from "./format";
 import {
   aggregateHits,
   emptyHit,
+  emptyPitch,
   hittingStreak,
   iso,
   lastN,
@@ -89,7 +90,7 @@ describe("stat math", () => {
 });
 
 describe("crazy stat engine", () => {
-  it("states the two-way line in numbers", () => {
+  it("does not emit a two-way line that restates the box", () => {
     const crazy = generateCrazyStats({
       name: "Shohei Ohtani",
       position: "TWP",
@@ -105,11 +106,11 @@ describe("crazy stat engine", () => {
         games: 134,
       }),
       seasonPitch: {
+        ...emptyPitch(),
         games: 14,
         gamesStarted: 14,
         wins: 8,
         losses: 2,
-        saves: 0,
         innings: 85.7,
         hits: 55,
         runs: 21,
@@ -128,12 +129,12 @@ describe("crazy stat engine", () => {
       hitGames: [],
       pitchGames: [],
     });
-    assert.equal(crazy[0]?.id, "two-way");
-    assert.match(crazy[0].headline, /30 HR/);
-    assert.match(crazy[0].headline, /1\.79/);
-    assert.match(crazy[0].body, /30 HR/);
-    assert.match(crazy[0].body, /85\.2 IP/);
-    assert.equal(/official/i.test(crazy[0].body), false);
+    assert.equal(crazy.some((s) => s.id === "two-way"), false);
+    const line = crazy.find((s) => s.id === "pitch-line");
+    assert.ok(line);
+    assert.match(line!.headline, /1\.79 ERA/);
+    assert.match(line!.headline, /0\.95 WHIP/);
+    assert.equal(/official/i.test(line!.body), false);
   });
 
   it("flags a 30-30 season and only-on-team when the board is passed", () => {
@@ -161,10 +162,10 @@ describe("crazy stat engine", () => {
     assert.ok(club);
     assert.equal(club!.stamp, "30-30");
     assert.match(club!.body, /Only Yankees player/);
-    assert.ok(crazy.some((s) => s.id === "team-lead"));
+    assert.equal(crazy.some((s) => s.id === "team-lead"), false);
   });
 
-  it("uses the season slash line and a real last name, not a suffix", () => {
+  it("does not emit a restated slash team-lead", () => {
     const crazy = generateCrazyStats({
       id: 1,
       name: "Matt Olson",
@@ -185,15 +186,83 @@ describe("crazy stat engine", () => {
         { id: 1, name: "Matt Olson", line: hit({ homeRuns: 40, rbi: 88 }) },
         { id: 2, name: "Michael Harris II", line: hit({ homeRuns: 26, rbi: 70 }) },
       ],
+      years: [
+        { year: 2023, hit: hit({ homeRuns: 54, games: 150 }) },
+        { year: 2024, hit: hit({ homeRuns: 29, games: 150 }) },
+        { year: 2025, hit: hit({ homeRuns: 29, games: 150 }) },
+      ],
     });
-    const lead = crazy.find((s) => s.id === "team-lead");
+    assert.equal(crazy.some((s) => s.id === "team-lead"), false);
+    const second = crazy.find((s) => s.id === "career-2nd-homeRuns");
+    assert.ok(second);
+    assert.match(second!.headline, /40 HR, 2nd-most of his career/);
+    assert.match(second!.body, /54 in 2023/);
+    assert.equal(/II/.test(`${second!.headline} ${second!.body}`), false);
+  });
+
+  it("names an MLB home-run lead", () => {
+    const crazy = generateCrazyStats({
+      name: "Kyle Schwarber",
+      seasonHit: hit({ homeRuns: 45, ops: 0.9, atBats: 500, games: 140 }),
+      hitGames: [],
+      pitchGames: [],
+      league: { homeRuns: 45, stolenBases: 50, rbi: 120, triples: 16, avg: 0.33, ops: 1.03 },
+    });
+    const lead = crazy.find((s) => s.id === "mlb-lead-homeRuns");
     assert.ok(lead);
-    assert.match(lead!.headline, /40 HR/);
-    assert.match(lead!.headline, /88 RBI/);
-    assert.match(lead!.headline, /\.272/);
-    assert.match(lead!.body, /Harris is 14 back/);
-    assert.equal(/II is next/.test(lead!.body), false);
-    assert.equal(/official/i.test(lead!.body), false);
+    assert.equal(lead!.headline, "45 HR, MLB lead");
+  });
+
+  it("names more home runs than last year", () => {
+    const crazy = generateCrazyStats({
+      name: "Pete Crow-Armstrong",
+      seasonHit: hit({ homeRuns: 44, stolenBases: 20, games: 140 }),
+      hitGames: [],
+      pitchGames: [],
+      years: [{ year: 2025, hit: hit({ homeRuns: 31, games: 150 }) }],
+    });
+    const yoy = crazy.find((s) => s.id === "year-delta-homeRuns");
+    assert.ok(yoy);
+    assert.equal(yoy!.headline, "13 more HR than last year");
+    assert.match(yoy!.body, /31 in 2025/);
+  });
+
+  it("names consecutive 40-HR seasons", () => {
+    const crazy = generateCrazyStats({
+      name: "Junior Caminero",
+      seasonHit: hit({ homeRuns: 41, games: 140 }),
+      hitGames: [],
+      pitchGames: [],
+      years: [
+        { year: 2025, hit: hit({ homeRuns: 45, games: 150 }) },
+        { year: 2024, hit: hit({ homeRuns: 22, games: 150 }) },
+      ],
+    });
+    const streak = crazy.find((s) => s.id === "consecutive-40-hr");
+    assert.ok(streak);
+    assert.equal(streak!.headline, "41 HR");
+    assert.match(streak!.body, /2 straight 40-HR seasons/);
+  });
+
+  it("names a closer line", () => {
+    const crazy = generateCrazyStats({
+      name: "Mason Miller",
+      seasonPitch: {
+        ...emptyPitch(),
+        saves: 37,
+        era: 1.12,
+        strikeOuts: 119,
+        innings: 64 + 1 / 3,
+        whip: 0.85,
+        kPer9: 16.6,
+      },
+      hitGames: [],
+      pitchGames: [],
+    });
+    const closer = crazy.find((s) => s.id === "closer-line");
+    assert.ok(closer);
+    assert.match(closer!.headline, /37 SV, 1\.12 ERA/);
+    assert.match(closer!.body, /119 K/);
   });
 
   it("does not invent a 20-20 club", () => {
@@ -277,7 +346,7 @@ describe("game crazy stat engine", () => {
     };
   }
 
-  it("footnotes last multi on a repeat 0-fer and keeps last HR first", () => {
+  it("footnotes last multi on a repeat 0-fer and skips last-HR leftover", () => {
     const crazy = generateGameCrazyStats({
       name: "Michael Harris II",
       team: "Atlanta Braves",
@@ -314,19 +383,17 @@ describe("game crazy stat engine", () => {
       ],
     });
     const ids = crazy.map((s) => s.id);
-    assert.equal(ids[0], "game-last-hr");
-    assert.ok(ids.includes("game-ohfer"));
+    assert.equal(ids[0], "game-ohfer");
+    assert.equal(ids.includes("game-last-hr"), false);
+    assert.equal(ids.includes("game-ohfer-first"), false);
     assert.equal(ids.includes("game-line"), false);
-    const leftover = crazy.find((s) => s.id === "game-last-hr")!;
-    assert.match(leftover.headline, /Last HR Sep 14 @ Cubs/);
-    assert.equal(leftover.body, "");
     const ohfer = crazy.find((s) => s.id === "game-ohfer")!;
     assert.match(ohfer.headline, /0-for-4, 2 K @ Astros/);
     assert.equal(ohfer.body, "Last multi-hit Sep 11.");
     assert.equal(/Olson|Phillies|3-3/.test(`${ohfer.headline} ${ohfer.body}`), false);
   });
 
-  it("leads a first 0-for-4 in two weeks ahead of last HR", () => {
+  it("does not frame a quiet night as first 0-for-4 in two weeks", () => {
     const crazy = generateGameCrazyStats({
       name: "Michael Harris II",
       team: "Atlanta Braves",
@@ -345,10 +412,10 @@ describe("game crazy stat engine", () => {
         }),
       ],
     });
-    assert.equal(crazy[0]?.id, "game-ohfer-first");
-    assert.match(crazy[0]!.headline, /First 0-for-4 in the last two weeks/);
-    assert.ok(crazy.some((s) => s.id === "game-last-hr"));
-    assert.equal(crazy.some((s) => s.id === "game-ohfer"), false);
+    assert.equal(crazy.some((s) => s.id === "game-ohfer-first"), false);
+    assert.equal(crazy.some((s) => s.id === "game-last-hr"), false);
+    assert.equal(crazy[0]?.id, "game-ohfer");
+    assert.match(crazy[0]!.headline, /0-for-4, 2 K @ Astros/);
   });
 
   it("keeps the teammate as its own take, not stacked on the 0-fer", () => {
@@ -557,7 +624,7 @@ describe("game crazy stat engine", () => {
     assert.equal(crazy.some((s) => /official/i.test(`${s.headline} ${s.body}`)), false);
   });
 
-  it("says tied when a teammate matches the hit lead", () => {
+  it("skips a tied hit lead", () => {
     const crazy = generateGameCrazyStats({
       name: "Matt Olson",
       team: "Atlanta Braves",
@@ -570,6 +637,7 @@ describe("game crazy stat engine", () => {
       },
       mates: [
         { id: 2, name: "Michael Harris II", hit: hit({ atBats: 4, hits: 3, homeRuns: 0 }) },
+        { id: 3, name: "Austin Riley", hit: hit({ atBats: 4, hits: 1, homeRuns: 1 }) },
       ],
       hitGames: [
         game({
@@ -583,10 +651,91 @@ describe("game crazy stat engine", () => {
         }),
       ],
     });
+    assert.equal(crazy.some((s) => s.id === "game-team-hits"), false);
+    assert.equal(crazy.some((s) => /Tied with Harris/.test(s.body)), false);
+    const hr = crazy.find((s) => s.id === "game-hr-since");
+    assert.ok(hr);
+  });
+
+  it("names a unique team-high hit game", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Wyatt Jenkins",
+      team: "Milwaukee Brewers",
+      opponent: "Los Angeles Angels",
+      isHome: false,
+      date: "2026-09-18",
+      hit: {
+        ...hit({ atBats: 4, plateAppearances: 4, hits: 3, homeRuns: 1 }),
+        summary: "3-4 | HR",
+      },
+      mates: [{ id: 2, name: "Teammate", hit: hit({ atBats: 4, hits: 1 }) }],
+    });
     const teamHits = crazy.find((s) => s.id === "game-team-hits");
     assert.ok(teamHits);
-    assert.match(teamHits!.body, /Tied with Harris/);
-    assert.equal(/II/.test(teamHits!.body), false);
+    assert.match(teamHits!.body, /Team-high 3 hits/);
+    assert.equal(/Tied/.test(teamHits!.body), false);
+  });
+
+  it("names 2 HR and a triple", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      opponent: "Rockies",
+      isHome: true,
+      date: "2026-06-15",
+      hit: hit({
+        atBats: 5,
+        plateAppearances: 5,
+        hits: 4,
+        homeRuns: 2,
+        triples: 1,
+        doubles: 0,
+      }),
+    });
+    const mix = crazy.find((s) => s.id === "game-hr-3b");
+    assert.ok(mix);
+    assert.match(mix!.headline, /2 HR and a triple vs Rockies/);
+  });
+
+  it("names 2 HR and 2 steals", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Ronald Acuna Jr.",
+      team: "Atlanta Braves",
+      opponent: "Mets",
+      isHome: true,
+      date: "2026-08-01",
+      hit: hit({
+        atBats: 5,
+        plateAppearances: 5,
+        hits: 3,
+        homeRuns: 2,
+        stolenBases: 2,
+      }),
+    });
+    const mix = crazy.find((s) => s.id === "game-hr-sb");
+    assert.ok(mix);
+    assert.match(mix!.headline, /2 HR and 2 SB vs Mets/);
+  });
+
+  it("names a reliever 3-strikeout outing", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Raisel Iglesias",
+      team: "Atlanta Braves",
+      opponent: "Mets",
+      isHome: true,
+      date: "2026-09-18",
+      pitch: {
+        ...emptyPitch(),
+        innings: 1,
+        strikeOuts: 3,
+        earnedRuns: 0,
+        summary: "1 IP, 0 ER, 3 K",
+      },
+    });
+    const gem = crazy.find((s) => s.id === "game-pitch");
+    assert.ok(gem);
+    assert.match(gem!.headline, /1 IP, 0 ER, 3 K vs Mets/);
+    assert.match(gem!.body, /3-strikeout outing/);
   });
 
   it("returns a no-line fallback when they have not played", () => {
