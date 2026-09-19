@@ -24,8 +24,7 @@ function TakeSlot({
   stats: CrazyStat[];
   tone: "season" | "game";
 }) {
-  const start = stats.findIndex(isTopTake);
-  const [index, setIndex] = useState(start >= 0 ? start : 0);
+  const [index, setIndex] = useState(0);
   const stat = stats[index];
 
   return (
