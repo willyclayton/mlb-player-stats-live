@@ -613,9 +613,11 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
           category: "heater",
           headline: boxLine(hit),
           body:
-            next && nextHits > 0
-              ? `Team-high hits. ${lastName(next.name)} had ${nextHits}.`
-              : `Team-high ${hit.hits} hits for the ${team}.`,
+            next && nextHits === hit.hits
+              ? `Tied with ${lastName(next.name)} for the ${team} hit lead.`
+              : next && nextHits > 0
+                ? `Team-high hits. ${lastName(next.name)} had ${nextHits}.`
+                : `Team-high ${hit.hits} hits for the ${team}.`,
           receipts: [{ label: "H", value: String(hit.hits) }],
         }),
       );

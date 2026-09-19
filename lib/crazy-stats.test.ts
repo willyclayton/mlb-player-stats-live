@@ -413,6 +413,38 @@ describe("game crazy stat engine", () => {
     assert.equal(crazy.some((s) => /official/i.test(`${s.headline} ${s.body}`)), false);
   });
 
+  it("says tied when a teammate matches the hit lead", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      opponent: "Houston Astros",
+      isHome: false,
+      date: "2026-09-18",
+      hit: {
+        ...hit({ atBats: 5, plateAppearances: 5, hits: 3, homeRuns: 1, rbi: 2 }),
+        summary: "3-5 | HR, 2 RBI, 2 R",
+      },
+      mates: [
+        { id: 2, name: "Michael Harris II", hit: hit({ atBats: 4, hits: 3, homeRuns: 0 }) },
+      ],
+      hitGames: [
+        game({
+          date: "2026-09-13",
+          opponent: "Phillies",
+          isHome: true,
+          hits: 3,
+          homeRuns: 1,
+          atBats: 5,
+          summary: "3-5 | HR, 3 RBI, R",
+        }),
+      ],
+    });
+    const teamHits = crazy.find((s) => s.id === "game-team-hits");
+    assert.ok(teamHits);
+    assert.match(teamHits!.body, /Tied with Harris/);
+    assert.equal(/II/.test(teamHits!.body), false);
+  });
+
   it("returns a no-line fallback when they have not played", () => {
     const crazy = generateGameCrazyStats({
       name: "Bench Bat",
