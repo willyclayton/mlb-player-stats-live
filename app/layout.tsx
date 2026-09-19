@@ -1,13 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo_Black, DM_Sans } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
-
-const display = Archivo_Black({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-display-g",
-});
 
 const sans = DM_Sans({
   subsets: ["latin"],
@@ -15,28 +9,31 @@ const sans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MLB Live — Crazy Stats",
-  description: "Tap a game or a player. Live MLB numbers and a simple fact.",
-  applicationName: "MLB Crazy Stats",
+  title: "MLB",
+  description: "Tap a game, then a player. Live numbers and a fact.",
+  applicationName: "MLB",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    title: "Crazy Stats",
+    title: "MLB",
     statusBarStyle: "black-translucent",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#070b12",
+  themeColor: "#000000",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
 };
 
+const themeBoot = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={sans.variable} suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
         <div className="app">
           <AppHeader />
           {children}

@@ -113,6 +113,17 @@ export function shiftEt(days: number, from = new Date()): string {
   return `${yy}-${mm}-${dd}`;
 }
 
+export function startEt(iso?: string): string | undefined {
+  if (!iso) return undefined;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toLocaleTimeString("en-US", {
+    timeZone: "America/New_York",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export function prettyDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   if (!y || !m || !d) return iso;

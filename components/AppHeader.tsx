@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { SearchBox } from "./SearchBox";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function AppHeader() {
   return (
     <header className="shell">
       <div className="shell-row">
         <Link href="/" className="brand-link">
-          Crazy Stats
+          MLB
         </Link>
-        <span className="live-dot">Live</span>
+        <ThemeToggle />
       </div>
       <SearchBox />
     </header>

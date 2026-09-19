@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { generateCrazyStats, generateGameCrazyStats } from "./crazy-stats";
-import { fmtAvg, parseInnings } from "./format";
+import { fmtAvg, parseInnings, startEt } from "./format";
 import {
   aggregateHits,
   emptyHit,
@@ -35,6 +35,10 @@ describe("format helpers", () => {
 
   it("formats averages without a leading zero", () => {
     assert.equal(fmtAvg(0.277), ".277");
+  });
+
+  it("prints first pitch in Eastern time", () => {
+    assert.equal(startEt("2026-09-19T17:10:00Z"), "1:10 PM");
   });
 });
 
