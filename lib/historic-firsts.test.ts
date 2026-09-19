@@ -146,8 +146,25 @@ describe("live season joins", () => {
     assert.match(joins[0]!.body, /Alfonso Soriano \(2006\)/);
   });
 
-  it("does not restate a Cubs 30-30 one year after PCA", () => {
-    assert.equal(joinSeasonLine("CHC", 44, 37).length, 0);
+  it("names consecutive 30-30 as a Cubs first when last year was also 30-30", () => {
+    const joins = joinSeasonLine("CHC", 44, 37, {
+      club: "Cubs",
+      lastYear: { homeRuns: 31, stolenBases: 35 },
+    });
+    const streak = joins.find((j) => j.id === "franchise-first-consecutive-30-30");
+    assert.ok(streak);
+    assert.match(streak!.headline, /First consecutive 30-30 seasons for the Cubs/);
+  });
+
+  it("does not restate a Cubs 30-30 one year after PCA, but names 40-30 and the 40-HR drought", () => {
+    const joins = joinSeasonLine("CHC", 44, 37, { club: "Cubs" });
+    assert.equal(joins.some((j) => j.id === "franchise-since-30-30"), false);
+    const mix = joins.find((j) => j.id === "franchise-first-40-30");
+    assert.ok(mix);
+    assert.match(mix!.headline, /First 40-HR \/ 30-SB season for the Cubs/);
+    const drought = joins.find((j) => j.id === "franchise-since-40-hr");
+    assert.ok(drought);
+    assert.match(drought!.body, /Derrek Lee \(2005\)/);
   });
 
   it("would name a White Sox 30-30 as a franchise first", () => {
@@ -164,7 +181,7 @@ describe("live season joins", () => {
     assert.equal(joinSeasonLine("TB", 41, 3).some((j) => j.id === "franchise-first-40-hr"), false);
   });
 
-  it("finds no new franchise firsts in the live 2026 30-30/40-HR board", () => {
+  it("finds the Cubs 40-30 first on the live 2026 board", () => {
     const live = [
       { teamAbbr: "CHC", hr: 44, sb: 37 },
       { teamAbbr: "WSH", hr: 30, sb: 30 },
@@ -173,7 +190,9 @@ describe("live season joins", () => {
       { teamAbbr: "HOU", hr: 40, sb: 1 },
       { teamAbbr: "ATL", hr: 40, sb: 4 },
     ];
-    assert.deepEqual(newFranchiseFirsts2026(live), []);
+    assert.deepEqual(newFranchiseFirsts2026(live), [
+      "CHC: First 40-HR / 30-SB season for the franchise (44 HR, 37 SB)",
+    ]);
   });
 
   it("names the last Cubs cycle before a 2026 cycle", () => {

@@ -2,6 +2,7 @@ import { writeCareerFacts } from "./fact-writer";
 import { rankFacts } from "./fact-ranker";
 import { fmtAvg, fmtEra, fmtIp, fmtOps, slash, prettyDate, shortTeamName } from "./format";
 import { join3Hr, joinCycle, joinSeasonLine, resolveTeamAbbr } from "./historic-firsts";
+import { joinHistoricGame } from "./historic-games";
 import { aggregateHits, hittingStreak, homerStreak, lastN } from "./stats";
 import type { CrazyStat, GameHit, GamePitch, HitLine, PitchLine, YearLine } from "./types";
 
@@ -191,7 +192,12 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
 
   const teamAbbr = resolveTeamAbbr(input.team);
   if (hit && teamAbbr) {
-    for (const join of joinSeasonLine(teamAbbr, hit.homeRuns, hit.stolenBases)) {
+    for (const join of joinSeasonLine(teamAbbr, hit.homeRuns, hit.stolenBases, {
+      club: team,
+      lastYear: lastYearHit
+        ? { homeRuns: lastYearHit.homeRuns, stolenBases: lastYearHit.stolenBases }
+        : undefined,
+    })) {
       stats.push(
         take({
           id: join.id,
@@ -567,6 +573,20 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
     (hit && (hit.plateAppearances > 0 || hit.atBats > 0)) ||
       (pitch && pitch.innings > 0),
   );
+
+  for (const join of joinHistoricGame(full, input.date)) {
+    stats.push(
+      take({
+        id: join.id,
+        score: join.stamp === "CLUB FIRST" ? 100 : 97,
+        stamp: join.stamp,
+        category: "rare",
+        headline: join.headline,
+        body: join.body,
+        receipts: join.receipts,
+      }),
+    );
+  }
 
   if (
     hit &&

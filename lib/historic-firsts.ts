@@ -443,6 +443,77 @@ export const LAST_3_HR: HistoricLine[] = [
 
 export const NEVER_3_HR: TeamAbbr[] = [];
 
+/** Last 40-HR season before 2026, from MLB statsSingleSeason (HR desc, season < 2026). */
+export const LAST_40_HR: HistoricLine[] = [
+  line("Mark Reynolds", 2009, "AZ", { hr: 44, sb: 24 }),
+  line("Ronald Acuña Jr.", 2023, "ATL", { hr: 41, sb: 73 }),
+  line("Anthony Santander", 2024, "BAL", { hr: 44, sb: 2 }),
+  line("J.D. Martinez", 2018, "BOS", { hr: 43, sb: 6 }),
+  line("Derrek Lee", 2005, "CHC", { hr: 46, sb: 15 }),
+  line("Todd Frazier", 2016, "CWS", { hr: 40, sb: 15 }),
+  line("Eugenio Suárez", 2019, "CIN", { hr: 49, sb: 3 }),
+  line("Travis Hafner", 2006, "CLE", { hr: 42, sb: 0 }),
+  line("Nolan Arenado", 2019, "COL", { hr: 41, sb: 3 }),
+  line("Miguel Cabrera", 2013, "DET", { hr: 44, sb: 3 }),
+  line("Alex Bregman", 2019, "HOU", { hr: 41, sb: 5 }),
+  line("Salvador Perez", 2021, "KC", { hr: 48, sb: 1 }),
+  line("Shohei Ohtani", 2023, "LAA", { hr: 44, sb: 20 }),
+  line("Shohei Ohtani", 2025, "LAD", { hr: 55, sb: 20 }),
+  line("Giancarlo Stanton", 2017, "MIA", { hr: 59, sb: 2 }),
+  line("Christian Yelich", 2019, "MIL", { hr: 44, sb: 30 }),
+  line("Nelson Cruz", 2019, "MIN", { hr: 41, sb: 0 }),
+  line("Juan Soto", 2025, "NYM", { hr: 43, sb: 38 }),
+  line("Aaron Judge", 2025, "NYY", { hr: 53, sb: 12 }),
+  line("Khris Davis", 2018, "ATH", { hr: 48, sb: 0 }),
+  line("Kyle Schwarber", 2025, "PHI", { hr: 56, sb: 10 }),
+  line("Willie Stargell", 1973, "PIT", { hr: 44, sb: 0 }),
+  line("Fernando Tatis Jr.", 2021, "SD", { hr: 42, sb: 25 }),
+  line("Barry Bonds", 2004, "SF", { hr: 45, sb: 6 }),
+  line("Cal Raleigh", 2025, "SEA", { hr: 60, sb: 14 }),
+  line("Albert Pujols", 2010, "STL", { hr: 42, sb: 14 }),
+  line("Junior Caminero", 2025, "TB", { hr: 45, sb: 7 }),
+  line("Joey Gallo", 2018, "TEX", { hr: 40, sb: 3 }),
+  line("Vladimir Guerrero Jr.", 2021, "TOR", { hr: 48, sb: 4 }),
+  line("Bryce Harper", 2015, "WSH", { hr: 42, sb: 6 }),
+];
+
+/** Last 40-HR / 30-SB season before 2026. Null clubs have never had one. */
+export const LAST_40_30: HistoricLine[] = [
+  line("Ronald Acuña Jr.", 2023, "ATL", { hr: 41, sb: 73 }),
+  line("Larry Walker", 1997, "COL", { hr: 49, sb: 33 }),
+  line("Jeff Bagwell", 1999, "HOU", { hr: 42, sb: 30 }),
+  line("Shohei Ohtani", 2024, "LAD", { hr: 54, sb: 59 }),
+  line("Christian Yelich", 2019, "MIL", { hr: 44, sb: 30 }),
+  line("Juan Soto", 2025, "NYM", { hr: 43, sb: 38 }),
+  line("Jose Canseco", 1988, "ATH", { hr: 42, sb: 40 }),
+  line("Barry Bonds", 1997, "SF", { hr: 40, sb: 37 }),
+  line("Alex Rodriguez", 1998, "SEA", { hr: 42, sb: 46 }),
+  line("Alfonso Soriano", 2006, "WSH", { hr: 46, sb: 41 }),
+];
+
+export const NEVER_40_30: TeamAbbr[] = [
+  "AZ",
+  "BAL",
+  "BOS",
+  "CHC",
+  "CWS",
+  "CIN",
+  "CLE",
+  "DET",
+  "KC",
+  "LAA",
+  "MIA",
+  "MIN",
+  "NYY",
+  "PHI",
+  "PIT",
+  "SD",
+  "STL",
+  "TB",
+  "TEX",
+  "TOR",
+];
+
 export const LAST_3_HR_WATCH: TeamAbbr[] = [
   "CHC",
   "ATL",
@@ -525,13 +596,31 @@ function droughtJoin(
   return { id, stamp, headline, body, receipts };
 }
 
+export function last40Hr(teamAbbr: string): HistoricLine | null {
+  return LAST_40_HR.find((r) => r.teamAbbr === teamAbbr) ?? null;
+}
+
+export function last40_30(teamAbbr: string): HistoricLine | null {
+  if (NEVER_40_30.includes(teamAbbr as TeamAbbr)) return null;
+  return LAST_40_30.find((r) => r.teamAbbr === teamAbbr) ?? null;
+}
+
+function hadConsecutive30_30(teamAbbr: string): boolean {
+  const years = [
+    ...new Set((club30ByTeam[teamAbbr] ?? []).filter((r) => r.year < SEASON).map((r) => r.year)),
+  ].sort((a, b) => a - b);
+  return years.some((year, i) => i > 0 && year === years[i - 1]! + 1);
+}
+
 /** Join a live season line against historic franchise firsts. */
 export function joinSeasonLine(
   teamAbbr: string,
   hr: number,
   sb: number,
+  extra: { lastYear?: { homeRuns: number; stolenBases: number }; club?: string } = {},
 ): SeasonJoin[] {
   const out: SeasonJoin[] = [];
+  const club = extra.club ?? "franchise";
   const receipts = [
     { label: "HR", value: String(hr) },
     { label: "SB", value: String(sb) },
@@ -545,7 +634,7 @@ export function joinSeasonLine(
         droughtJoin(
           "franchise-first-40-40",
           "FIRST 40-40",
-          "First 40-40 season in franchise history",
+          `First 40-40 season for the ${club}`,
           null,
           "40-40",
           receipts,
@@ -558,12 +647,33 @@ export function joinSeasonLine(
           "40-40",
           `${hr} HR and ${sb} SB this season`,
           prior,
-          "franchise 40-40",
+          `${club} 40-40`,
           receipts,
         ),
       );
     }
-  } else if (hr >= 30 && sb >= 30) {
+  } else if (hr >= 40 && sb >= 30) {
+    const prior = last40_30(teamAbbr);
+    if (!prior) {
+      out.push({
+        id: "franchise-first-40-30",
+        stamp: "40-30",
+        headline: `First 40-HR / 30-SB season for the ${club}`,
+        body: "",
+        receipts,
+      });
+    } else if (prior.year <= SEASON - 2) {
+      out.push({
+        id: "franchise-since-40-30",
+        stamp: "40-30",
+        headline: `${hr} HR and ${sb} SB this season`,
+        body: `First ${club} 40-HR / 30-SB since ${named(prior)}.`,
+        receipts,
+      });
+    }
+  }
+
+  if (hr >= 30 && sb >= 30) {
     const mark = franchise30_30(teamAbbr);
     const prior = mark.recentBefore2026;
     if (!prior) {
@@ -571,7 +681,7 @@ export function joinSeasonLine(
         droughtJoin(
           "franchise-first-30-30",
           "FIRST 30-30",
-          "First 30-30 season in franchise history",
+          `First 30-30 season for the ${club}`,
           null,
           "30-30",
           receipts,
@@ -584,10 +694,20 @@ export function joinSeasonLine(
           "30-30",
           `${hr} HR and ${sb} SB this season`,
           prior,
-          "franchise 30-30",
+          `${club} 30-30`,
           receipts,
         ),
       );
+    }
+    const last = extra.lastYear;
+    if (last && last.homeRuns >= 30 && last.stolenBases >= 30 && !hadConsecutive30_30(teamAbbr)) {
+      out.push({
+        id: "franchise-first-consecutive-30-30",
+        stamp: "30-30",
+        headline: `First consecutive 30-30 seasons for the ${club}`,
+        body: `${last.homeRuns} HR, ${last.stolenBases} SB last year.`,
+        receipts,
+      });
     }
   }
 
@@ -598,7 +718,7 @@ export function joinSeasonLine(
       out.push({
         id: "franchise-first-50-hr",
         stamp: "FIRST 50 HR",
-        headline: "First 50-HR season in franchise history",
+        headline: `First 50-HR season for the ${club}`,
         body: `${hr} home runs.`,
         receipts: [{ label: "HR", value: String(hr) }],
       });
@@ -607,7 +727,7 @@ export function joinSeasonLine(
         id: "franchise-since-50-hr",
         stamp: "50 HR",
         headline: `${hr} HR this season`,
-        body: `First franchise 50-HR season since ${named(prior)}.`,
+        body: `First ${club} 50-HR season since ${named(prior)}.`,
         receipts: [{ label: "HR", value: String(hr) }],
       });
     }
@@ -619,10 +739,21 @@ export function joinSeasonLine(
       out.push({
         id: "franchise-first-40-hr",
         stamp: "FIRST 40 HR",
-        headline: "First 40-HR season in franchise history",
+        headline: `First 40-HR season for the ${club}`,
         body: `${hr} home runs.`,
         receipts: [{ label: "HR", value: String(hr) }],
       });
+    } else {
+      const prior = last40Hr(teamAbbr);
+      if (prior && prior.year <= SEASON - 5) {
+        out.push({
+          id: "franchise-since-40-hr",
+          stamp: "40 HR",
+          headline: `${hr} HR this season`,
+          body: `First ${club} 40-HR season since ${named(prior)}.`,
+          receipts: [{ label: "HR", value: String(hr) }, { label: "Since", value: String(prior.year) }],
+        });
+      }
     }
   }
 

@@ -188,6 +188,32 @@ describe("crazy stat engine", () => {
     assert.equal(crazy.some((s) => s.id === "franchise-first-30-30"), false);
   });
 
+  it("names the first Cubs 40-HR / 30-SB season and the 40-HR drought", () => {
+    const crazy = generateCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      seasonHit: hit({
+        homeRuns: 44,
+        stolenBases: 37,
+        avg: 0.28,
+        obp: 0.37,
+        slg: 0.57,
+        ops: 0.94,
+        atBats: 550,
+        games: 154,
+      }),
+      years: [{ year: 2025, hit: hit({ homeRuns: 31, stolenBases: 35, games: 150 }) }],
+      hitGames: [],
+      pitchGames: [],
+    });
+    const mix = crazy.find((s) => s.id === "franchise-first-40-30");
+    assert.ok(mix);
+    assert.match(mix!.headline, /First 40-HR \/ 30-SB season for the Cubs/);
+    assert.ok(crazy.some((s) => s.id === "franchise-since-40-hr"));
+    assert.ok(crazy.some((s) => s.id === "franchise-first-consecutive-30-30"));
+    assert.equal(crazy.some((s) => s.id === "franchise-since-30-30"), false);
+  });
+
   it("does not emit a restated slash team-lead", () => {
     const crazy = generateCrazyStats({
       id: 1,
@@ -529,6 +555,29 @@ describe("game crazy stat engine", () => {
     assert.match(crazy[0]!.headline, /Last multi-hit Sep 11 vs Phillies/);
     assert.match(crazy[0]!.body, /3-3/);
     assert.equal(crazy.some((s) => s.id === "last-hr"), false);
+  });
+
+  it("names the reverse cycle as a Cubs first", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      opponent: "Colorado Rockies",
+      isHome: true,
+      date: "2026-06-15",
+      hit: hit({
+        atBats: 4,
+        plateAppearances: 4,
+        hits: 4,
+        doubles: 1,
+        triples: 1,
+        homeRuns: 1,
+      }),
+    });
+    const hist = crazy.find((s) => s.id === "historic-game");
+    assert.ok(hist);
+    assert.match(hist!.headline, /reverse natural cycle/i);
+    assert.equal(hist!.stamp, "CLUB FIRST");
+    assert.equal(crazy[0]?.id, "historic-game");
   });
 
   it("names a multi-homer night and the last time it happened", () => {
