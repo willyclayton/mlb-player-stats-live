@@ -131,7 +131,7 @@ export function rarity(stat: CrazyStat): number {
       score = 87;
       break;
     case "historic-game":
-      score = stat.stamp === "CLUB FIRST" ? 100 : 97;
+      score = stat.stamp === "CLUB FIRST" || stat.stamp === "FIRST EVER" ? 100 : 97;
       break;
     case "historic-game-2":
       score = 91;
@@ -141,6 +141,12 @@ export function rarity(stat: CrazyStat): number {
       break;
     case "game-combo-2":
       score = 91;
+      break;
+    case "historic-season":
+      score = stat.stamp === "CLUB FIRST" ? 95 : stat.stamp === "CLUB RECORD" ? 92 : 90;
+      break;
+    case "historic-season-2":
+      score = 88;
       break;
     case "career-first-strikeOuts":
       score = 88;

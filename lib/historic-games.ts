@@ -11,7 +11,10 @@ function lastName(name: string): string {
   ) {
     parts.pop();
   }
-  return (parts[parts.length - 1] || name).toLowerCase();
+  return (parts[parts.length - 1] || name)
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase();
 }
 
 function prettyIso(iso: string): string {
@@ -46,7 +49,7 @@ export function joinHistoricGame(name: string, date?: string): SeasonJoin[] {
       : "";
     return {
       id: i === 0 ? "historic-game" : "historic-game-2",
-      stamp: first ? "CLUB FIRST" : "FIRST SINCE",
+      stamp: first ? (fact.scope === "MLB" ? "FIRST EVER" : "CLUB FIRST") : "FIRST SINCE",
       headline: fact.headline,
       body: prev,
       receipts: first

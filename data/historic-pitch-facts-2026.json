@@ -1,0 +1,153 @@
+{
+  "asOf": "2026-09-19",
+  "season": 2026,
+  "kind": "pitch",
+  "qualityBar": "Regular-season franchise pitching records and long-window firsts still true on 2026-09-19. Qualified IP unless noted.",
+  "facts": [
+    {
+      "player": "Jacob Misiorowski",
+      "team": "Milwaukee Brewers",
+      "teamAbbr": "MIL",
+      "feat": "franchise-era-record-qualified",
+      "headline": "Lowest qualified Brewers ERA ever",
+      "previousPlayer": "Mike Caldwell",
+      "previousYear": 1978,
+      "previousValue": "2.36",
+      "liveValue": "1.89",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=season&group=pitching&season=2026&sportIds=1&playerPool=qualified&sortStat=earnedRunAverage&limit=15",
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=pitching&sportIds=1&teamId=158&sortStat=earnedRunAverage&limit=20"
+      ],
+      "confidence": "high",
+      "notes": "166.1 IP / 1.89 ERA as of 2026-09-19. Qualifier is 1 IP per team game. Season not over."
+    },
+    {
+      "player": "Jacob Misiorowski",
+      "team": "Milwaukee Brewers",
+      "teamAbbr": "MIL",
+      "feat": "mlb-fastest-to-200k",
+      "headline": "2nd-fastest to 200 K in MLB history",
+      "previousPlayer": "Spencer Strider",
+      "previousYear": 2023,
+      "previousValue": "123.1 IP",
+      "liveValue": "129.1 IP",
+      "sources": [
+        "https://www.mlb.com/news/jacob-misiorowski-notches-200th-strikeout-of-season-vs-twins"
+      ],
+      "confidence": "high",
+      "notes": "Elias/Langs: Strider 2023 123.1, Misiorowski 2026 129.1, Strider 2022 130.0, Randy Johnson 2001 130.2."
+    },
+    {
+      "player": "Jacob Misiorowski",
+      "team": "Milwaukee Brewers",
+      "teamAbbr": "MIL",
+      "feat": "franchise-fastest-to-200k",
+      "headline": "Fastest Brewer to 200 K",
+      "previousPlayer": "Corbin Burnes",
+      "previousYear": 2021,
+      "previousValue": "145.2 IP",
+      "liveValue": "129.1 IP",
+      "sources": [
+        "https://www.mlb.com/news/jacob-misiorowski-notches-200th-strikeout-of-season-vs-twins"
+      ],
+      "confidence": "high",
+      "notes": "9th Brewers pitcher to 200 K. Ben Sheets 264 in 2004 remains the single-season K record."
+    },
+    {
+      "player": "Jacob Misiorowski",
+      "team": "Milwaukee Brewers",
+      "teamAbbr": "MIL",
+      "feat": "franchise-whip-record",
+      "headline": "Brewers WHIP record",
+      "previousPlayer": "Corbin Burnes",
+      "previousYear": 2021,
+      "previousValue": "0.94",
+      "liveValue": "0.81",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=pitching&sportIds=1&teamId=158&sortStat=walksAndHitsPerInningPitched&limit=15"
+      ],
+      "confidence": "high",
+      "notes": "93 H + 42 BB in 166.1 IP. Same qualifier caveat as ERA."
+    },
+    {
+      "player": "Cam Schlittler",
+      "team": "New York Yankees",
+      "teamAbbr": "NYY",
+      "feat": "franchise-era-since",
+      "headline": "Lowest Yankees ERA since Guidry, 1978",
+      "previousPlayer": "Ron Guidry",
+      "previousYear": 1978,
+      "previousValue": "1.74",
+      "liveValue": "1.95",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=pitching&sportIds=1&teamId=147&sortStat=earnedRunAverage&limit=40"
+      ],
+      "confidence": "high",
+      "notes": "184.2 IP / 1.95. Next qualified Yankees mark after Guidry is Rudy May 2.46 in 1980."
+    },
+    {
+      "player": "Chris Sale",
+      "team": "Atlanta Braves",
+      "teamAbbr": "ATL",
+      "feat": "franchise-era-since",
+      "headline": "Lowest Braves ERA since Maddux, 1995",
+      "previousPlayer": "Greg Maddux",
+      "previousYear": 1995,
+      "previousValue": "1.63",
+      "liveValue": "2.18",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=pitching&sportIds=1&teamId=144&sortStat=earnedRunAverage&limit=30"
+      ],
+      "confidence": "high",
+      "notes": "157.0 IP currently qualifies by about 3 IP. Next after Maddux 1995: Maddux 1997 2.20. Drop if ERA rises to 2.20."
+    },
+    {
+      "player": "Dylan Cease",
+      "team": "Toronto Blue Jays",
+      "teamAbbr": "TOR",
+      "feat": "franchise-k-since",
+      "headline": "First Blue Jays 200-K season since Gausman, 2023",
+      "previousPlayer": "Kevin Gausman",
+      "previousYear": 2023,
+      "previousValue": "237",
+      "liveValue": "239",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=pitching&sportIds=1&teamId=141&sortStat=strikeOuts&limit=20"
+      ],
+      "confidence": "high",
+      "notes": "Jays K list: Clemens 292/271, Ray 248, Cease 239, Gausman 237. Not a franchise record."
+    },
+    {
+      "player": "Cristopher Sánchez",
+      "team": "Philadelphia Phillies",
+      "teamAbbr": "PHI",
+      "feat": "franchise-wins-since",
+      "headline": "First Phillies 17-win season since Nola, 2018",
+      "previousPlayer": "Aaron Nola",
+      "previousYear": 2018,
+      "previousValue": "17",
+      "liveValue": "17",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=season&group=pitching&season=2026&sportIds=1&playerPool=all&sortStat=wins&limit=12"
+      ],
+      "confidence": "high",
+      "notes": "Wheeler had 16 in 2024. Last Phillies 20-win: Halladay 21 in 2010."
+    },
+    {
+      "player": "Mason Miller",
+      "team": "San Diego Padres",
+      "teamAbbr": "SD",
+      "feat": "franchise-reliever-k-record",
+      "headline": "Padres reliever strikeout record",
+      "previousPlayer": "Trevor Hoffman",
+      "previousYear": 1996,
+      "previousValue": "111",
+      "liveValue": "119",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=season&group=pitching&season=2026&sportIds=1&playerPool=all&sortStat=saves&limit=12"
+      ],
+      "confidence": "high",
+      "notes": "Hoffman 111 in 1996 and 1997; Brad Hand 111 in 2016. Not a franchise save record."
+    }
+  ]
+}

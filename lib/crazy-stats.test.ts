@@ -212,6 +212,10 @@ describe("crazy stat engine", () => {
     assert.ok(crazy.some((s) => s.id === "franchise-since-40-hr"));
     assert.ok(crazy.some((s) => s.id === "franchise-first-consecutive-30-30"));
     assert.equal(crazy.some((s) => s.id === "franchise-since-30-30"), false);
+    const lefty = crazy.find((s) => s.id === "historic-season");
+    assert.ok(lefty);
+    assert.match(lefty!.headline, /Cubs lefty/);
+    assert.match(lefty!.body, /Billy Williams/);
   });
 
   it("does not emit a restated slash team-lead", () => {
@@ -279,6 +283,7 @@ describe("crazy stat engine", () => {
   it("names consecutive 40-HR seasons", () => {
     const crazy = generateCrazyStats({
       name: "Junior Caminero",
+      team: "Tampa Bay Rays",
       seasonHit: hit({ homeRuns: 41, games: 140 }),
       hitGames: [],
       pitchGames: [],
@@ -287,10 +292,14 @@ describe("crazy stat engine", () => {
         { year: 2024, hit: hit({ homeRuns: 22, games: 150 }) },
       ],
     });
+    const club = crazy.find((s) => s.id === "historic-season");
+    assert.ok(club);
+    assert.match(club!.headline, /First consecutive 40-HR seasons for the Rays/);
     const streak = crazy.find((s) => s.id === "consecutive-40-hr");
     assert.ok(streak);
     assert.equal(streak!.headline, "41 HR");
     assert.match(streak!.body, /2 straight 40-HR seasons/);
+    assert.ok((club!.score ?? 0) > (streak!.score ?? 0));
   });
 
   it("names a closer line", () => {
@@ -312,6 +321,27 @@ describe("crazy stat engine", () => {
     assert.ok(closer);
     assert.match(closer!.headline, /37 SV, 1\.12 ERA/);
     assert.match(closer!.body, /119 K/);
+  });
+
+  it("names Misiorowski's Brewers ERA record", () => {
+    const crazy = generateCrazyStats({
+      name: "Jacob Misiorowski",
+      team: "Milwaukee Brewers",
+      seasonPitch: {
+        ...emptyPitch(),
+        innings: 166 + 1 / 3,
+        era: 1.89,
+        whip: 0.81,
+        strikeOuts: 243,
+        gamesStarted: 27,
+      },
+      hitGames: [],
+      pitchGames: [],
+    });
+    const era = crazy.find((s) => s.id === "historic-season");
+    assert.ok(era);
+    assert.match(era!.headline, /Lowest qualified Brewers ERA/);
+    assert.match(era!.body, /Mike Caldwell/);
   });
 
   it("does not invent a 20-20 club", () => {

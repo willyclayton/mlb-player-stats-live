@@ -34,7 +34,15 @@ export function isTopTake(stat: CrazyStat): boolean {
   if (stat.id === "club-20-20") return /30-30|40-40/.test(stat.stamp);
   if (stat.id === "career-first-30-30") return true;
   if (stat.id.startsWith("franchise-first-") || stat.id.startsWith("franchise-since-")) return true;
-  if (stat.id === "historic-game" && stat.stamp === "CLUB FIRST") return true;
+  if (stat.id === "historic-game" && (stat.stamp === "CLUB FIRST" || stat.stamp === "FIRST EVER")) {
+    return true;
+  }
+  if (stat.id === "game-combo" && (stat.stamp === "FIRST EVER" || stat.stamp === "FIRST SINCE")) {
+    return true;
+  }
+  if (stat.id === "historic-season" && (stat.stamp === "CLUB FIRST" || stat.stamp === "CLUB RECORD")) {
+    return true;
+  }
   if (stat.id === "mlb-lead-homeRuns" || stat.id === "mlb-lead-ops") return true;
   if (stat.id === "game-hit-high") return /[5-9]-HIT/.test(stat.stamp);
   if (stat.id === "game-hr") {

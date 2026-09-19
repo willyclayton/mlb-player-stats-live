@@ -20,7 +20,7 @@ describe("historic game catalog", () => {
     const joins = joinHistoricGame("Joshua Báez", "2026-08-15");
     assert.ok(joins.length >= 1);
     assert.match(joins[0]!.headline, /3 homers in an MLB debut/i);
-    assert.equal(joins[0]!.stamp, "CLUB FIRST");
+    assert.equal(joins[0]!.stamp, "FIRST EVER");
   });
 
   it("joins O'Hearn's 10 RBI as a Pirates first since 1939", () => {
@@ -33,8 +33,9 @@ describe("historic game catalog", () => {
     assert.ok(joins.some((j) => /immaculate|Pedro|2002/i.test(`${j.headline} ${j.body}`)));
   });
 
-  it("returns nothing for a quiet night", () => {
-    assert.deepEqual(joinHistoricGame("Matt Olson", "2026-09-18"), []);
+  it("joins Báez without the accent on the live name", () => {
+    const joins = joinHistoricGame("Joshua Baez", "2026-08-15");
+    assert.match(joins[0]!.headline, /3 homers in an MLB debut/i);
   });
 
   it("joins Burleson's Yankee Stadium 3-HR game as an Interleague-era first", () => {
