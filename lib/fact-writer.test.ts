@@ -41,7 +41,7 @@ describe("career fact writer", () => {
     });
     const second = facts.find((s) => s.id === "career-2nd-homeRuns");
     assert.ok(second);
-    assert.match(second!.headline, /2nd-most of his career/);
+    assert.match(second!.headline, /40 HR, 2nd-most of his career/);
     assert.match(second!.body, /54 in 2023/);
     assert.equal(facts.some((s) => s.id === "career-high-homeRuns"), false);
   });

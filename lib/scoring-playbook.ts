@@ -1,21 +1,33 @@
 import type { CrazyStat } from "./types";
 
 /**
- * Scoring playbook — from Will's A/B picks (1B 2A 3B 4B 5B 6B 7B 8B 9B 10B).
+ * Scoring playbook — from Will's A/B picks
+ * (1B 2A 3B 4B 5B 6B 7B 8B 9B 10B) and quiet-night leftovers
+ * (1B 2B 3B 4A 5A 6A 7B 8B 9A 10A 11A 12A 13B 14B 15A 16B 17B 18B 19A 20A
+ * 21B 22A 23B 24A 25B | W1B–W9B W10A).
  *
  * Look for
  * 1. First or best: career high, first 20/30/40 season, career-best ERA, cycle.
- * 2. A named comparison: Harris is 14 back, previous best 2.33 in 2022.
- * 3. A long window: months or years, not five days.
+ * 2. A named comparison: Harris is 14 back, 2.33 in 2022.
+ * 3. A long window: months or years, not five days. Keep the date.
  * 4. Feat rarity: cycle > 3 HR > 5-hit > 2 HR > only steal.
- * 5. A positive event, not an 0-fer.
+ * 5. A positive event, not an 0-fer headline.
  * 6. Prestige: HR and ERA beat doubles, steals, and OPS splits.
+ *
+ * Quiet leftovers
+ * 1. Season: last multi > last HR. Last HR only if that’s all we have.
+ * 2. Game: last HR > last multi. Fill the slot; don’t lead an 0-fer.
+ * 3. 0-fer footnote is last multi, short. Teammate is its own take.
+ * 4. Nobody had a hit if the team is 0. First 0-for-4 in two weeks if the window.
+ * 5. Last-15 / team-chase / multi-HR / slash beat a leftover last HR.
+ *
+ * Copy: short except last-15 slash + OPS vs season.
  *
  * Discount
  * 1. Restates the slash / box (two-way line with no comparison).
  * 2. First-since under 14 days.
  * 3. 2nd-most unless the number is big (40+ HR still counts).
- * 4. Absence: 0-fer, DNP.
+ * 4. Absence: 0-fer, DNP. Don’t pile zeros.
  * 5. Cheap club-uniques (only steal).
  * 6. Rate splits (last 15 OPS) — a streak beats a heater.
  *
@@ -140,7 +152,10 @@ export function rarity(stat: CrazyStat): number {
       score = 66;
       break;
     case "team-lead": {
-      const cats = new Set(stat.body.match(/\b(HR|SB|RBI)\b/g) ?? []).size;
+      const cats = Math.max(
+        numReceipt(stat, "Leads"),
+        new Set(stat.body.match(/\b(HR|SB|RBI)\b/g) ?? []).size,
+      );
       score = 76 + Math.min(2, Math.max(0, cats - 1)) * 4;
       break;
     }
@@ -180,13 +195,26 @@ export function rarity(stat: CrazyStat): number {
     case "game-pitch":
       score = 60 + Math.min(16, numReceipt(stat, "K"));
       break;
-    case "last-hr":
+    case "game-nobody":
+      score = 46;
+      break;
+    case "game-ohfer-first":
+      score = 44;
+      break;
     case "game-last-hr":
       score = 38;
       break;
+    case "game-mate":
+      score = 34;
+      break;
     case "last-multi":
+      score = 32;
+      break;
     case "game-last-multi":
       score = 28;
+      break;
+    case "last-hr":
+      score = 26;
       break;
     case "game-ohfer":
       score = 24;

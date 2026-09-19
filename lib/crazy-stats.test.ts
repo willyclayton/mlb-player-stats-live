@@ -261,42 +261,184 @@ describe("crazy stat engine", () => {
 });
 
 describe("game crazy stat engine", () => {
-  it("states an 0-fer and points at the last multi-hit game", () => {
+  function ohferHit(over: Partial<HitLine> = {}) {
+    return {
+      ...hit({
+        atBats: 4,
+        plateAppearances: 4,
+        hits: 0,
+        strikeOuts: 2,
+        homeRuns: 0,
+        rbi: 0,
+        walks: 0,
+        ...over,
+      }),
+      summary: over.atBats === 5 ? "0-5, 3 K" : "0-4, 2 K",
+    };
+  }
+
+  it("footnotes last multi on a repeat 0-fer and keeps last HR first", () => {
     const crazy = generateGameCrazyStats({
-      name: "Pete Crow-Armstrong",
-      team: "Chicago Cubs",
-      opponent: "Cincinnati Reds",
+      name: "Michael Harris II",
+      team: "Atlanta Braves",
+      opponent: "Houston Astros",
       isHome: false,
       date: "2026-09-18",
-      hit: {
-        ...hit({
-          atBats: 5,
-          plateAppearances: 5,
-          hits: 0,
-          strikeOuts: 3,
-          homeRuns: 0,
-          rbi: 0,
-          walks: 0,
-        }),
-        summary: "0-5, 3 K",
-      },
+      hit: ohferHit(),
       hitGames: [
         game({
-          date: "2026-09-14",
-          opponent: "Braves",
+          date: "2026-09-11",
+          opponent: "Phillies",
           isHome: true,
-          hits: 4,
-          atBats: 5,
-          summary: "4-5 | HR",
+          hits: 3,
+          atBats: 3,
+          walks: 1,
+          summary: "3-3 | BB",
+        }),
+        game({
+          date: "2026-09-14",
+          opponent: "Cubs",
+          isHome: false,
+          hits: 1,
+          atBats: 1,
+          homeRuns: 1,
+          summary: "1-1 | HR, BB, 2 RBI",
+        }),
+        game({
+          date: "2026-09-16",
+          opponent: "Mets",
+          isHome: true,
+          hits: 0,
+          atBats: 4,
         }),
       ],
     });
     const ids = crazy.map((s) => s.id);
+    assert.equal(ids[0], "game-last-hr");
     assert.ok(ids.includes("game-ohfer"));
     assert.equal(ids.includes("game-line"), false);
-    assert.match(crazy.find((s) => s.id === "game-ohfer")!.headline, /0-for-5/);
-    assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /Sep 14/);
-    assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /First since|Last multi-hit/);
+    const leftover = crazy.find((s) => s.id === "game-last-hr")!;
+    assert.match(leftover.headline, /Last HR Sep 14 @ Cubs/);
+    assert.equal(leftover.body, "");
+    const ohfer = crazy.find((s) => s.id === "game-ohfer")!;
+    assert.match(ohfer.headline, /0-for-4, 2 K @ Astros/);
+    assert.equal(ohfer.body, "Last multi-hit Sep 11.");
+    assert.equal(/Olson|Phillies|3-3/.test(`${ohfer.headline} ${ohfer.body}`), false);
+  });
+
+  it("leads a first 0-for-4 in two weeks ahead of last HR", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Michael Harris II",
+      team: "Atlanta Braves",
+      opponent: "Houston Astros",
+      isHome: false,
+      date: "2026-09-18",
+      hit: ohferHit(),
+      hitGames: [
+        game({
+          date: "2026-09-14",
+          opponent: "Cubs",
+          isHome: false,
+          hits: 1,
+          homeRuns: 1,
+          atBats: 1,
+        }),
+      ],
+    });
+    assert.equal(crazy[0]?.id, "game-ohfer-first");
+    assert.match(crazy[0]!.headline, /First 0-for-4 in the last two weeks/);
+    assert.ok(crazy.some((s) => s.id === "game-last-hr"));
+    assert.equal(crazy.some((s) => s.id === "game-ohfer"), false);
+  });
+
+  it("keeps the teammate as its own take, not stacked on the 0-fer", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Michael Harris II",
+      team: "Atlanta Braves",
+      opponent: "Houston Astros",
+      isHome: false,
+      date: "2026-09-18",
+      hit: ohferHit(),
+      mates: [
+        {
+          id: 2,
+          name: "Matt Olson",
+          hit: hit({ atBats: 5, plateAppearances: 5, hits: 3, homeRuns: 1, rbi: 2 }),
+        },
+      ],
+      hitGames: [
+        game({
+          date: "2026-09-11",
+          opponent: "Phillies",
+          isHome: true,
+          hits: 3,
+          atBats: 3,
+        }),
+        game({
+          date: "2026-09-16",
+          opponent: "Mets",
+          isHome: true,
+          hits: 0,
+          atBats: 4,
+        }),
+      ],
+    });
+    const mate = crazy.find((s) => s.id === "game-mate");
+    const ohfer = crazy.find((s) => s.id === "game-ohfer");
+    assert.ok(mate);
+    assert.equal(mate!.headline, "Olson went 3-for-5");
+    assert.equal(mate!.body, "");
+    assert.ok(ohfer);
+    assert.equal(/Olson/.test(ohfer!.body), false);
+    assert.ok((mate!.score ?? 0) > (ohfer!.score ?? 0));
+  });
+
+  it("says nobody had a hit when the team is 0", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Michael Harris II",
+      team: "Atlanta Braves",
+      opponent: "Houston Astros",
+      isHome: false,
+      date: "2026-09-18",
+      hit: ohferHit(),
+      mates: [{ id: 2, name: "Matt Olson", hit: hit({ atBats: 5, hits: 0 }) }],
+      hitGames: [],
+    });
+    assert.equal(crazy[0]?.id, "game-nobody");
+    assert.match(crazy[0]!.headline, /Nobody had a hit @ Astros/);
+    assert.equal(crazy.some((s) => s.id === "game-ohfer"), false);
+    assert.equal(crazy.some((s) => s.id === "game-mate"), false);
+  });
+
+  it("prefers last multi as the season leftover", () => {
+    const crazy = generateCrazyStats({
+      name: "Michael Harris II",
+      team: "Atlanta Braves",
+      hitGames: [
+        game({
+          date: "2026-09-11",
+          opponent: "Phillies",
+          isHome: true,
+          hits: 3,
+          atBats: 3,
+          summary: "3-3 | BB",
+        }),
+        game({
+          date: "2026-09-14",
+          opponent: "Cubs",
+          isHome: false,
+          hits: 1,
+          homeRuns: 1,
+          atBats: 1,
+          summary: "1-1 | HR",
+        }),
+      ],
+      pitchGames: [],
+    });
+    assert.equal(crazy[0]?.id, "last-multi");
+    assert.match(crazy[0]!.headline, /Last multi-hit Sep 11 vs Phillies/);
+    assert.match(crazy[0]!.body, /3-3/);
+    assert.equal(crazy.some((s) => s.id === "last-hr"), false);
   });
 
   it("names a multi-homer night and the last time it happened", () => {
@@ -336,6 +478,7 @@ describe("game crazy stat engine", () => {
     assert.equal(hr!.stamp, "MULTI-HR");
     assert.match(hr!.body, /First since/);
     assert.match(hr!.body, /Jun 11/);
+    assert.equal(/vs |@ /.test(hr!.body), false);
     assert.equal(/Season HR/.test(hr!.body), false);
   });
 
@@ -407,8 +550,9 @@ describe("game crazy stat engine", () => {
     });
     const hr = crazy.find((s) => s.id === "game-hr-since");
     assert.ok(hr);
-    assert.match(hr!.body, /First since/);
-    assert.match(hr!.body, /Sep 6/);
+    assert.match(hr!.body, /First since Sep 6/);
+    assert.equal(/Phillies|3-5/.test(hr!.body), false);
+    assert.match(hr!.headline, /^HR /);
     assert.equal(crazy.some((s) => s.id === "game-line"), false);
     assert.equal(crazy.some((s) => /official/i.test(`${s.headline} ${s.body}`)), false);
   });
