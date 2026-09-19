@@ -1,6 +1,6 @@
 # MLB Player Stats Live
 
-Tap a game, then a player. Official season stat, official this-game stat, and Another for a new fact.
+Tap a game, then a player. Live numbers, then a short official fact — season and this game. Another cycles a new one.
 
 ```bash
 npm install

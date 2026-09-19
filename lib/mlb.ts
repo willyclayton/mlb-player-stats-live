@@ -1,5 +1,10 @@
 import { shiftEt, teamAbbrFromName, todayEt } from "./format";
-import { generateCrazyStats, generateGameCrazyStats } from "./crazy-stats";
+import {
+  generateCrazyStats,
+  generateGameCrazyStats,
+  type BoxMate,
+  type TeamHitter,
+} from "./crazy-stats";
 import { aggregateHits, hitFromApi, mostRecent, pitchFromApi } from "./stats";
 import type {
   GameHit,
@@ -341,6 +346,42 @@ function usablePitch(position: string | undefined, pitch?: ReturnType<typeof pit
   return pitch;
 }
 
+function matesFromBox(
+  boxSide: Record<string, unknown>,
+  skipId: number,
+): BoxMate[] {
+  const out: BoxMate[] = [];
+  for (const raw of Object.values(rec(boxSide.players))) {
+    const row = rec(raw);
+    const person = rec(row.person);
+    const id = Number(person.id);
+    if (!id || id === skipId) continue;
+    const batting = rec(rec(row.stats).batting);
+    const hit = Object.keys(batting).length ? hitFromApi(batting) : undefined;
+    if (hit) out.push({ id, name: String(person.fullName ?? person.name ?? ""), hit });
+  }
+  return out;
+}
+
+async function getTeamHitters(teamId: number): Promise<TeamHitter[]> {
+  const data = await mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
+    `/stats?stats=season&group=hitting&season=${SEASON}&teamId=${teamId}&sportIds=1&playerPool=all&limit=40`,
+    180,
+  );
+  const out: TeamHitter[] = [];
+  for (const split of data.stats?.[0]?.splits ?? []) {
+    const person = rec(split.player);
+    const line = hitFromApi(rec(split.stat));
+    if (!person.id || !line) continue;
+    out.push({
+      id: Number(person.id),
+      name: String(person.fullName ?? ""),
+      line,
+    });
+  }
+  return out;
+}
+
 async function lineFromBox(
   gamePk: number,
   playerId: number,
@@ -350,6 +391,7 @@ async function lineFromBox(
   opponent: string;
   isHome: boolean;
   date?: string;
+  mates: BoxMate[];
 } | null> {
   const [box, sched] = await Promise.all([
     mlb<{ teams?: { home?: Record<string, unknown>; away?: Record<string, unknown> } }>(
@@ -403,15 +445,16 @@ async function lineFromBox(
       opponent,
       isHome,
       date,
+      mates: matesFromBox(boxSide, playerId),
     };
   }
   return header
-    ? { opponent: header.away.name, isHome: true, date }
+    ? { opponent: header.away.name, isHome: true, date, mates: [] }
     : null;
 }
 
 export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayload> {
-  const hydrate = `currentTeam,stats(group=[hitting,pitching],type=[season,gameLog],season=${SEASON})`;
+  const hydrate = `currentTeam,stats(group=[hitting,pitching],type=[season,gameLog],season=${SEASON}),stats(group=[hitting],type=[gameLog],season=${SEASON - 1})`;
   const data = await mlb<{ people?: Record<string, unknown>[] }>(
     `/people/${id}?hydrate=${encodeURIComponent(hydrate)}`,
     45,
@@ -422,6 +465,12 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
   const player = playerRef(person);
   const bat = rec(person.batSide);
   const throwH = rec(person.pitchHand);
+  const extras = await Promise.all([
+    player.teamId ? getTeamHitters(player.teamId) : Promise.resolve([] as TeamHitter[]),
+    gamePk ? lineFromBox(gamePk, id) : Promise.resolve(null),
+  ]);
+  const teamHitters = extras[0];
+  const boxed = extras[1];
 
   let seasonHit;
   let seasonPitch;
@@ -450,23 +499,23 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     }
   }
 
-  const recentHits = mostRecent(hitGames, 40);
+  const seasonHits = hitGames.filter((g) => g.date.startsWith(String(SEASON)));
+  const recentHits = mostRecent(seasonHits, 40);
   const recentPitches = mostRecent(pitchGames, 10);
   const seasonHitUse = usableHit(player.position, seasonHit);
   const seasonPitchUse = usablePitch(player.position, seasonPitch);
 
   const seasonTakes = generateCrazyStats({
+    id: player.id,
     name: player.name,
-    nickname: player.nickname,
     team: player.team,
     position: player.position,
     seasonHit: seasonHitUse,
     seasonPitch: seasonPitchUse,
-    hitGames: recentHits,
+    hitGames,
     pitchGames: recentPitches,
-  })
-    .filter((s) => s.id !== "last-game")
-    .slice(0, 6);
+    teamHitters,
+  }).slice(0, 6);
 
   const lastHit = recentHits[recentHits.length - 1];
   const lastPitch = recentPitches[recentPitches.length - 1];
@@ -484,21 +533,21 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
       ? `${focusPitch.isHome ? "vs" : "@"} ${focusPitch.opponent}`
       : "This game";
 
-  if (gamePk) {
-    const boxed = await lineFromBox(gamePk, id);
-    if (boxed) {
-      focusHit = boxed.hit;
-      focusPitch = boxed.pitch;
-      opponent = boxed.opponent;
-      isHome = boxed.isHome;
-      gameDate = boxed.date;
-      gameLabel = `${isHome ? "vs" : "@"} ${opponent}`;
-    }
+  let mates: BoxMate[] = [];
+  if (boxed) {
+    focusHit = boxed.hit;
+    focusPitch = boxed.pitch;
+    opponent = boxed.opponent;
+    isHome = boxed.isHome;
+    gameDate = boxed.date;
+    gameLabel = `${isHome ? "vs" : "@"} ${opponent}`;
+    mates = boxed.mates;
   }
 
   const gameTakes = generateGameCrazyStats({
+    id: player.id,
     name: player.name,
-    nickname: player.nickname,
+    team: player.team,
     opponent,
     isHome,
     date: gameDate,
@@ -506,6 +555,8 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     pitch: focusPitch,
     seasonHit: seasonHitUse,
     seasonPitch: seasonPitchUse,
+    hitGames,
+    mates,
   }).slice(0, 6);
 
   return {

@@ -16,7 +16,7 @@ const sans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "MLB Live — Crazy Stats",
-  description: "Tap a game or a player. Live MLB numbers. One insane stat.",
+  description: "Tap a game or a player. Live MLB numbers and a simple fact.",
   applicationName: "MLB Crazy Stats",
   manifest: "/manifest.json",
   appleWebApp: {
