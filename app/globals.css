@@ -589,8 +589,8 @@ html[data-names="full"] .score-teams {
 }
 
 .hero img {
-  width: 108px;
-  height: 108px;
+  width: 72px;
+  height: 72px;
   object-fit: cover;
   object-position: top;
 }
@@ -642,50 +642,20 @@ html[data-names="full"] .score-teams {
 }
 
 .take-head .btn {
-  padding: 9px 14px;
+  padding: 4px 0;
   font-size: 13px;
 }
 
 .take {
   position: relative;
   background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 0;
-  padding: 14px 0;
+  padding: 4px 0 8px;
   overflow: hidden;
-}
-
-.take .stamp {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--fg);
-  background: transparent;
-  border: 1px solid var(--fg);
-  border-radius: 0;
-  padding: 4px 8px;
-}
-
-.take-slot-game .take .stamp {
-  color: var(--invert-fg);
-  background: var(--invert);
-  border-color: var(--invert);
-}
-
-.take.top {
-  border-color: var(--top);
-}
-
-.take.top .stamp {
-  color: #111;
-  background: var(--top);
-  border-color: var(--top);
 }
 
 .take.top .top-tag {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .hero.top {
@@ -695,7 +665,7 @@ html[data-names="full"] .score-teams {
 
 .take h2 {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 20px;
   letter-spacing: -0.02em;
   line-height: 1.15;
   margin: 12px 0 8px;

@@ -1,4 +1,4 @@
-import { shiftEt, startEt, teamAbbrFromName, todayEt } from "./format";
+import { shiftEt, shortTeamName, startEt, teamAbbrFromName, todayEt } from "./format";
 import { appearanceIds, appearedIn } from "./lineup";
 import { isLive, slateBlocks } from "./slate";
 import { isTopTake, rareGameFeat } from "./top-stat";
@@ -20,6 +20,7 @@ import type {
   PlayerRef,
   TeamSide,
   TopStatCard,
+  YearLine,
 } from "./types";
 
 const MLB = "https://statsapi.mlb.com/api/v1";
@@ -489,6 +490,39 @@ async function lineFromBox(
   return null;
 }
 
+function yearFromSplits(
+  blocks: { group?: { displayName?: string }; splits?: Record<string, unknown>[] }[] | undefined,
+): YearLine[] {
+  const byYear = new Map<number, YearLine>();
+  for (const block of blocks ?? []) {
+    const group = String(block.group?.displayName ?? "").toLowerCase();
+    for (const split of block.splits ?? []) {
+      const year = Number(rec(split).season);
+      if (!Number.isFinite(year) || year < 1900) continue;
+      const combined = Number(rec(split).numTeams) >= 2 || !rec(split).team;
+      const existing = byYear.get(year) ?? { year };
+      if (group === "hitting") {
+        if (existing.hit && !combined) continue;
+        const line = hitFromApi(rec(rec(split).stat));
+        if (line) existing.hit = line;
+      } else if (group === "pitching") {
+        if (existing.pitch && !combined) continue;
+        const line = pitchFromApi(rec(rec(split).stat));
+        if (line) existing.pitch = line;
+      }
+      byYear.set(year, existing);
+    }
+  }
+  return [...byYear.values()].sort((a, b) => a.year - b.year);
+}
+
+async function getYearLines(id: number): Promise<YearLine[]> {
+  const data = await mlb<{
+    stats?: { group?: { displayName?: string }; splits?: Record<string, unknown>[] }[];
+  }>(`/people/${id}/stats?stats=yearByYear&group=hitting,pitching`, 300);
+  return yearFromSplits(data.stats);
+}
+
 async function getHitLog(id: number, season: number): Promise<GameHit[]> {
   const data = await mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
     `/people/${id}/stats?stats=gameLog&group=hitting&season=${season}&gameType=R`,
@@ -504,13 +538,14 @@ async function getHitLog(id: number, season: number): Promise<GameHit[]> {
 
 export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayload> {
   const hydrate = `currentTeam,stats(group=[hitting,pitching],type=[season,gameLog],season=${SEASON})`;
-  const [data, priorHits, boxedEarly] = await Promise.all([
+  const [data, priorHits, boxedEarly, years] = await Promise.all([
     mlb<{ people?: Record<string, unknown>[] }>(
       `/people/${id}?hydrate=${encodeURIComponent(hydrate)}`,
       45,
     ),
     getHitLog(id, SEASON - 1).catch(() => [] as GameHit[]),
     gamePk ? lineFromBox(gamePk, id) : Promise.resolve(null),
+    getYearLines(id).catch(() => [] as YearLine[]),
   ]);
   const person = data.people?.[0];
   if (!person) throw new Error(`Player ${id} not found`);
@@ -565,6 +600,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     hitGames,
     pitchGames: recentPitches,
     teamHitters,
+    years,
   }).slice(0, 6);
 
   const lastHit = recentHits[recentHits.length - 1];
@@ -577,10 +613,12 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
   let opponent = focusHit?.opponent ?? focusPitch?.opponent ?? "Opp";
   let isHome = focusHit?.isHome ?? focusPitch?.isHome ?? true;
   let gameDate = latestDate;
+  const vsLabel = (home: boolean, opp: string) =>
+    `${home ? "vs" : "@"} ${shortTeamName(opp) || opp}`;
   let gameLabel = focusHit
-    ? `${focusHit.isHome ? "vs" : "@"} ${focusHit.opponent}`
+    ? vsLabel(focusHit.isHome, focusHit.opponent)
     : focusPitch
-      ? `${focusPitch.isHome ? "vs" : "@"} ${focusPitch.opponent}`
+      ? vsLabel(focusPitch.isHome, focusPitch.opponent)
       : "This game";
 
   let mates: BoxMate[] = [];
@@ -590,7 +628,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     opponent = boxed.opponent;
     isHome = boxed.isHome;
     gameDate = boxed.date;
-    gameLabel = `${isHome ? "vs" : "@"} ${opponent}`;
+    gameLabel = vsLabel(isHome, opponent);
     mates = boxed.mates;
   }
 
@@ -606,6 +644,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     seasonHit: seasonHitUse,
     seasonPitch: seasonPitchUse,
     hitGames,
+    pitchGames: recentPitches,
     mates,
   }).slice(0, 6);
 

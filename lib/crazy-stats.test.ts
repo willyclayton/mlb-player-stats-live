@@ -131,6 +131,9 @@ describe("crazy stat engine", () => {
     assert.equal(crazy[0]?.id, "two-way");
     assert.match(crazy[0].headline, /30 HR/);
     assert.match(crazy[0].headline, /1\.79/);
+    assert.match(crazy[0].body, /30 HR/);
+    assert.match(crazy[0].body, /85\.2 IP/);
+    assert.equal(/official/i.test(crazy[0].body), false);
   });
 
   it("flags a 30-30 season and only-on-team when the board is passed", () => {
@@ -161,6 +164,59 @@ describe("crazy stat engine", () => {
     assert.ok(crazy.some((s) => s.id === "team-lead"));
   });
 
+  it("uses the season slash line and a real last name, not a suffix", () => {
+    const crazy = generateCrazyStats({
+      id: 1,
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      seasonHit: hit({
+        avg: 0.272,
+        obp: 0.36,
+        slg: 0.54,
+        ops: 0.9,
+        homeRuns: 40,
+        rbi: 88,
+        atBats: 500,
+        games: 140,
+      }),
+      hitGames: [],
+      pitchGames: [],
+      teamHitters: [
+        { id: 1, name: "Matt Olson", line: hit({ homeRuns: 40, rbi: 88 }) },
+        { id: 2, name: "Michael Harris II", line: hit({ homeRuns: 26, rbi: 70 }) },
+      ],
+    });
+    const lead = crazy.find((s) => s.id === "team-lead");
+    assert.ok(lead);
+    assert.match(lead!.headline, /40 HR/);
+    assert.match(lead!.headline, /88 RBI/);
+    assert.match(lead!.headline, /\.272/);
+    assert.match(lead!.body, /Harris is 14 back/);
+    assert.equal(/II is next/.test(lead!.body), false);
+    assert.equal(/official/i.test(lead!.body), false);
+  });
+
+  it("does not invent a 20-20 club", () => {
+    const crazy = generateCrazyStats({
+      name: "Role Player",
+      team: "Atlanta Braves",
+      seasonHit: hit({
+        homeRuns: 22,
+        stolenBases: 21,
+        avg: 0.25,
+        obp: 0.32,
+        slg: 0.42,
+        ops: 0.74,
+        atBats: 480,
+        games: 130,
+      }),
+      hitGames: [],
+      pitchGames: [],
+    });
+    assert.equal(crazy.some((s) => s.stamp === "20-20"), false);
+    assert.equal(crazy.some((s) => s.id === "club-20-20"), false);
+  });
+
   it("states a last-15 OPS split against the season", () => {
     const games: GameHit[] = Array.from({ length: 15 }, (_, i) =>
       game({
@@ -187,8 +243,11 @@ describe("crazy stat engine", () => {
       hitGames: games,
       pitchGames: [],
     });
-    assert.ok(crazy.some((s) => s.id === "heater-15"));
-    assert.match(crazy.find((s) => s.id === "heater-15")!.headline, /Last 15/);
+    const heat = crazy.find((s) => s.id === "heater-15");
+    assert.ok(heat);
+    assert.match(heat!.headline, /Last 15/);
+    assert.match(heat!.body, /vs season/);
+    assert.equal(/official/i.test(heat!.body), false);
   });
 
   it("returns a thin-file fallback when there is no volume", () => {
@@ -234,10 +293,10 @@ describe("game crazy stat engine", () => {
     });
     const ids = crazy.map((s) => s.id);
     assert.ok(ids.includes("game-ohfer"));
-    assert.ok(ids.includes("game-line"));
+    assert.equal(ids.includes("game-line"), false);
     assert.match(crazy.find((s) => s.id === "game-ohfer")!.headline, /0-for-5/);
     assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /Sep 14/);
-    assert.ok(crazy.length >= 2);
+    assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /First since|Last multi-hit/);
   });
 
   it("names a multi-homer night and the last time it happened", () => {
@@ -275,8 +334,9 @@ describe("game crazy stat engine", () => {
     const hr = crazy.find((s) => s.id === "game-hr");
     assert.ok(hr);
     assert.equal(hr!.stamp, "MULTI-HR");
+    assert.match(hr!.body, /First since/);
     assert.match(hr!.body, /Jun 11/);
-    assert.match(hr!.body, /Season HR: 30/);
+    assert.equal(/Season HR/.test(hr!.body), false);
   });
 
   it("flags a 5-hit game with a steal and the previous one", () => {
@@ -311,7 +371,78 @@ describe("game crazy stat engine", () => {
     const feat = crazy.find((s) => s.id === "game-hits-sb");
     assert.ok(feat);
     assert.match(feat!.headline, /5 hits and 1 SB/);
+    assert.match(feat!.body, /First since/);
     assert.match(feat!.body, /2025/);
+  });
+
+  it("names the last home run instead of restating the box", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      opponent: "Detroit Tigers",
+      isHome: true,
+      date: "2026-09-18",
+      hit: {
+        ...hit({
+          atBats: 5,
+          plateAppearances: 5,
+          hits: 3,
+          homeRuns: 1,
+          rbi: 2,
+          runs: 2,
+        }),
+        summary: "3-5 | HR, 2 RBI, 2 R",
+      },
+      hitGames: [
+        game({
+          date: "2026-09-06",
+          opponent: "Mets",
+          isHome: false,
+          hits: 1,
+          homeRuns: 1,
+          atBats: 4,
+          summary: "1-4 | HR",
+        }),
+      ],
+    });
+    const hr = crazy.find((s) => s.id === "game-hr-since");
+    assert.ok(hr);
+    assert.match(hr!.body, /First since/);
+    assert.match(hr!.body, /Sep 6/);
+    assert.equal(crazy.some((s) => s.id === "game-line"), false);
+    assert.equal(crazy.some((s) => /official/i.test(`${s.headline} ${s.body}`)), false);
+  });
+
+  it("says tied when a teammate matches the hit lead", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      opponent: "Houston Astros",
+      isHome: false,
+      date: "2026-09-18",
+      hit: {
+        ...hit({ atBats: 5, plateAppearances: 5, hits: 3, homeRuns: 1, rbi: 2 }),
+        summary: "3-5 | HR, 2 RBI, 2 R",
+      },
+      mates: [
+        { id: 2, name: "Michael Harris II", hit: hit({ atBats: 4, hits: 3, homeRuns: 0 }) },
+      ],
+      hitGames: [
+        game({
+          date: "2026-09-13",
+          opponent: "Phillies",
+          isHome: true,
+          hits: 3,
+          homeRuns: 1,
+          atBats: 5,
+          summary: "3-5 | HR, 3 RBI, R",
+        }),
+      ],
+    });
+    const teamHits = crazy.find((s) => s.id === "game-team-hits");
+    assert.ok(teamHits);
+    assert.match(teamHits!.body, /Tied with Harris/);
+    assert.equal(/II/.test(teamHits!.body), false);
   });
 
   it("returns a no-line fallback when they have not played", () => {
@@ -321,5 +452,7 @@ describe("game crazy stat engine", () => {
       isHome: true,
     });
     assert.equal(crazy[0]?.id, "game-dnp");
+    assert.match(crazy[0].headline, /Did not play/);
+    assert.equal(/official/i.test(crazy[0].body), false);
   });
 });
