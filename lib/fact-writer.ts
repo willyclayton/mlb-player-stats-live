@@ -150,7 +150,7 @@ export function writeCareerFacts(input: CareerInput): CrazyStat[] {
               id: `career-2nd-${spec.key}`,
               stamp: `2ND ${spec.stamp}`,
               category: "rare",
-              headline: `${current} ${spec.noun}, 2nd-most of his career`,
+              headline: `${current} ${spec.stamp}, 2nd-most of his career`,
               body: `${best.value} in ${best.year}.`,
               receipts: [
                 { label: spec.stamp, value: String(current) },
@@ -203,7 +203,7 @@ export function writeCareerFacts(input: CareerInput): CrazyStat[] {
           stamp: "CAREER ERA",
           category: "pitching",
           headline: `Career-best ${fmtEra(pitch.era)} ERA`,
-          body: `Previous best: ${fmtEra(best.line.era)} in ${best.year}.`,
+          body: `${fmtEra(best.line.era)} in ${best.year}.`,
           receipts: [
             { label: "ERA", value: fmtEra(pitch.era) },
             { label: "Prev", value: `${fmtEra(best.line.era)} ${best.year}` },

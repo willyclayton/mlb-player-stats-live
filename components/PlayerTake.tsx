@@ -10,7 +10,7 @@ function TakeCard({ stat }: { stat: CrazyStat }) {
     <article className={`take${top ? " top" : ""}`}>
       {top ? <span className="top-tag">Top stat</span> : null}
       <h2>{stat.headline}</h2>
-      <p>{stat.body}</p>
+      {stat.body ? <p>{stat.body}</p> : null}
     </article>
   );
 }

@@ -20,7 +20,8 @@ describe("Will's A/B playbook", () => {
   it("1B team lead with a named gap beats 2nd-most, and it was close", () => {
     const a = stat("career-2nd-homeRuns", { headline: "40 HR, 2nd-most of his career" });
     const b = stat("team-lead", {
-      body: "Leads the Braves in HR and RBI. Harris is 14 back in HR.",
+      body: "Harris is 14 back in HR.",
+      receipts: [{ label: "Leads", value: "2" }],
     });
     assert.ok(rarity(b) > rarity(a));
     assert.ok(nearTie(a, b));
@@ -94,6 +95,17 @@ describe("Will's A/B playbook", () => {
     const b = stat("game-last-hr");
     assert.ok(rarity(b) > rarity(a));
     assert.equal(nearTie(a, b), false);
+  });
+
+  it("season leftover last multi beats last HR; game leftover last HR beats last multi", () => {
+    assert.ok(rarity(stat("last-multi")) > rarity(stat("last-hr")));
+    assert.ok(rarity(stat("game-last-hr")) > rarity(stat("game-last-multi")));
+  });
+
+  it("first 0-for-4 in two weeks and nobody-had-a-hit beat leftover last HR", () => {
+    assert.ok(rarity(stat("game-ohfer-first")) > rarity(stat("game-last-hr")));
+    assert.ok(rarity(stat("game-nobody")) > rarity(stat("game-ohfer")));
+    assert.ok(rarity(stat("game-mate")) > rarity(stat("game-ohfer")));
   });
 
   it("10B career-best ERA beats a club-only 30-30, and it was close", () => {
