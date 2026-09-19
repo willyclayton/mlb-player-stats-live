@@ -1,0 +1,118 @@
+export type PlayerRef = {
+  id: number;
+  name: string;
+  nickname?: string;
+  team?: string;
+  teamId?: number;
+  teamAbbr?: string;
+  position?: string;
+  number?: string;
+};
+
+export type HitLine = {
+  games: number;
+  plateAppearances: number;
+  atBats: number;
+  runs: number;
+  hits: number;
+  doubles: number;
+  triples: number;
+  homeRuns: number;
+  rbi: number;
+  stolenBases: number;
+  caughtStealing: number;
+  walks: number;
+  strikeOuts: number;
+  avg: number;
+  obp: number;
+  slg: number;
+  ops: number;
+  babip?: number;
+  totalBases: number;
+  hitByPitch: number;
+};
+
+export type PitchLine = {
+  games: number;
+  gamesStarted: number;
+  wins: number;
+  losses: number;
+  saves: number;
+  innings: number;
+  hits: number;
+  runs: number;
+  earnedRuns: number;
+  homeRuns: number;
+  walks: number;
+  strikeOuts: number;
+  era: number;
+  whip: number;
+  kPer9: number;
+  bbPer9: number;
+  hrPer9: number;
+  kBb: number;
+  opponentAvg: number;
+};
+
+export type GameHit = HitLine & {
+  date: string;
+  opponent: string;
+  opponentId?: number;
+  isHome: boolean;
+  isWin?: boolean;
+  summary?: string;
+};
+
+export type GamePitch = PitchLine & {
+  date: string;
+  opponent: string;
+  opponentId?: number;
+  isHome: boolean;
+  isWin?: boolean;
+  summary?: string;
+};
+
+export type CrazyStat = {
+  id: string;
+  score: number;
+  stamp: string;
+  headline: string;
+  body: string;
+  category: "heater" | "power" | "speed" | "two-way" | "pitching" | "streak" | "split" | "rare";
+  receipts: { label: string; value: string }[];
+};
+
+export type LogRow = {
+  date: string;
+  opponent: string;
+  isHome: boolean;
+  line: string;
+};
+
+export type PlayerPayload = {
+  player: PlayerRef & { bats?: string; throws?: string };
+  seasonHit?: HitLine;
+  seasonPitch?: PitchLine;
+  recentHit: { last7?: HitLine; last15?: HitLine; last30?: HitLine };
+  lastHitGames: LogRow[];
+  crazy: CrazyStat[];
+  liveNote?: string;
+};
+
+export type HomeGame = {
+  gamePk: number;
+  status: string;
+  abstractState: string;
+  home: { abbr: string; score?: number };
+  away: { abbr: string; score?: number };
+};
+
+export type Heater = PlayerRef & { value: string; label: string };
+
+export type HomePayload = {
+  asOf: string;
+  slateLabel: string;
+  games: HomeGame[];
+  players: PlayerRef[];
+  heaters: Heater[];
+};

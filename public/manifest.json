@@ -1,0 +1,9 @@
+{
+  "name": "MLB Live Crazy Stats",
+  "short_name": "Crazy Stats",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070b12",
+  "theme_color": "#070b12",
+  "description": "Tap a player. Pull live MLB data. Get a crazy stat."
+}
