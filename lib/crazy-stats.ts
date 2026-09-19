@@ -41,7 +41,14 @@ function take(
 }
 
 function lastName(name: string): string {
-  return name.split(" ").pop() || name;
+  const parts = name.trim().split(/\s+/);
+  while (
+    parts.length > 1 &&
+    /^(jr|sr|ii|iii|iv|v)[.]?$/i.test(parts[parts.length - 1] ?? "")
+  ) {
+    parts.pop();
+  }
+  return parts[parts.length - 1] || name;
 }
 
 function club(team?: string): string {
@@ -62,9 +69,12 @@ function factDate(iso?: string): string {
   return iso.startsWith(String(SEASON)) ? label : `${label}, ${iso.slice(0, 4)}`;
 }
 
+function boxLine(hit: { summary?: string; hits: number; atBats: number }): string {
+  return hit.summary || `${hit.hits}-${hit.atBats}`;
+}
+
 function gameNote(g: GameHit): string {
-  const line = g.summary || `${g.hits}-${g.atBats}`;
-  return `${factDate(g.date)} ${vsOpp(g.isHome, g.opponent)} (${line})`;
+  return `${factDate(g.date)} ${vsOpp(g.isHome, g.opponent)} (${boxLine(g)})`;
 }
 
 function lastMatch(
@@ -180,14 +190,17 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
         take({
           id: "team-lead",
           score: 70 + leads.length * 8,
-          stamp: `LEADS ${team.toUpperCase()}`,
+          stamp: slash(hit),
           category: "rare",
-          headline: `Leads the ${team} in ${list}`,
-          body: next || `${full} sits first on the ${team} official leaderboard.`,
-          receipts: leads.map((label) => {
-            const [k, v] = label.split(" ");
-            return { label: k, value: v.replace(/[()]/g, "") };
-          }),
+          headline: `${slash(hit)}, ${hit.homeRuns} HR, ${hit.rbi} RBI`,
+          body: next
+            ? `Leads the ${team} in ${list}. ${next}`
+            : `Leads the ${team} in ${list}.`,
+          receipts: [
+            { label: "AVG", value: fmtAvg(hit.avg) },
+            { label: "HR", value: String(hit.homeRuns) },
+            { label: "RBI", value: String(hit.rbi) },
+          ],
         }),
       );
     }
@@ -297,15 +310,14 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
   );
 
   if (hit && hit.atBats + hit.walks + hit.plateAppearances > 0) {
-    const line = hit.summary || `${hit.hits}-${hit.atBats}`;
     stats.push(
       take({
         id: "game-line",
-        score: 36 + hit.hits * 6 + hit.homeRuns * 10,
+        score: 74 + hit.hits * 4 + hit.homeRuns * 8,
         stamp: "BOX",
         category: "heater",
-        headline: `${line} ${vs}`,
-        body: `${hit.hits}-for-${hit.atBats}, ${hit.homeRuns} HR, ${hit.rbi} RBI, ${hit.walks} BB, ${hit.strikeOuts} K. Official box.`,
+        headline: boxLine(hit),
+        body: `${hit.hits}-for-${hit.atBats}, ${hit.homeRuns} HR, ${hit.rbi} RBI ${vs}.`,
         receipts: [
           { label: "H-AB", value: `${hit.hits}-${hit.atBats}` },
           { label: "HR", value: String(hit.homeRuns) },
@@ -406,10 +418,10 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         take({
           id: "game-team-hits",
           score: 60 + hit.hits * 4,
-          stamp: `TEAM HIGH`,
+          stamp: "BOX",
           category: "heater",
-          headline: `Team-high ${hit.hits} hits for the ${team}`,
-          body: `${full} had the most hits on the ${team} ${vs}.`,
+          headline: boxLine(hit),
+          body: `Team-high ${hit.hits} hits for the ${team} ${vs}.`,
           receipts: [{ label: "H", value: String(hit.hits) }],
         }),
       );

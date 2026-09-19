@@ -9,19 +9,8 @@ function TakeCard({ stat }: { stat: CrazyStat }) {
   return (
     <article className={`take${top ? " top" : ""}`}>
       {top ? <span className="top-tag">Top stat</span> : null}
-      <span className="stamp">{stat.stamp}</span>
       <h2>{stat.headline}</h2>
       <p>{stat.body}</p>
-      {stat.receipts.length ? (
-        <div className="receipts">
-          {stat.receipts.map((r) => (
-            <div className="receipt" key={`${stat.id}-${r.label}`}>
-              <div className="lbl">{r.label}</div>
-              <div className="val">{r.value}</div>
-            </div>
-          ))}
-        </div>
-      ) : null}
     </article>
   );
 }
@@ -45,7 +34,7 @@ function TakeSlot({
         <h2>{label}</h2>
         {stats.length > 1 ? (
           <button
-            className="btn"
+            className="btn ghost"
             type="button"
             onClick={() => setIndex((i) => (i + 1) % stats.length)}
           >
@@ -74,7 +63,7 @@ export function PlayerTake({
   return (
     <div className="takes">
       <TakeSlot label="Season" stats={season} tone="season" />
-      <TakeSlot label={`This game · ${gameLabel}`} stats={game} tone="game" />
+      <TakeSlot label={gameLabel} stats={game} tone="game" />
     </div>
   );
 }

@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Headshot } from "@/components/Headshot";
-import { PlayerCard } from "@/components/PlayerCard";
 import { PlayerTake } from "@/components/PlayerTake";
 import { Matchup } from "@/components/TeamLabel";
-import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate } from "@/lib/format";
+import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate, shortTeamName } from "@/lib/format";
 import { gameHref } from "@/lib/href";
 import { getGame, getPlayer } from "@/lib/mlb";
 
@@ -43,10 +42,6 @@ export default async function PlayerPage({
   const inGame = game
     ? [...game.away.players, ...game.home.players].some((p) => p.id === id)
     : false;
-  const mates = game && inGame
-    ? [...game.away.players, ...game.home.players].filter((p) => p.id !== id)
-    : [];
-
   const { player } = data;
 
   return (
@@ -61,23 +56,14 @@ export default async function PlayerPage({
             </Link>
           </>
         ) : null}
-        <span>/</span>
-        <span>{player.name}</span>
       </nav>
 
       <div className={`hero${player.topStat ? " top" : ""}`}>
-        <Headshot id={player.id} name={player.name} size={360} />
+        <Headshot id={player.id} name={player.name} size={240} />
         <div>
           {player.topStat ? <div className="top-tag">Top stat</div> : null}
           <div className="kicker">{player.team || "MLB"}</div>
           <h1>{player.name}</h1>
-          {player.topStat ? <p className="lede">{player.topStat}</p> : null}
-          <div className="pills">
-            {player.position ? <span className="pill">{player.position}</span> : null}
-            {player.number ? <span className="pill">#{player.number}</span> : null}
-            {player.bats ? <span className="pill">B {player.bats[0]}</span> : null}
-            {player.throws ? <span className="pill">T {player.throws[0]}</span> : null}
-          </div>
         </div>
       </div>
 
@@ -113,7 +99,7 @@ export default async function PlayerPage({
               <div className="log-row" key={`${g.date}-${g.opponent}`}>
                 <div className="muted">{prettyDate(g.date)}</div>
                 <div>
-                  {g.isHome ? "vs" : "@"} {g.opponent}
+                  {g.isHome ? "vs" : "@"} {shortTeamName(g.opponent) || g.opponent}
                 </div>
                 <div>{g.line}</div>
               </div>
@@ -122,16 +108,6 @@ export default async function PlayerPage({
         </section>
       ) : null}
 
-      {mates.length ? (
-        <section className="section">
-          <h2>Same game</h2>
-          <div className="row-scroll">
-            {mates.map((mate) => (
-              <PlayerCard key={mate.id} player={mate} gamePk={game?.gamePk} />
-            ))}
-          </div>
-        </section>
-      ) : null}
     </>
   );
 }

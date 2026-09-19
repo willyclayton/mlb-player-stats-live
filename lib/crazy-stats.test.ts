@@ -161,6 +161,37 @@ describe("crazy stat engine", () => {
     assert.ok(crazy.some((s) => s.id === "team-lead"));
   });
 
+  it("uses the season slash line and a real last name, not a suffix", () => {
+    const crazy = generateCrazyStats({
+      id: 1,
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      seasonHit: hit({
+        avg: 0.272,
+        obp: 0.36,
+        slg: 0.54,
+        ops: 0.9,
+        homeRuns: 40,
+        rbi: 88,
+        atBats: 500,
+        games: 140,
+      }),
+      hitGames: [],
+      pitchGames: [],
+      teamHitters: [
+        { id: 1, name: "Matt Olson", line: hit({ homeRuns: 40, rbi: 88 }) },
+        { id: 2, name: "Michael Harris II", line: hit({ homeRuns: 26, rbi: 70 }) },
+      ],
+    });
+    const lead = crazy.find((s) => s.id === "team-lead");
+    assert.ok(lead);
+    assert.match(lead!.headline, /40 HR/);
+    assert.match(lead!.headline, /88 RBI/);
+    assert.match(lead!.headline, /\.272/);
+    assert.match(lead!.body, /Harris/);
+    assert.equal(/II is next/.test(lead!.body), false);
+  });
+
   it("states a last-15 OPS split against the season", () => {
     const games: GameHit[] = Array.from({ length: 15 }, (_, i) =>
       game({
