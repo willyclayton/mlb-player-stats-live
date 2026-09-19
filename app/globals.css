@@ -869,7 +869,14 @@ html[data-names="full"] .score-teams {
   color: var(--soft);
 }
 
+.judge-copy {
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
 .judge-log {
+  flex: 1;
+  overflow: auto;
   margin: 8px 0 0;
   padding: 0 0 0 18px;
   color: var(--soft);

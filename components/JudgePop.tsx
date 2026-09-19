@@ -55,7 +55,7 @@ export function JudgePop() {
         <p className="judge-kicker">Done</p>
         <h1>Send this</h1>
         <p className="judge-code">{text}</p>
-        <button className="judge-card" type="button" onClick={copy}>
+        <button className="btn judge-copy" type="button" onClick={copy}>
           {copied ? "Copied" : "Copy"}
         </button>
         <ol className="judge-log">
