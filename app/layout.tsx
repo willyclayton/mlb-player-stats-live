@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, DM_Sans, Newsreader } from "next/font/google";
+import { Archivo_Black, DM_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const display = Bebas_Neue({
+const display = Archivo_Black({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-display-g",
