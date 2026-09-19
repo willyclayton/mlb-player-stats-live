@@ -1,6 +1,10 @@
 import { writeCareerFacts } from "./fact-writer";
 import { rankFacts } from "./fact-ranker";
 import { fmtAvg, fmtEra, fmtIp, fmtOps, slash, prettyDate, shortTeamName } from "./format";
+import { joinGameCombo } from "./game-combos";
+import { join3Hr, joinCycle, joinSeasonLine, resolveTeamAbbr } from "./historic-firsts";
+import { joinHistoricGame } from "./historic-games";
+import { joinHistoricSeason } from "./historic-season";
 import { aggregateHits, hittingStreak, homerStreak, lastN } from "./stats";
 import type { CrazyStat, GameHit, GamePitch, HitLine, PitchLine, YearLine } from "./types";
 
@@ -184,6 +188,48 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
           { label: "SB", value: String(hit.stolenBases) },
           { label: "OPS", value: hit.ops.toFixed(3).replace(/^0/, "") },
         ],
+      }),
+    );
+  }
+
+  const teamAbbr = resolveTeamAbbr(input.team);
+  if (hit && teamAbbr) {
+    for (const join of joinSeasonLine(teamAbbr, hit.homeRuns, hit.stolenBases, {
+      club: team,
+      lastYear: lastYearHit
+        ? { homeRuns: lastYearHit.homeRuns, stolenBases: lastYearHit.stolenBases }
+        : undefined,
+    })) {
+      stats.push(
+        take({
+          id: join.id,
+          score: 90,
+          stamp: join.stamp,
+          category: "rare",
+          headline: join.headline,
+          body: join.body,
+          receipts: join.receipts,
+        }),
+      );
+    }
+  }
+
+  for (const join of joinHistoricSeason(input.name, {
+    hit,
+    pitch,
+    lastYearHit: lastYearHit
+      ? { homeRuns: lastYearHit.homeRuns, stolenBases: lastYearHit.stolenBases }
+      : undefined,
+  })) {
+    stats.push(
+      take({
+        id: join.id,
+        score: 90,
+        stamp: join.stamp,
+        category: pitch && !hit ? "pitching" : "rare",
+        headline: join.headline,
+        body: join.body,
+        receipts: join.receipts,
       }),
     );
   }
@@ -538,6 +584,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
   const stats: CrazyStat[] = [];
   const full = input.name;
   const team = club(input.team);
+  const abbr = resolveTeamAbbr(input.team);
   const vs = vsOpp(input.isHome, input.opponent);
   const hit = input.hit;
   const pitch = input.pitch;
@@ -548,6 +595,36 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
     (hit && (hit.plateAppearances > 0 || hit.atBats > 0)) ||
       (pitch && pitch.innings > 0),
   );
+
+  const historic = joinHistoricGame(full, input.date);
+  for (const join of historic) {
+    stats.push(
+      take({
+        id: join.id,
+        score: join.stamp === "CLUB FIRST" || join.stamp === "FIRST EVER" ? 100 : 97,
+        stamp: join.stamp,
+        category: "rare",
+        headline: join.headline,
+        body: join.body,
+        receipts: join.receipts,
+      }),
+    );
+  }
+  if (!historic.length && hit) {
+    for (const join of joinGameCombo(hit, input.date)) {
+      stats.push(
+        take({
+          id: join.id,
+          score: join.stamp === "FIRST EVER" ? 100 : 97,
+          stamp: join.stamp,
+          category: "rare",
+          headline: join.headline,
+          body: join.body,
+          receipts: join.receipts,
+        }),
+      );
+    }
+  }
 
   if (
     hit &&
@@ -561,6 +638,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
       (g) => g.hits >= 1 && g.doubles >= 1 && g.triples >= 1 && g.homeRuns >= 1,
       input.date,
     );
+    const franchiseCycle = abbr ? joinCycle(abbr) : null;
     stats.push(
       take({
         id: "game-cycle",
@@ -568,7 +646,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         stamp: "CYCLE",
         category: "rare",
         headline: `Hit for the cycle ${vs}`,
-        body: since(prev, "cycle"),
+        body: franchiseCycle?.body ?? since(prev, "cycle"),
         receipts: [{ label: "H", value: String(hit.hits) }, ...dayReceipt(prev, input.date)],
       }),
     );
@@ -636,6 +714,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
 
   if (hit && hit.homeRuns >= 2) {
     const prev = lastMatch(logs, (g) => g.homeRuns >= 2, input.date);
+    const franchiseHr = hit.homeRuns >= 3 && abbr ? join3Hr(abbr) : null;
     stats.push(
       take({
         id: "game-hr",
@@ -643,7 +722,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         stamp: "MULTI-HR",
         category: "power",
         headline: `${hit.homeRuns} home runs ${vs}`,
-        body: since(prev, "multi-homer game"),
+        body: franchiseHr?.body ?? since(prev, "multi-homer game"),
         receipts: [
           { label: "HR", value: String(hit.homeRuns) },
           { label: "RBI", value: String(hit.rbi) },
@@ -878,7 +957,9 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
       s.id === "game-pitch" ||
       s.id === "game-season-high" ||
       s.id === "game-hr-3b" ||
-      s.id === "game-hr-sb",
+      s.id === "game-hr-sb" ||
+      s.id === "game-combo" ||
+      s.id === "game-combo-2",
   );
   if (played && hit && (!feat || quiet)) {
     const prevMulti = lastMatch(logs, (g) => g.hits >= 2, input.date);

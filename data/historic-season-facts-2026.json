@@ -1,0 +1,326 @@
+{
+  "asOf": "2026-09-19",
+  "season": 2026,
+  "kind": "season",
+  "qualityBar": "Regular-season franchise/club records and firsts still true on 2026-09-19. High confidence only. Named previous player + year unless a true franchise first.",
+  "liveBoard": {
+    "source": "https://statsapi.mlb.com/api/v1/stats?stats=season&group=hitting&sportIds=1&season=2026&sortStat=homeRuns&limit=40",
+    "leaders": [
+      { "player": "Kyle Schwarber", "teamAbbr": "PHI", "hr": 45, "sb": 3, "rbi": 95, "ops": ".864" },
+      { "player": "Pete Crow-Armstrong", "teamAbbr": "CHC", "hr": 44, "sb": 37, "rbi": 105, "ops": ".948", "xbh": 81, "triples": 8 },
+      { "player": "Junior Caminero", "teamAbbr": "TB", "hr": 41, "sb": 3, "rbi": 97, "ops": ".898" },
+      { "player": "Yordan Alvarez", "teamAbbr": "HOU", "hr": 40, "sb": 1, "rbi": 99, "ops": "1.031" },
+      { "player": "Matt Olson", "teamAbbr": "ATL", "hr": 40, "sb": 4, "rbi": 88, "ops": ".834" },
+      { "player": "CJ Abrams", "teamAbbr": "WSH", "hr": 30, "sb": 30, "rbi": 97, "ops": ".831" }
+    ]
+  },
+  "alreadyEncodedDoNotRepeat": [
+    "PCA first Cubs 40-HR/30-SB ever",
+    "PCA first consecutive Cubs 30-30",
+    "PCA first Cubs 40-HR since Derrek Lee 2005",
+    "Abrams first Nats 30-30 since Soriano 2006 (Guerrero Expos 2001 franchise first)",
+    "No Cubs 40-40 ever; PCA 3 SB short of 40-40",
+    "40-40 club: Canseco 1988 ATH, Bonds 1996 SF, A-Rod 1998 SEA, Soriano 2006 WSH, Acuña 2023 ATL, Ohtani 2024 LAD",
+    "Never 30-30: STL, SD, TB, DET, MIN, CWS",
+    "Never 50-HR: CWS, COL, HOU, KC, LAA, MIN, TB, WSH"
+  ],
+  "conflicts": [
+    {
+      "topic": "Astros 40-HR club size",
+      "correct": "Alvarez is the 5th unique Astro with a 40-HR season (Bagwell, Hidalgo, Berkman, Bregman, Alvarez) and the 8th such season.",
+      "wrong": "NBC Sports (2026-09-17) said 'eighth player in Astros franchise history.' That counts seasons, not distinct players.",
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=117&sortStat=homeRuns&limit=25",
+        "https://www.nbcsports.com/fantasy/baseball/player-news/2026-09-17/yordan-alvarez-crushes-40th-homer-to-lead-astros"
+      ]
+    },
+    {
+      "topic": "PCA 81 extra-base hits vs 81 leadoff RBI",
+      "correct": "Both can be true. 29 2B + 8 3B + 44 HR = 81 extra-base hits, passing Billy Williams 1970 (34/4/42 = 80) for Cubs LHB. Separate Tribune/Hartig note: 81 RBI from the leadoff spot (Cubs record dating to 1898; previous holder unnamed).",
+      "wrong": "Some recaps call 81 XBH 'the Cubs extra-base hit record' without 'left-handed.' Overall Cubs XBH record is Sammy Sosa 2001 (64 HR + 34 2B + 5 3B = 103)."
+    },
+    {
+      "topic": "Baseball Almanac Rays single-season HR list",
+      "correct": "Caminero 2026 is 41 HR (MLB Stats API). Almanac page still showed 35 when checked.",
+      "wrong": "https://www.baseball-almanac.com/yearly/top25team2.php?s=HR&t=TBR"
+    }
+  ],
+  "stillOpenDroughts": [
+    { "teamAbbr": "SF", "feat": "40-HR season", "previousPlayer": "Barry Bonds", "previousYear": 2004, "previousValue": 45, "closest2026": "Rafael Devers 37" },
+    { "teamAbbr": "PIT", "feat": "40-HR season", "previousPlayer": "Willie Stargell", "previousYear": 1973, "previousValue": 44, "closest2026": "Brandon Lowe 32" },
+    { "teamAbbr": "COL", "feat": "40-HR season", "previousPlayer": "Nolan Arenado", "previousYear": 2019, "previousValue": 41, "closest2026": "Hunter Goodman 38" },
+    { "teamAbbr": "WSH", "feat": "40-HR season", "previousPlayer": "Bryce Harper", "previousYear": 2015, "previousValue": 42, "closest2026": "CJ Abrams 30, James Wood 30" }
+  ],
+  "noNewFranchiseFirst": [
+    "Aaron Judge (NYY): 18 HR in 66 G; injured. No 2026 40-HR.",
+    "Shohei Ohtani (LAD): 30 HR / 11 SB in 134 G; IL. No 40-40/40-HR.",
+    "Cal Raleigh (SEA): 22 HR in 119 G after 60 in 2025.",
+    "Ronald Acuña Jr. (ATL): 19 HR / 20 SB in 101 G.",
+    "Juan Soto (NYM): 26 HR / 9 SB in 103 G.",
+    "Bobby Witt Jr. (KC): 18 HR / 42 SB. Royals already had 30-30 (Witt 2023-24).",
+    "Dansby Swanson (CHC): 18 HR; season-line firsts none. Game 3-HR/8-RBI on 2026-07-01 is in historic-game-facts.",
+    "Alex Bregman (CHC): 26 HR / 3 SB. Game 3-HR facts already encoded. No Cubs 40-HR.",
+    "Matt Olson (ATL): 40 HR. Last Braves 40 was Olson 2023 (54) / Acuña 2023 (41). Not a drought.",
+    "Corbin Carroll (AZ): 22 HR / 21 SB / 16 3B. Single-season 3B record remains his own 17 in 2025. Career triples record is new (below)."
+  ],
+  "facts": [
+    {
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "teamAbbr": "CHC",
+      "feat": "Cubs LHB single-season HR record",
+      "headline": "Most homers by a Cubs lefty in a season",
+      "previousPlayer": "Billy Williams",
+      "previousYear": 1970,
+      "previousValue": 42,
+      "liveValue": 44,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=112&sortStat=homeRuns&limit=200",
+        "https://www.si.com/mlb/cubs/onsi/pete-crow-armstrong-breaks-a-cubs-hr-record-ties-ernie-banks-in-same-crazy-night-16",
+        "https://www.espn.com/mlb/story/_/id/49962242/pete-crow-armstrong-furthers-mvp-case-cubs-victory",
+        "https://www.nbcsports.com/mlb/news/with-2-more-homers-the-cubs-pete-crow-armstrong-makes-his-mvp-case"
+      ],
+      "confidence": "high",
+      "notes": "HR 43 on 2026-09-16 vs ATL broke Williams 1970. Only Cubs lefties with 40: Williams 1970, PCA 2026. Not the overall Cubs HR record (Sosa 66 in 1998)."
+    },
+    {
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "teamAbbr": "CHC",
+      "feat": "Youngest Cub to 40 HR",
+      "headline": "Youngest Cub to 40 home runs",
+      "previousPlayer": "Ernie Banks",
+      "previousYear": 1955,
+      "previousValue": "24y 214d",
+      "liveValue": "24y 165d",
+      "sources": [
+        "https://www.sportsmockery.com/chicago-cubs/pete-crow-armstrongs-40-home-run-season-is-more-special-than-you-think/",
+        "https://www.usatoday.com/story/sports/mlb/2026/09/06/cubs-pete-crow-armstrong-40th-home-run-pca/91644479007/",
+        "https://statsapi.mlb.com/api/v1/people/691718"
+      ],
+      "confidence": "high",
+      "notes": "Reached 40 on 2026-09-06 at MIA. PCA b. 2002-03-25. Banks b. 1931-01-31. 49 days younger than Banks at 40, per Meghan Montemurro."
+    },
+    {
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "teamAbbr": "CHC",
+      "feat": "Most HR by a Cub age 24 or younger (tie)",
+      "headline": "Tied Banks for most HR by a Cub age 24 or younger",
+      "previousPlayer": "Ernie Banks",
+      "previousYear": 1955,
+      "previousValue": 44,
+      "liveValue": 44,
+      "sources": [
+        "https://www.si.com/mlb/cubs/onsi/pete-crow-armstrong-breaks-a-cubs-hr-record-ties-ernie-banks-in-same-crazy-night-16",
+        "https://www.espn.com/mlb/story/_/id/49962242/pete-crow-armstrong-furthers-mvp-case-cubs-victory",
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=112&sortStat=homeRuns&limit=200"
+      ],
+      "confidence": "high",
+      "notes": "Sarah Langs via SI/ESPN. HR 44 on 2026-09-16 tied Banks 1955. Still a tie as of 2026-09-19."
+    },
+    {
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "teamAbbr": "CHC",
+      "feat": "Cubs LHB single-season extra-base hits record",
+      "headline": "Most extra-base hits by a Cubs lefty in a season",
+      "previousPlayer": "Billy Williams",
+      "previousYear": 1970,
+      "previousValue": 80,
+      "liveValue": 81,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=season&group=hitting&sportIds=1&season=2026&sortStat=homeRuns&limit=5",
+        "https://www.baseball-reference.com/players/w/willibi01.shtml",
+        "https://www.cbssports.com/mlb/news/pete-crow-armstrong-sets-cubs-record-powers-8-4-win-over-braves/",
+        "https://clutchpoints.com/mlb/chicago-cubs/cubs-news-pete-crow-armstrong-accomplishes-feat-never-before-reached-in-mlb-history"
+      ],
+      "confidence": "high",
+      "notes": "PCA 29 2B + 8 3B + 44 HR = 81. Williams 1970: 34 2B + 4 3B + 42 HR = 80 (MLB Stats API). Overall Cubs XBH record remains Sosa 2001 (103). Some recaps omit 'left-handed.'"
+    },
+    {
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "teamAbbr": "CHC",
+      "feat": "Most Cubs games with a HR and a SB in a season",
+      "headline": "Most Cubs games with a homer and a steal",
+      "previousPlayer": "Ryne Sandberg",
+      "previousYear": 1991,
+      "previousValue": 7,
+      "liveValue": 8,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/people/691718/stats?stats=gameLog&group=hitting&season=2026",
+        "https://statsapi.mlb.com/api/v1/people/121665/stats?stats=gameLog&group=hitting&season=1991",
+        "https://lastwordonsports.com/baseball/2026/08/24/pete-crow-armstrong-homer/",
+        "https://clutchpoints.com/mlb/chicago-cubs/cubs-news-pete-crow-armstrong-makes-franchise-history-with-home-run-in-rout-of-mariners"
+      ],
+      "confidence": "high",
+      "notes": "Since modern SB rule (1898). Recaps tracked PCA to 6 games on 2026-08-23, one behind Sandberg. API logs: PCA 2026 dates 04-07, 06-04, 07-01, 07-25, 08-17, 08-23, 09-07, 09-14. Sandberg 1991 independently 7."
+    },
+    {
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "teamAbbr": "CHC",
+      "feat": "Most games with 10+ total bases in a season since 1900 (tie)",
+      "headline": "Tied the modern record for 10-total-base games",
+      "previousPlayer": "Nelson Cruz",
+      "previousYear": 2019,
+      "previousValue": 6,
+      "liveValue": 6,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/people/691718/stats?stats=gameLog&group=hitting&season=2026",
+        "https://statsapi.mlb.com/api/v1/people/443558/stats?stats=gameLog&group=hitting&season=2019",
+        "https://www.espn.com/mlb/story/_/id/49962242/pete-crow-armstrong-furthers-mvp-case-cubs-victory",
+        "https://pitcherlist.com/mlb-news-moments-ethan-salas-goes-off/"
+      ],
+      "confidence": "high",
+      "notes": "MLB since 1900, per Sarah Langs / Montemurro. PCA dates: 06-06, 06-15, 08-05, 08-17, 08-29, 09-16. Cruz 2019 MIN also 6. Scope is MLB, not Cubs."
+    },
+    {
+      "player": "Junior Caminero",
+      "team": "Tampa Bay Rays",
+      "teamAbbr": "TB",
+      "feat": "First consecutive 40-HR seasons for the Rays",
+      "headline": "First consecutive 40-HR seasons for the Rays",
+      "previousPlayer": null,
+      "previousYear": null,
+      "previousValue": null,
+      "liveValue": 41,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=139&sortStat=homeRuns&limit=25",
+        "https://flteams.com/2026/09/12/camineros-walk-off-home-run-clinches-rays-postseason-birth/",
+        "https://www.statmuse.com/mlb/ask/rays-player-most-home-runs-in-a-single-season"
+      ],
+      "confidence": "high",
+      "notes": "Also first Rays player with multiple 40-HR seasons. Only prior 40-HR season: Carlos Peña 46 in 2007. Caminero 45 in 2025, 41 in 2026 (age-22 season; b. 2003-07-05). Reached 40 on 2026-09-11 walk-off vs HOU."
+    },
+    {
+      "player": "Junior Caminero",
+      "team": "Tampa Bay Rays",
+      "teamAbbr": "TB",
+      "feat": "Consecutive 40-HR seasons in age-22-or-younger seasons",
+      "headline": "Second man with back-to-back 40s in age-22-or-younger seasons",
+      "previousPlayer": "Eddie Mathews",
+      "previousYear": 1954,
+      "previousValue": "47 (1953), 40 (1954)",
+      "liveValue": "45 (2025), 41 (2026)",
+      "sources": [
+        "https://flteams.com/2026/09/12/camineros-walk-off-home-run-clinches-rays-postseason-birth/",
+        "https://statsapi.mlb.com/api/v1/people/118416/stats?stats=yearByYear&group=hitting",
+        "https://statsapi.mlb.com/api/v1/people/691406/stats?stats=yearByYear&group=hitting"
+      ],
+      "confidence": "high",
+      "notes": "FL Teams: second in the modern era in age-22-or-younger seasons. Mathews 47 at age 21 (1953) and 40 at age 22 (1954). Caminero 45 at age 21 (2025) and 41 at age 22 (2026). Spanish recaps frame it as before turning 24; same pair."
+    },
+    {
+      "player": "Yordan Alvarez",
+      "team": "Houston Astros",
+      "teamAbbr": "HOU",
+      "feat": "First Astros 40-HR season since 2019",
+      "headline": "First Astros 40-HR season since Bregman, 2019",
+      "previousPlayer": "Alex Bregman",
+      "previousYear": 2019,
+      "previousValue": 41,
+      "liveValue": 40,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=117&sortStat=homeRuns&limit=25",
+        "https://worldbaseballnews.org/news/mlb/yordan-alvarez-40-home-runs-astros-al-west-lead/",
+        "https://www.nbcsports.com/fantasy/baseball/player-news/2026-09-17/yordan-alvarez-crushes-40th-homer-to-lead-astros",
+        "https://www.statmuse.com/mlb/ask/last-astros-players-to-hit-40-home-runs-in-one-season"
+      ],
+      "confidence": "high",
+      "notes": "Career-first 40 on 2026-09-17 vs KC. 5th unique Astro: Bagwell (43/42/47), Hidalgo (44), Berkman (42/45), Bregman (41), Alvarez (40). 8th 40-HR season. CONFLICT: NBC called him the 8th player. Also MLB OPS lead at 1.031; not an Astros single-season OPS record (Bagwell 1994 1.201)."
+    },
+    {
+      "player": "Kyle Schwarber",
+      "team": "Philadelphia Phillies",
+      "teamAbbr": "PHI",
+      "feat": "Tied Phillies record for 40-HR seasons",
+      "headline": "Tied Howard with a fourth Phillies 40-HR season",
+      "previousPlayer": "Ryan Howard",
+      "previousYear": 2009,
+      "previousValue": 4,
+      "liveValue": 4,
+      "sources": [
+        "https://apnews.com/article/kyle-schwarber-phillies-7894daf8b3afaae2e4dddb09a327b4e8",
+        "https://www.sportingnews.com/us/mlb/philadelphia-phillies/news/kyle-schwarbers-40th-hr-ryan-howard-rare-phillies-history/41db84144aae05053aa6d2fc",
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=143&sortStat=homeRuns&limit=25"
+      ],
+      "confidence": "high",
+      "notes": "Paul Casella / MLB.com. Howard 58/47/48/45 (2006-09). Schwarber 46 (2022), 47 (2023), 56 (2025), 45 (2026). Reached 40 on 2026-08-26 at SEA. MLB HR lead at 45. Not consecutive; skipped 2024 (38)."
+    },
+    {
+      "player": "Corbin Carroll",
+      "team": "Arizona Diamondbacks",
+      "teamAbbr": "AZ",
+      "feat": "Diamondbacks career triples record",
+      "headline": "Diamondbacks career triples king",
+      "previousPlayer": "Stephen Drew",
+      "previousYear": 2012,
+      "previousValue": 52,
+      "liveValue": 59,
+      "sources": [
+        "https://arizonasports.com/mlb/arizona-diamondbacks/corbin-carroll-becomes-the-diamondbacks-triples-king",
+        "https://www.mlb.com/dbacks/video/corbin-carroll-s-53rd-triple-most-in-d-backs-history",
+        "https://www.cbssports.com/fantasy/baseball/news/diamondbacks-corbin-carroll-sets-franchise-record/",
+        "https://statsapi.mlb.com/api/v1/people/682998/stats?stats=yearByYear&group=hitting"
+      ],
+      "confidence": "high",
+      "notes": "53rd career triple on 2026-06-26 at TB (10th of 2026). Drew 52 in 773 G; Carroll passed him in 566 G. Career 3B: 2 (2022) + 10 + 14 + 17 + 16 = 59. Single-season D-backs record remains Carroll 17 in 2025; 2026 has 16, MLB lead."
+    },
+    {
+      "player": "James Wood",
+      "team": "Washington Nationals",
+      "teamAbbr": "WSH",
+      "feat": "Nationals/Expos single-season leadoff HR record",
+      "headline": "Nationals leadoff HR record",
+      "previousPlayer": "Alfonso Soriano",
+      "previousYear": 2006,
+      "previousValue": 9,
+      "liveValue": 10,
+      "sources": [
+        "https://www.audacy.com/theteam980/sports/nationals/james-wood-hits-10th-leadoff-homer-of-2026-setting-new-nats-single-season-record",
+        "https://www.sportingnews.com/us/mlb/washington-nationals/news/nationals-james-wood-leading-record-breaking-power/77eb27204b8d4a8159b7cd86",
+        "https://www.statmuse.com/mlb/ask/james-wood-leadoff-home-runs-in-2026"
+      ],
+      "confidence": "high",
+      "notes": "Tied mark also held by Brad Wilkerson, 9 in 2004 (Expos). 10th leadoff HR on 2026-07-11 vs NYY. StatMuse still 10 as of late season. Wood also 30 HR / 21 SB (not a 30-30). First-half HR record 28 vs Soriano 27 in 2006 is a related club mark from the same swing."
+    },
+    {
+      "player": "Rafael Devers",
+      "team": "San Francisco Giants",
+      "teamAbbr": "SF",
+      "feat": "Most Giants HR in a season since Bonds 2004",
+      "headline": "Most Giants homers in a season since Bonds",
+      "previousPlayer": "Barry Bonds",
+      "previousYear": 2004,
+      "previousValue": 45,
+      "liveValue": 37,
+      "sources": [
+        "https://statsapi.mlb.com/api/v1/stats?stats=statsSingleSeason&group=hitting&sportIds=1&teamId=137&sortStat=homeRuns&limit=20",
+        "https://www.thebiglead.com/rafael-devers-joins-barry-bonds-giants-franchise-history/",
+        "https://heavy.com/sports/mlb/san-francisco-giants/rafael-devers-willie-mays-barry-bonds/"
+      ],
+      "confidence": "high",
+      "notes": "NOT a 40-HR season. Bonds 2004 40-HR drought still open. Willy Adames 2025 was first Giant 30-HR since 2004; Devers 37 is the most since Bonds. Do not write 'first 40-HR since Bonds.'"
+    },
+    {
+      "player": "Munetaka Murakami",
+      "team": "Chicago White Sox",
+      "teamAbbr": "CWS",
+      "feat": "White Sox 3 players with 30+ HR, first since 2008",
+      "headline": "First White Sox 30-HR trio since 2008",
+      "previousPlayer": "Carlos Quentin / Jermaine Dye / Jim Thome",
+      "previousYear": 2008,
+      "previousValue": "36 / 34 / 34",
+      "liveValue": "Murakami 32, Vargas 32, Montgomery 31",
+      "sources": [
+        "https://www.mlb.com/news/munetaka-murakami-reaches-30-homers-in-rookie-season",
+        "https://roundtable.io/sports/mlb/white-sox/news/white-sox-reach-milestone-not-seen-for-18-years",
+        "https://statsapi.mlb.com/api/v1/stats?stats=season&group=hitting&sportIds=1&teamId=145&season=2026&sortStat=homeRuns&limit=10"
+      ],
+      "confidence": "high",
+      "notes": "Fourth CWS season with 3+ players at 30 HR: 2004 (Konerko 41, Lee 31, Valentín 30), 2006 (Dye 44, Thome 42, Konerko 35, Crede 30), 2008, 2026. MLB.com. Murakami also 4th Japanese-born MLB 30-HR (Ohtani, Suzuki, Matsui) and first Japanese-born MLB rookie 30. Montgomery set CWS primary-SS single-season HR mark; previous holder unnamed, not listed separately."
+    }
+  ]
+}

@@ -1,0 +1,383 @@
+{
+  "asOf": "2026-09-19",
+  "season": 2026,
+  "kind": "game-combo",
+  "qualityBar": "Regular-season MLB single-game combos joinable to a live box. Counts are since 1900/1901 unless noted.",
+  "combos": [
+    {
+      "id": "3hr-2doubles",
+      "combo": "3 HR and 2+ doubles",
+      "match": { "homeRuns": 3, "doubles": 2 },
+      "autoJoin": true,
+      "lastPlayer": "Shohei Ohtani",
+      "lastDate": "2024-09-19",
+      "lastTeam": "Los Angeles Dodgers",
+      "previous": { "player": "Adolis García", "date": "2023-04-22", "team": "Texas Rangers" },
+      "countEver": 5,
+      "countScope": "since 1901",
+      "any2026": false,
+      "matches2026": [],
+      "occurrences": [
+        { "player": "Kris Bryant", "date": "2016-06-27", "team": "Chicago Cubs" },
+        { "player": "Matt Carpenter", "date": "2018-07-20", "team": "St. Louis Cardinals" },
+        { "player": "Alex Dickerson", "date": "2020-09-01", "team": "San Francisco Giants" },
+        { "player": "Adolis García", "date": "2023-04-22", "team": "Texas Rangers" },
+        { "player": "Shohei Ohtani", "date": "2024-09-19", "team": "Los Angeles Dodgers" }
+      ],
+      "notes": "Not 'first since 1918'. Elias: Bryant 2016-06-27 was the first in the modern era (ESPN: since 1900; MLB.com: since 1913). StatMuse complete game-level doubles/HR back to 1901 lists exactly these five. All 15 regular-season 3-HR boxes in 2026 have 0 doubles.",
+      "sources": [
+        "https://www.statmuse.com/mlb/ask/mlb-players-with-3-home-runs-and-2-doubles-in-a-game",
+        "https://www.mlb.com/news/kris-bryant-has-historic-3-homer-2-double-win-c186601452",
+        "https://www.espn.com/mlb/story/_/id/16568873/kris-bryant-chicago-cubs-bests-ernie-banks-3-home-run-game",
+        "https://www.mlb.com/news/matt-carpenter-makes-history-with-3-hrs-2-2bs-c286530588"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "3hr-triple",
+      "combo": "3 HR and a triple",
+      "match": { "homeRuns": 3, "triples": 1 },
+      "autoJoin": true,
+      "lastPlayer": "Kendrys Morales",
+      "lastDate": "2015-09-20",
+      "lastTeam": "Kansas City Royals",
+      "previous": { "player": "Ryan Braun", "date": "2012-04-30", "team": "Milwaukee Brewers" },
+      "countEver": 7,
+      "countScope": "since 1901",
+      "any2026": false,
+      "matches2026": [],
+      "occurrences": [
+        { "player": "Les Bell", "date": "1928-06-02", "team": "Boston Braves" },
+        { "player": "Tony Lazzeri", "date": "1936-05-24", "team": "New York Yankees" },
+        { "player": "Pat Seerey", "date": "1945-07-13", "team": "Cleveland Indians" },
+        { "player": "Wes Westrum", "date": "1950-06-24", "team": "New York Giants" },
+        { "player": "Fred Lynn", "date": "1975-06-18", "team": "Boston Red Sox" },
+        { "player": "Ryan Braun", "date": "2012-04-30", "team": "Milwaukee Brewers" },
+        { "player": "Kendrys Morales", "date": "2015-09-20", "team": "Kansas City Royals" }
+      ],
+      "notes": "StatMuse complete triples/HR back to 1901. MLB.com: Braun was first 3 HR + 3B since Lynn 1975. No 2026 3-HR game had a triple.",
+      "sources": [
+        "https://www.statmuse.com/mlb/ask/mlb-players-with-3-home-runs-and-1-triple-in-a-game",
+        "https://www.mlb.com/news/brewers-best-single-game-hitting-performances",
+        "https://thisdayinbaseball.com/giants-catcher-wes-westrum-hits-three-home-runs-and-a-triple-the-27-year-old-backstops-fifteen-total-bases-help-new-york-defeat-cincinnati-at-the-polo-grounds-12-2/"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "3hr-steal",
+      "combo": "3 HR and a stolen base",
+      "match": { "homeRuns": 3, "stolenBases": 1 },
+      "autoJoin": true,
+      "lastPlayer": "Shohei Ohtani",
+      "lastDate": "2024-09-19",
+      "lastTeam": "Los Angeles Dodgers",
+      "previous": { "player": "Paul Goldschmidt", "date": "2023-05-07", "team": "St. Louis Cardinals" },
+      "countEver": 21,
+      "countScope": "since 1901 (StatMuse named list)",
+      "any2026": false,
+      "matches2026": [],
+      "notes": "Ohtani 2024-09-19 is also the only 3 HR + 2 SB game (StatMuse complete SB/HR to 1901). No 2026 3-HR game had a steal. Named StatMuse list: Ohtani, Goldschmidt 2023-05-07, Trevor Story 2022-05-19, Byron Buxton 2017-08-27, Yoenis Céspedes 2015-08-21, plus 16 earlier.",
+      "sources": [
+        "https://www.statmuse.com/mlb/ask/mlb-players-with-3-home-runs-and-a-stolen-base-in-a-game",
+        "https://www.statmuse.com/mlb/ask/mlb-players-with-3-home-runs-and-2-steals-in-a-game",
+        "https://www.mlb.com/news/shohei-ohtani-reaches-50-homers-50-steals",
+        "https://www.espn.com/mlb/boxscore/_/gameId/401471528"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "3hr-2bb",
+      "combo": "3 HR and 2+ walks",
+      "match": { "homeRuns": 3, "walks": 2 },
+      "autoJoin": true,
+      "lastPlayer": "Alex Bregman",
+      "lastDate": "2026-08-12",
+      "lastTeam": "Chicago Cubs",
+      "previous": { "player": "Will Smith", "date": "2024-07-05", "team": "Los Angeles Dodgers" },
+      "countEver": 20,
+      "countScope": "since 1900 (Sarah Langs / Elias)",
+      "any2026": true,
+      "matches2026": [
+        {
+          "player": "Alex Bregman",
+          "date": "2026-08-12",
+          "team": "Chicago Cubs",
+          "opponent": "Washington Nationals",
+          "line": "3-3 | 3 HR, 2 BB, 7 RBI"
+        }
+      ],
+      "notes": "Langs: 20th player since 1900; 21st including postseason. First Cub on the list. Only 2026 3-HR game with 2+ BB (Raleigh had 1 BB). Catalog already has the Cubs-since-1900 headline.",
+      "sources": [
+        "https://www.nbcchicago.com/mlb/chicago-cubs/alex-bregman-makes-cubs-history-with-home-run-barrage-vs-nationals/3974656/",
+        "https://www.statmuse.com/mlb/ask/players-with-3-home-runs-and-2-walks-in-a-game"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "4hr",
+      "combo": "4 home runs",
+      "match": { "homeRuns": 4 },
+      "autoJoin": true,
+      "lastPlayer": "Kyle Schwarber",
+      "lastDate": "2025-08-28",
+      "lastTeam": "Philadelphia Phillies",
+      "previous": { "player": "Nick Kurtz", "date": "2025-07-25", "team": "Athletics" },
+      "countEver": 21,
+      "countScope": "MLB history (Wikipedia single-game HR leaders)",
+      "any2026": false,
+      "matches2026": [],
+      "notes": "2025 had three 4-HR games: Eugenio Suárez 2025-04-26 AZ, Nick Kurtz 2025-07-25 ATH, Kyle Schwarber 2025-08-28 PHI. Season high in 2026 is 3 HR (15 games, 13 players).",
+      "sources": [
+        "https://en.wikipedia.org/wiki/List_of_Major_League_Baseball_single-game_home_run_leaders",
+        "https://www.statmuse.com/mlb/ask/players-with-4-home-runs-in-a-game",
+        "https://www.statmuse.com/mlb/ask/most-home-runs-by-a-player-in-a-game-in-2026"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "6hits",
+      "combo": "6 hits",
+      "match": { "hits": 6 },
+      "autoJoin": true,
+      "lastPlayer": "Nick Kurtz",
+      "lastDate": "2025-07-25",
+      "lastTeam": "Athletics",
+      "previous": { "player": "Austin Wynns", "date": "2025-04-20", "team": "Cincinnati Reds" },
+      "countEver": null,
+      "countScope": "many since 1901; not fully counted here",
+      "any2026": false,
+      "matches2026": [],
+      "notes": "StatMuse: 15 players tied for most hits in a 2026 game, with 5. No 6-hit game through 2026-09-19. Last: Kurtz 6-for-6 (4 HR) 2025-07-25; Wynns 2025-04-20; Ohtani 2024-09-19.",
+      "sources": [
+        "https://www.statmuse.com/mlb/ask/players-who-had-6-hits-in-a-game",
+        "https://www.statmuse.com/mlb/ask/most-hits-by-a-player-in-a-game-in-2026"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "5xbh",
+      "combo": "5 extra-base hits",
+      "match": { "extraBaseHits": 5 },
+      "autoJoin": true,
+      "lastPlayer": "Nick Kurtz",
+      "lastDate": "2025-07-25",
+      "lastTeam": "Athletics",
+      "previous": { "player": "Shohei Ohtani", "date": "2024-09-19", "team": "Los Angeles Dodgers" },
+      "countEver": 16,
+      "countScope": "since 1901 (StatMuse: 16 players tied at 5 XBH)",
+      "any2026": false,
+      "matches2026": [],
+      "notes": "2026 season high is 4 XBH (Jac Caglianone 2026-08-08 KC vs CHC: 2 HR, 2 doubles). 5-XBH club includes Kurtz, Ohtani, Adolis García 2023-04-22, Luis Urías 2021-08-12, Dickerson, Carpenter, Bryant.",
+      "sources": [
+        "https://www.statmuse.com/mlb/ask/most-extra-base-hits-by-one-player-in-an-mlb-game",
+        "https://www.statmuse.com/mlb/ask/most-extra-base-hits-by-a-player-in-a-game-in-2026"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "cycle-steal",
+      "combo": "cycle and a stolen base",
+      "match": { "cycle": true, "stolenBases": 1 },
+      "autoJoin": true,
+      "lastPlayer": "Elly De La Cruz",
+      "lastDate": "2023-06-23",
+      "lastTeam": "Cincinnati Reds",
+      "previous": { "player": "Trea Turner", "date": "2021-06-30", "team": "Washington Nationals" },
+      "countEver": null,
+      "countScope": "not fully enumerated; last two verified via MLB game logs",
+      "any2026": false,
+      "matches2026": [],
+      "notes": "All four 2026 cycles had 0 SB (PCA, Harper, Peters, Bleday). Every cycle from 2021-09-19 through 2025-07-12 also 0 SB except Turner 2021-06-30 (2 SB) and Elly 2023-06-23 (1 SB). Athletic/Opta: Elly first with cycle + steal + 4 RBI in first six innings.",
+      "sources": [
+        "https://www.mlb.com/news/elly-de-la-cruz-hits-for-cycle",
+        "https://statsapi.mlb.com/api/v1/people/682829/stats?stats=gameLog&season=2023&group=hitting",
+        "https://en.wikipedia.org/wiki/List_of_Major_League_Baseball_players_to_hit_for_the_cycle"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "2hr-2sb",
+      "combo": "2 HR and 2 stolen bases",
+      "match": { "homeRuns": 2, "stolenBases": 2 },
+      "autoJoin": true,
+      "lastPlayer": "Jake McCarthy",
+      "lastDate": "2026-08-08",
+      "lastTeam": "Colorado Rockies",
+      "previous": { "player": "Ronald Acuña Jr.", "date": "2026-05-30", "team": "Atlanta Braves" },
+      "countEver": null,
+      "countScope": "dozens since 1901; do not publish a single all-time rank",
+      "any2026": true,
+      "matches2026": [
+        {
+          "player": "Ronald Acuña Jr.",
+          "date": "2026-05-30",
+          "team": "Atlanta Braves",
+          "opponent": "Cincinnati Reds",
+          "line": "2-4 | 2 HR, BB, 2 SB"
+        },
+        {
+          "player": "Jake McCarthy",
+          "date": "2026-08-08",
+          "team": "Colorado Rockies",
+          "opponent": "St. Louis Cardinals",
+          "line": "4-5 | 2 HR, 2 SB, 3 RBI, 4 R"
+        }
+      ],
+      "notes": "Acuña already cataloged as first Braves 2 HR / 2 SB since Ender Inciarte 2017. McCarthy is the latest MLB occurrence; previous MLB before 2026: Mickey Moniak 2025-09-14. Grant McAuley '23rd since 1898' conflicts with StatMuse — do not use.",
+      "sources": [
+        "https://www.statmuse.com/mlb/ask/mlb-players-with-2-home-runs-and-2-stolen-bases-in-the-same-game",
+        "https://www.baseball-reference.com/boxes/SLN/SLN202608080.shtml",
+        "https://www.baseball-reference.com/boxes/CIN/CIN202605300.shtml"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "reverse-cycle",
+      "combo": "reverse natural cycle (HR, 3B, 2B, 1B in order)",
+      "match": { "cycle": true },
+      "autoJoin": false,
+      "lastPlayer": "Pete Crow-Armstrong",
+      "lastDate": "2026-06-15",
+      "lastTeam": "Chicago Cubs",
+      "previous": { "player": "Rajai Davis", "date": "2016-07-02", "team": "Cleveland Indians" },
+      "countEver": 9,
+      "countScope": "modern era since 1900 (11 all-time including 1885-87)",
+      "any2026": true,
+      "matches2026": [
+        {
+          "player": "Pete Crow-Armstrong",
+          "date": "2026-06-15",
+          "team": "Chicago Cubs",
+          "opponent": "Colorado Rockies",
+          "line": "4-4 | HR, 3B, 2B, 1B (reverse cycle)"
+        }
+      ],
+      "occurrences": [
+        { "player": "Henry Larkin", "date": "1885", "team": "Philadelphia Athletics", "era": "AA" },
+        { "player": "Bid McPhee", "date": "1887", "team": "Cincinnati Red Stockings", "era": "AA" },
+        { "player": "Sam Mertes", "date": "1904", "team": "New York Giants" },
+        { "player": "Gee Walker", "date": "1937", "team": "Detroit Tigers" },
+        { "player": "Arky Vaughan", "date": "1939", "team": "Pittsburgh Pirates" },
+        { "player": "Jackie Robinson", "date": "1948", "team": "Brooklyn Dodgers" },
+        { "player": "Jim Fregosi", "date": "1968-05-20", "team": "California Angels" },
+        { "player": "Luke Scott", "date": "2006-07-28", "team": "Houston Astros" },
+        { "player": "Carlos Gómez", "date": "2008-05-07", "team": "Minnesota Twins" },
+        { "player": "Rajai Davis", "date": "2016-07-02", "team": "Cleveland Indians" },
+        { "player": "Pete Crow-Armstrong", "date": "2026-06-15", "team": "Chicago Cubs" }
+      ],
+      "notes": "Cannot detect order from box totals. Langs: 5th reverse cycle in the expansion era (since 1961). Already in the 2026 game catalog. Natural cycle last: Gary Matthews Jr. 2006-09-13 (14 modern era).",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hitting_for_the_cycle",
+        "https://en.wikipedia.org/wiki/List_of_Major_League_Baseball_players_to_hit_for_the_cycle",
+        "https://www.si.com/fannation/mlb/fastball/news/history-behind-cubs-pete-crow-armstrong-s-cycle-vs-rockies-pat3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "3hr-walkoff",
+      "combo": "3 HR including a walk-off",
+      "match": { "homeRuns": 3, "walkOff": true },
+      "autoJoin": false,
+      "lastPlayer": "Max Muncy",
+      "lastDate": "2026-04-10",
+      "lastTeam": "Los Angeles Dodgers",
+      "previous": { "player": "Jack Suwinski", "date": "2022-06-19", "team": "Pittsburgh Pirates" },
+      "countEver": 17,
+      "countScope": "Cybermetrics / Stathead walk-off 3-HR search, not every pre-play-by-play game",
+      "any2026": true,
+      "matches2026": [
+        {
+          "player": "Max Muncy",
+          "date": "2026-04-10",
+          "team": "Los Angeles Dodgers",
+          "opponent": "Texas Rangers",
+          "line": "4-5 | 3 HR including 9th-inning walk-off"
+        }
+      ],
+      "notes": "Cannot detect walk-off from HitLine totals. Elias: first Dodger 3-HR walk-off since Don Demeter 1959-04-21; first MLB since Suwinski 2022-06-19. Already in the 2026 game catalog. Cybermetrics listed 17 including Muncy.",
+      "sources": [
+        "https://www.mlb.com/news/max-muncy-hits-three-home-runs-dodgers-walk-off-rangers",
+        "https://cybermetric.blogspot.com/2026/04/players-who-hit-3-hrs-in-game-including.html"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "2hr-inning-slam",
+      "combo": "2 HR in one inning including a grand slam",
+      "match": { "homeRuns": 2, "sameInning": true, "grandSlam": true },
+      "autoJoin": false,
+      "lastPlayer": "Yordan Alvarez",
+      "lastDate": "2026-06-12",
+      "lastTeam": "Houston Astros",
+      "previous": { "player": "Kendrys Morales", "date": "2012-07-30", "team": "Los Angeles Angels" },
+      "countEver": 8,
+      "countScope": "slam + multi-run HR in the same inning (Sportradar)",
+      "any2026": true,
+      "matches2026": [
+        {
+          "player": "Yordan Alvarez",
+          "date": "2026-06-12",
+          "team": "Houston Astros",
+          "opponent": "Kansas City Royals",
+          "line": "3-5 | 2 HR in the 1st (2-run + grand slam), 6 RBI"
+        }
+      ],
+      "notes": "Alvarez was 2 HR, not 3 HR. Cannot detect inning/slam from HitLine totals. First ever slam + multi-run HR in the 1st inning. 8th with that mix in any inning; first since Morales 2012-07-30. Already in the 2026 game catalog.",
+      "sources": [
+        "https://apnews.com/article/yordan-alvarez-astros-homers-ad01c0a55c1b86ced154fb037a0e6a1c",
+        "https://www.nbcsports.com/mlb/news/astros-slugger-yordan-alvarez-becomes-1st-mlb-player-to-hit-grand-slam-multi-run-hr-in-1st-inning"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "10rbi",
+      "combo": "10+ RBI",
+      "match": { "rbi": 10 },
+      "autoJoin": true,
+      "lastPlayer": "Ryan O'Hearn",
+      "lastDate": "2026-07-07",
+      "lastTeam": "Pittsburgh Pirates",
+      "previous": { "player": "Shohei Ohtani", "date": "2024-09-19", "team": "Los Angeles Dodgers" },
+      "countEver": 17,
+      "countScope": "modern era since 1900 (MLB.com); Baseball-Almanac 18 including Wilbert Robinson 1892",
+      "any2026": true,
+      "matches2026": [
+        {
+          "player": "Ryan O'Hearn",
+          "date": "2026-07-07",
+          "team": "Pittsburgh Pirates",
+          "opponent": "Atlanta Braves",
+          "line": "4-5 | 3 HR, 10 RBI"
+        }
+      ],
+      "notes": "Rarer than a 4-HR game. First Pirates 10-RBI game. 3 HR were a grand slam and two 3-run shots. 0 doubles / 0 triples / 0 SB / 0 BB.",
+      "sources": [
+        "https://www.mlb.com/news/ryan-o-hearn-sets-career-high-for-rbis-in-a-game",
+        "https://www.baseball-almanac.com/recbooks/rb_rbi1.shtml"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "threeHrGames2026": [
+    { "player": "Max Muncy", "date": "2026-04-10", "team": "LAD", "opp": "TEX", "line": "4-5 | 3 HR, 3 RBI, 5 R", "ab": 5, "h": 4, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 3 },
+    { "player": "Andy Pages", "date": "2026-05-06", "team": "LAD", "opp": "HOU", "line": "3-5 | 3 HR, 6 RBI", "ab": 5, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 6 },
+    { "player": "Colt Keith", "date": "2026-06-15", "team": "DET", "opp": "HOU", "line": "3-4 | 3 HR, HBP, 6 RBI", "ab": 4, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 6 },
+    { "player": "Kyle Schwarber", "date": "2026-06-20", "team": "PHI", "opp": "NYM", "line": "4-5 | 3 HR, 6 RBI, 4 R", "ab": 5, "h": 4, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 6 },
+    { "player": "Junior Caminero", "date": "2026-06-25", "team": "TB", "opp": "KC", "line": "3-5 | 3 HR, 6 RBI", "ab": 5, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 6 },
+    { "player": "Hunter Goodman", "date": "2026-06-27", "team": "COL", "opp": "MIN", "line": "3-5 | 3 HR, 5 RBI", "ab": 5, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 5 },
+    { "player": "Dansby Swanson", "date": "2026-07-01", "team": "CHC", "opp": "SD", "line": "3-5 | 3 HR, 8 RBI, 4 R", "ab": 5, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 8 },
+    { "player": "Ryan O'Hearn", "date": "2026-07-07", "team": "PIT", "opp": "ATL", "line": "4-5 | 3 HR, 10 RBI", "ab": 5, "h": 4, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 10 },
+    { "player": "Hunter Goodman", "date": "2026-07-19", "team": "COL", "opp": "CIN", "line": "3-4 | 3 HR, 5 RBI", "ab": 4, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 5 },
+    { "player": "Alec Burleson", "date": "2026-08-03", "team": "STL", "opp": "NYY", "line": "3-5 | 3 HR, 6 RBI", "ab": 5, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 6 },
+    { "player": "Alex Bregman", "date": "2026-08-12", "team": "CHC", "opp": "WSH", "line": "3-3 | 3 HR, 2 BB, 7 RBI", "ab": 3, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 2, "sb": 0, "rbi": 7 },
+    { "player": "Joshua Báez", "date": "2026-08-15", "team": "STL", "opp": "CHC", "line": "3-4 | 3 HR, 5 RBI", "ab": 4, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 5 },
+    { "player": "Cal Raleigh", "date": "2026-08-24", "team": "SEA", "opp": "PHI", "line": "3-3 | 3 HR, BB, 4 RBI", "ab": 3, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 1, "sb": 0, "rbi": 4 },
+    { "player": "Pete Crow-Armstrong", "date": "2026-08-29", "team": "CHC", "opp": "CIN", "line": "4-6 | 3 HR, 6 RBI, 4 R", "ab": 6, "h": 4, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 6 },
+    { "player": "Alex Bregman", "date": "2026-08-31", "team": "CHC", "opp": "MIL", "line": "3-6 | 3 HR, 4 RBI", "ab": 6, "h": 3, "doubles": 0, "triples": 0, "hr": 3, "bb": 0, "sb": 0, "rbi": 4 }
+  ],
+  "notes": [
+    "Yordan Alvarez 2026-06-12 was 2 HR in the 1st inning (2-run + slam), not a 3-HR game.",
+    "13 unique players, 15 games. Goodman and Bregman each had two.",
+    "No 2026 3-HR game had a double, triple, or stolen base. Only Bregman 08-12 had 2+ walks."
+  ]
+}

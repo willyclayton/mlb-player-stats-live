@@ -97,6 +97,57 @@ export function rarity(stat: CrazyStat): number {
     case "career-first-30-30":
       score = 91;
       break;
+    case "franchise-first-40-40":
+      score = 98;
+      break;
+    case "franchise-first-50-hr":
+      score = 96;
+      break;
+    case "franchise-first-30-30":
+      score = 94;
+      break;
+    case "franchise-first-40-hr":
+      score = 91;
+      break;
+    case "franchise-since-40-40":
+      score = 94;
+      break;
+    case "franchise-since-50-hr":
+      score = 90;
+      break;
+    case "franchise-since-30-30":
+      score = 90;
+      break;
+    case "franchise-first-40-30":
+      score = 96;
+      break;
+    case "franchise-first-consecutive-30-30":
+      score = 93;
+      break;
+    case "franchise-since-40-30":
+      score = 90;
+      break;
+    case "franchise-since-40-hr":
+      score = 87;
+      break;
+    case "historic-game":
+      score = stat.stamp === "CLUB FIRST" || stat.stamp === "FIRST EVER" ? 100 : 97;
+      break;
+    case "historic-game-2":
+      score = 91;
+      break;
+    case "game-combo":
+      score = stat.stamp === "FIRST EVER" ? 100 : 97;
+      break;
+    case "game-combo-2":
+      score = 91;
+      break;
+    case "historic-season":
+      score = stat.stamp === "CLUB FIRST" ? 95 : stat.stamp === "CLUB RECORD" ? 92 : 90;
+      break;
+    case "historic-season-2":
+      score = 88;
+      break;
     case "career-first-strikeOuts":
       score = 88;
       break;

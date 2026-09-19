@@ -165,6 +165,59 @@ describe("crazy stat engine", () => {
     assert.equal(crazy.some((s) => s.id === "team-lead"), false);
   });
 
+  it("joins a Nationals 30-30 against the franchise last before 2026", () => {
+    const crazy = generateCrazyStats({
+      id: 1,
+      name: "CJ Abrams",
+      team: "Washington Nationals",
+      seasonHit: hit({
+        homeRuns: 30,
+        stolenBases: 30,
+        avg: 0.26,
+        obp: 0.33,
+        slg: 0.45,
+        ops: 0.78,
+        atBats: 520,
+      }),
+      hitGames: [],
+      pitchGames: [],
+    });
+    const since = crazy.find((s) => s.id === "franchise-since-30-30");
+    assert.ok(since);
+    assert.match(since!.body, /Alfonso Soriano \(2006\)/);
+    assert.equal(crazy.some((s) => s.id === "franchise-first-30-30"), false);
+  });
+
+  it("names the first Cubs 40-HR / 30-SB season and the 40-HR drought", () => {
+    const crazy = generateCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      seasonHit: hit({
+        homeRuns: 44,
+        stolenBases: 37,
+        avg: 0.28,
+        obp: 0.37,
+        slg: 0.57,
+        ops: 0.94,
+        atBats: 550,
+        games: 154,
+      }),
+      years: [{ year: 2025, hit: hit({ homeRuns: 31, stolenBases: 35, games: 150 }) }],
+      hitGames: [],
+      pitchGames: [],
+    });
+    const mix = crazy.find((s) => s.id === "franchise-first-40-30");
+    assert.ok(mix);
+    assert.match(mix!.headline, /First 40-HR \/ 30-SB season for the Cubs/);
+    assert.ok(crazy.some((s) => s.id === "franchise-since-40-hr"));
+    assert.ok(crazy.some((s) => s.id === "franchise-first-consecutive-30-30"));
+    assert.equal(crazy.some((s) => s.id === "franchise-since-30-30"), false);
+    const lefty = crazy.find((s) => s.id === "historic-season");
+    assert.ok(lefty);
+    assert.match(lefty!.headline, /Cubs lefty/);
+    assert.match(lefty!.body, /Billy Williams/);
+  });
+
   it("does not emit a restated slash team-lead", () => {
     const crazy = generateCrazyStats({
       id: 1,
@@ -230,6 +283,7 @@ describe("crazy stat engine", () => {
   it("names consecutive 40-HR seasons", () => {
     const crazy = generateCrazyStats({
       name: "Junior Caminero",
+      team: "Tampa Bay Rays",
       seasonHit: hit({ homeRuns: 41, games: 140 }),
       hitGames: [],
       pitchGames: [],
@@ -238,10 +292,14 @@ describe("crazy stat engine", () => {
         { year: 2024, hit: hit({ homeRuns: 22, games: 150 }) },
       ],
     });
+    const club = crazy.find((s) => s.id === "historic-season");
+    assert.ok(club);
+    assert.match(club!.headline, /First consecutive 40-HR seasons for the Rays/);
     const streak = crazy.find((s) => s.id === "consecutive-40-hr");
     assert.ok(streak);
     assert.equal(streak!.headline, "41 HR");
     assert.match(streak!.body, /2 straight 40-HR seasons/);
+    assert.ok((club!.score ?? 0) > (streak!.score ?? 0));
   });
 
   it("names a closer line", () => {
@@ -263,6 +321,27 @@ describe("crazy stat engine", () => {
     assert.ok(closer);
     assert.match(closer!.headline, /37 SV, 1\.12 ERA/);
     assert.match(closer!.body, /119 K/);
+  });
+
+  it("names Misiorowski's Brewers ERA record", () => {
+    const crazy = generateCrazyStats({
+      name: "Jacob Misiorowski",
+      team: "Milwaukee Brewers",
+      seasonPitch: {
+        ...emptyPitch(),
+        innings: 166 + 1 / 3,
+        era: 1.89,
+        whip: 0.81,
+        strikeOuts: 243,
+        gamesStarted: 27,
+      },
+      hitGames: [],
+      pitchGames: [],
+    });
+    const era = crazy.find((s) => s.id === "historic-season");
+    assert.ok(era);
+    assert.match(era!.headline, /Lowest qualified Brewers ERA/);
+    assert.match(era!.body, /Mike Caldwell/);
   });
 
   it("does not invent a 20-20 club", () => {
@@ -508,6 +587,53 @@ describe("game crazy stat engine", () => {
     assert.equal(crazy.some((s) => s.id === "last-hr"), false);
   });
 
+  it("names the reverse cycle as a Cubs first", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      opponent: "Colorado Rockies",
+      isHome: true,
+      date: "2026-06-15",
+      hit: hit({
+        atBats: 4,
+        plateAppearances: 4,
+        hits: 4,
+        doubles: 1,
+        triples: 1,
+        homeRuns: 1,
+      }),
+    });
+    const hist = crazy.find((s) => s.id === "historic-game");
+    assert.ok(hist);
+    assert.match(hist!.headline, /reverse natural cycle/i);
+    assert.equal(hist!.stamp, "CLUB FIRST");
+    assert.equal(crazy[0]?.id, "historic-game");
+  });
+
+  it("names a 3 HR + 2 doubles night as first since Ohtani 2024", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      opponent: "Mets",
+      isHome: true,
+      date: "2026-09-19",
+      hit: hit({
+        atBats: 5,
+        plateAppearances: 5,
+        hits: 5,
+        doubles: 2,
+        homeRuns: 3,
+        rbi: 6,
+        totalBases: 16,
+      }),
+    });
+    const combo = crazy.find((s) => s.id === "game-combo");
+    assert.ok(combo);
+    assert.match(combo!.headline, /3 HR and 2\+ doubles/);
+    assert.match(combo!.body, /Shohei Ohtani/);
+    assert.match(combo!.body, /2024/);
+  });
+
   it("names a multi-homer night and the last time it happened", () => {
     const crazy = generateGameCrazyStats({
       name: "Shohei Ohtani",
@@ -583,6 +709,26 @@ describe("game crazy stat engine", () => {
     assert.match(feat!.headline, /5 hits and 1 SB/);
     assert.match(feat!.body, /First since/);
     assert.match(feat!.body, /2025/);
+  });
+
+  it("names the last Cubs cycle when someone hits one", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
+      opponent: "Rockies",
+      isHome: true,
+      date: "2026-06-15",
+      hit: hit({
+        atBats: 5,
+        hits: 4,
+        doubles: 1,
+        triples: 1,
+        homeRuns: 1,
+      }),
+    });
+    const cycle = crazy.find((s) => s.id === "game-cycle");
+    assert.ok(cycle);
+    assert.match(cycle!.body, /Carson Kelly/);
   });
 
   it("names the last home run instead of restating the box", () => {
