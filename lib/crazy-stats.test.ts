@@ -497,19 +497,19 @@ describe("game crazy stat engine", () => {
     assert.match(crazy[0]!.headline, /0-for-4, 2 K @ Astros/);
   });
 
-  it("keeps the teammate as its own take, not stacked on the 0-fer", () => {
+  it("keeps a quiet game on this player's 0-fer, not a teammate's line", () => {
     const crazy = generateGameCrazyStats({
-      name: "Michael Harris II",
-      team: "Atlanta Braves",
-      opponent: "Houston Astros",
+      name: "Carter Jensen",
+      team: "Kansas City Royals",
+      opponent: "Pittsburgh Pirates",
       isHome: false,
       date: "2026-09-18",
       hit: ohferHit(),
       mates: [
         {
           id: 2,
-          name: "Matt Olson",
-          hit: hit({ atBats: 5, plateAppearances: 5, hits: 3, homeRuns: 1, rbi: 2 }),
+          name: "Vinnie Pasquantino",
+          hit: hit({ atBats: 4, plateAppearances: 4, hits: 2 }),
         },
       ],
       hitGames: [
@@ -529,14 +529,10 @@ describe("game crazy stat engine", () => {
         }),
       ],
     });
-    const mate = crazy.find((s) => s.id === "game-mate");
-    const ohfer = crazy.find((s) => s.id === "game-ohfer");
-    assert.ok(mate);
-    assert.equal(mate!.headline, "Olson went 3-for-5");
-    assert.equal(mate!.body, "");
-    assert.ok(ohfer);
-    assert.equal(/Olson/.test(ohfer!.body), false);
-    assert.ok((mate!.score ?? 0) > (ohfer!.score ?? 0));
+    assert.equal(crazy[0]?.id, "game-ohfer");
+    assert.match(crazy[0]!.headline, /0-for-4/);
+    assert.equal(crazy.some((s) => s.id === "game-mate"), false);
+    assert.equal(/Pasquantino/.test(`${crazy[0]!.headline} ${crazy[0]!.body}`), false);
   });
 
   it("says nobody had a hit when the team is 0", () => {

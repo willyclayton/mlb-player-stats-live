@@ -896,9 +896,6 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
   if (quiet && hit) {
     const teamShut = mates.length > 0 && withHits.length === 0;
     const prevMulti = lastMatch(logs, (g) => g.hits >= 2, input.date);
-    const bestMate = [...mates]
-      .filter((m) => (m.hit?.hits ?? 0) >= 2)
-      .sort((a, b) => (b.hit?.hits ?? 0) - (a.hit?.hits ?? 0))[0];
 
     if (teamShut) {
       stats.push(
@@ -925,20 +922,6 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
             { label: "AB", value: String(hit.atBats) },
             { label: "K", value: String(hit.strikeOuts) },
           ],
-        }),
-      );
-    }
-
-    if (bestMate?.hit && !teamShut) {
-      stats.push(
-        take({
-          id: "game-mate",
-          score: 34,
-          stamp: "BOX",
-          category: "heater",
-          headline: `${lastName(bestMate.name)} went ${bestMate.hit.hits}-for-${bestMate.hit.atBats}`,
-          body: "",
-          receipts: [{ label: "H", value: String(bestMate.hit.hits) }],
         }),
       );
     }
