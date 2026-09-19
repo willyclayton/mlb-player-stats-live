@@ -120,5 +120,7 @@ describe("Will's A/B playbook", () => {
     assert.ok(rarity(stat("career-first-30-30")) > rarity(stat("club-20-20", { stamp: "30-30" })));
     assert.ok(rarity(stat("game-hr-sb")) > rarity(stat("game-hr", { receipts: [{ label: "HR", value: "2" }] })));
     assert.ok(rarity(stat("game-ohfer")) > rarity(stat("game-dnp")));
+    assert.ok(rarity(stat("mlb-lead-avg")) > rarity(stat("career-high-triples")));
+    assert.ok(rarity(stat("mlb-lead-rbi")) > rarity(stat("career-high-homeRuns")));
   });
 });

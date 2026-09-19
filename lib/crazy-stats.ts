@@ -219,7 +219,7 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
       stats.push(
         take({
           id: "mlb-lead-avg",
-          score: 84,
+          score: 87,
           stamp: "MLB AVG",
           category: "heater",
           headline: `${fmtAvg(hit.avg)}, MLB batting lead`,
@@ -232,7 +232,7 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
       stats.push(
         take({
           id: "mlb-lead-rbi",
-          score: 82,
+          score: 89,
           stamp: "MLB RBI",
           category: "power",
           headline: `${hit.rbi} RBI, MLB lead`,
@@ -245,7 +245,7 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
       stats.push(
         take({
           id: "mlb-lead-stolenBases",
-          score: 80,
+          score: 85,
           stamp: "MLB SB",
           category: "speed",
           headline: `${hit.stolenBases} SB, MLB lead`,
@@ -258,7 +258,7 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
       stats.push(
         take({
           id: "mlb-lead-triples",
-          score: 79,
+          score: 85,
           stamp: "MLB 3B",
           category: "speed",
           headline: `${hit.triples} triples, MLB lead`,

@@ -107,16 +107,16 @@ export function rarity(stat: CrazyStat): number {
       score = 90;
       break;
     case "mlb-lead-avg":
-      score = 84;
+      score = 87;
       break;
     case "mlb-lead-rbi":
-      score = 82;
+      score = 89;
       break;
     case "mlb-lead-stolenBases":
-      score = 80;
+      score = 85;
       break;
     case "mlb-lead-triples":
-      score = 79;
+      score = 85;
       break;
     case "consecutive-40-hr":
       score = 83;
