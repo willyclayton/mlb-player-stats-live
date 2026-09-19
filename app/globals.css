@@ -818,12 +818,6 @@ html[data-names="full"] .score-teams {
   overflow-wrap: anywhere;
 }
 
-.judge-stat {
-  flex: 1;
-  cursor: default;
-  pointer-events: none;
-}
-
 .judge-actions {
   display: flex;
   gap: 10px;
@@ -868,6 +862,14 @@ html[data-names="full"] .score-teams {
 .judge-card:active .judge-note,
 .judge-card:active .judge-who {
   color: inherit;
+}
+
+.judge-card.judge-stat {
+  flex: 1;
+  cursor: default;
+  pointer-events: none;
+  justify-content: flex-start;
+  padding-top: 28px;
 }
 
 .judge-who {
