@@ -570,6 +570,284 @@
         "https://apnews.com/article/phillies-jesus-luzardo-shutout-5d33a1f4cafecf959b56a0050e808fed"
       ],
       "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Joshua Báez",
+      "team": "St. Louis Cardinals",
+      "opponent": "Chicago Cubs",
+      "date": "2026-08-15",
+      "line": "3-4 | 3 HR in first 3 AB (first pitch of debut), 5 RBI, 3 R",
+      "headline": "First player ever with 3 homers in an MLB debut",
+      "previous": null,
+      "scope": "MLB",
+      "notes": "Homered in each of his first three career at-bats, also a first. 9th player with 2 HR in his first regular-season game. 2nd player since 1900 to homer in his first two career at-bats in one game, joining Bob Nieman (St. Louis Browns, 1951-09-14). 33rd player to homer on his first career pitch. First Cardinals 3-HR game since Nolan Arenado 2022-07-01 (short window; the debut mark is the historic one).",
+      "sources": [
+        "https://www.mlb.com/news/joshua-baez-mlb-debut",
+        "https://www.mlb.com/news/joshua-baez-mlb-debut-three-homers-stats-facts",
+        "https://apnews.com/article/cardinals-joshua-baez-debut-home-runs-0b0e9a1b40e5a03155d9fad6cb8e8758",
+        "https://www.baseball-reference.com/boxes/CHN/CHN202608150.shtml",
+        "https://statsapi.mlb.com/api/v1/game/824644/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Joshua Báez",
+      "team": "St. Louis Cardinals",
+      "opponent": "Chicago Cubs",
+      "date": "2026-08-15",
+      "line": "HR on the first pitch he saw, 449 ft",
+      "headline": "First Cardinals position player to homer on his first pitch since Chris Richard, 2000",
+      "previous": { "player": "Chris Richard", "date": "2000-07-17", "team": "St. Louis Cardinals" },
+      "scope": "franchise",
+      "notes": "MLB.com stats page also: first Cardinals player (any position) to homer on the first pitch of his first career at-bat since Adam Wainwright 2006-05-24. Richard is the position-player first-since from the debut recap.",
+      "sources": [
+        "https://www.mlb.com/news/joshua-baez-mlb-debut",
+        "https://www.mlb.com/news/joshua-baez-mlb-debut-three-homers-stats-facts"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Ryan O'Hearn",
+      "team": "Pittsburgh Pirates",
+      "opponent": "Atlanta Braves",
+      "date": "2026-07-07",
+      "line": "4-5 | 3 HR (grand slam + two 3-run), 10 RBI, 3 R",
+      "headline": "First Pirate ever with 10 RBI in a game",
+      "previous": { "player": "Johnny Rizzo (9 RBI)", "date": "1939-05-30", "team": "Pittsburgh Pirates" },
+      "scope": "franchise",
+      "notes": "Broke the club record of 9 RBI set by Rizzo vs STL. 17th player in the modern era (since 1900) with 10+ RBI in a game; first since Shohei Ohtani 2024-09-19 (too short for an MLB first-since headline). 11th with 3 HR and 10 RBI in a game since RBI became official in 1920. Helmet to Cooperstown. Bid for a 4th HR ended with a 9th-inning single off infielder Jorge Mateo.",
+      "sources": [
+        "https://www.mlb.com/news/ryan-o-hearn-sets-career-high-for-rbis-in-a-game",
+        "https://www.espn.com/mlb/story/_/id/49301778/ryan-ohearn-sets-pirates-record-10-rbis-braves",
+        "https://www.nbcsports.com/mlb/news/pirates-ryan-ohearn-sets-club-record-with-10-rbis-during-3-homer-night-vs-braves",
+        "https://statsapi.mlb.com/api/v1/game/823361/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Payton Tolle",
+      "team": "Boston Red Sox",
+      "opponent": "Kansas City Royals",
+      "date": "2026-09-13",
+      "line": "Immaculate 1st (9 pitches, 9 strikes, 3 K); 6 IP, 4 H, 0 ER, 1 BB, 7 K",
+      "headline": "First Red Sox to open a game with an immaculate inning since Pedro Martínez, 2002",
+      "previous": { "player": "Pedro Martínez", "date": "2002-05-18", "team": "Boston Red Sox" },
+      "scope": "franchise",
+      "notes": "K'd Nick Loftin (called), Bobby Witt Jr. (swinging), Jac Caglianone (swinging). 8th immaculate inning in Red Sox history; 2nd in the first inning. Most recent Red Sox immaculate in any inning: Chris Sale 2021-08-26 vs MIN (5-year window; skip that first-since). Rain-delayed Fenway start, like Martínez vs SEA.",
+      "sources": [
+        "https://www.espn.com/mlb/story/_/id/49932782/red-sox-payton-tolle-opens-start-immaculate-inning",
+        "https://www.boston.com/sports/boston-red-sox/2026/09/13/payton-tolle-boston-red-sox-fenway-park-immaculate-inning-strikeout-mlb-baseball/",
+        "https://www.baseball-almanac.com/feats/feats17.shtml",
+        "https://statsapi.mlb.com/api/v1/game/824708/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Taj Bradley",
+      "team": "Minnesota Twins",
+      "opponent": "Athletics",
+      "date": "2026-08-25",
+      "line": "Immaculate 5th (Cortes, Serven, Bolte); 6.2 IP, 7 H, 4 ER, 1 BB, 11 K",
+      "headline": "First immaculate inning in Twins history",
+      "previous": null,
+      "scope": "franchise",
+      "notes": "MLB.com: first on record in Twins history. Tied a career-high 11 K. Rangers then stood alone as the only current club without an immaculate inning. Twins lost 4-2 at Sutter Health Park.",
+      "sources": [
+        "https://www.mlb.com/news/taj-bradley-has-first-immaculate-inning-on-record-in-twins-history",
+        "https://www.si.com/mlb/twins/onsi/taj-bradley-does-something-no-twins-pitcher-has-ever-done-before",
+        "https://www.baseball-almanac.com/feats/feats17.shtml",
+        "https://statsapi.mlb.com/api/v1/game/824962/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Michael Soroka",
+      "team": "Arizona Diamondbacks",
+      "opponent": "Detroit Tigers",
+      "date": "2026-03-30",
+      "line": "Immaculate 5th (Báez, Carpenter, Torres); 5 IP, 4 H, 0 ER, 1 BB, 10 K",
+      "headline": "First Diamondbacks immaculate inning since Wade Miley, 2012",
+      "previous": { "player": "Wade Miley", "date": "2012-10-01", "team": "Arizona Diamondbacks" },
+      "scope": "franchise",
+      "notes": "4th in franchise history (Randy Johnson 2001-09-02, Byung-Hyun Kim 2002-05-11, Miley 2012-10-01). First D-backs pitcher to throw one in his debut start with the club. Most K by a pitcher in a Diamondbacks debut, passing Johnson's 9 in 1999. AZ Central misdated Miley as 2012-04-25; Baseball Almanac, Wikipedia, and MLB video use 2012-10-01 vs COL.",
+      "sources": [
+        "https://www.mlb.com/news/michael-soroka-pitches-immaculate-inning-in-d-backs-home-opening-win",
+        "https://www.espn.com/mlb/story/_/id/48353238/soroka-throws-immaculate-5th-inning-diamondbacks-debut",
+        "https://www.baseball-almanac.com/feats/feats17.shtml",
+        "https://statsapi.mlb.com/api/v1/game/825108/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "opponent": "Chicago White Sox",
+      "date": "2026-08-17",
+      "line": "4-5 | 2 HR (leadoff + 10th-inning walk-off), 2B, BB, SB, 3 RBI",
+      "headline": "First Cubs player with a leadoff and walk-off homer in the same game",
+      "previous": null,
+      "scope": "franchise",
+      "notes": "First-pitch leadoff HR off Luis Castillo; 2-run walk-off off Hagen Smith in the 10th. Also locked a second straight 30-30 season. ESPN: first time in franchise history.",
+      "sources": [
+        "https://www.mlb.com/news/pete-crow-armstrong-records-second-straight-30-30-season",
+        "https://www.espn.com/mlb/story/_/id/49645439/pete-crow-armstrong-two-homers-fuel-chicago-cubs-victory",
+        "https://apnews.com/article/white-sox-cubs-score-dcb33123184bdc4eae2671beacc5d4c8",
+        "https://statsapi.mlb.com/api/v1/game/824641/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Pete Crow-Armstrong",
+      "team": "Chicago Cubs",
+      "opponent": "Chicago White Sox",
+      "date": "2026-08-17",
+      "line": "Leadoff HR and 10th-inning walk-off HR",
+      "headline": "First MLB leadoff and walk-off homer since Chris Young, 2010",
+      "previous": { "player": "Chris Young", "date": "2010-08-07", "team": "Arizona Diamondbacks" },
+      "scope": "MLB",
+      "notes": "Elias: 6th player ever. Prior: Vic Power 1957-05-07, Darin Erstad 2000-06-25, Reed Johnson 2003-06-15, Ian Kinsler 2009-07-19, Young 2010-08-07. Elias excludes Billy Hamilton 1893 (HR came in the top of the 10th). Randy Arozarena did it five days later.",
+      "sources": [
+        "https://www.mlb.com/news/players-with-a-leadoff-and-walk-off-home-run-in-the-same-game",
+        "https://www.espn.com/mlb/story/_/id/49645439/pete-crow-armstrong-two-homers-fuel-chicago-cubs-victory",
+        "https://www.mlb.com/news/pete-crow-armstrong-records-second-straight-30-30-season"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Randy Arozarena",
+      "team": "Seattle Mariners",
+      "opponent": "Chicago Cubs",
+      "date": "2026-08-22",
+      "line": "3-4 | 2 HR (first-pitch leadoff + 9th-inning walk-off), BB, 3 RBI",
+      "headline": "First Mariners player with a leadoff and walk-off homer in the same game",
+      "previous": null,
+      "scope": "franchise",
+      "notes": "7th MLB player ever; 5 days after PCA. Sarah Langs: 3rd with a first-pitch leadoff HR and a walk-off HR in the same game (Vic Power 1957, PCA 2026-08-17). Skip the MLB first-since (same week). Also robbed a homer from Miguel Amaya.",
+      "sources": [
+        "https://www.mlb.com/news/randy-arozarena-hits-2-home-runs-including-walk-off",
+        "https://www.cbssports.com/mlb/news/randy-arozarena-mariners-first-pitch-home-run-walk-off/",
+        "https://sports.mynorthwest.com/mlb/seattle-mariners/randy-arozarena-achieves-rare-feat-in-seattle-mariners-walkoff-win",
+        "https://statsapi.mlb.com/api/v1/game/823100/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Austin Wells",
+      "team": "New York Yankees",
+      "opponent": "Boston Red Sox",
+      "date": "2026-08-30",
+      "line": "2-2 | 2 HR in the 8th (PH in 6th), 5 RBI",
+      "headline": "First player ever to pinch-hit, then homer twice in one inning",
+      "previous": null,
+      "scope": "MLB",
+      "notes": "OptaSTATS / Wikipedia 2026 season page. Entered as a PH for Ali Sánchez in the 6th (sac fly), then homered off Jovani Morán and infielder Andruw Monasterio (49.8 mph slider) in a 9-run 8th. First Yankee with 2 HR in an inning since Gleyber Torres 2022-09-21 (too short). 6th Yankee / 7th instance.",
+      "sources": [
+        "https://www.foxsports.com/articles/mlb/austin-wells-homers-twice-in-9run-eighth-heliot-ramos-homers-in-fifth-as-yankees-rout-red-sox-161",
+        "https://en.wikipedia.org/wiki/2026_Major_League_Baseball_season",
+        "https://statsapi.mlb.com/api/v1/game/823502/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Braden Montgomery",
+      "team": "Chicago White Sox",
+      "opponent": "Atlanta Braves",
+      "date": "2026-06-09",
+      "line": "2-5 | RBI 1B, 2-run walk-off HR in the 10th (MLB debut)",
+      "headline": "First walk-off homer in an MLB debut since Carlos Pérez, 2015",
+      "previous": { "player": "Carlos Pérez", "date": "2015-05-05", "team": "Los Angeles Angels" },
+      "scope": "MLB",
+      "notes": "Elias: 5th player ever. Prior: Billy Parker 1971, Josh Bard 2002, Miguel Cabrera 2003-06-20, Pérez 2015-05-05. Called up from Triple-A Charlotte the same day. Walk-off off Raisel Iglesias, 343 ft.",
+      "sources": [
+        "https://www.mlb.com/news/braden-montgomery-hits-walk-off-home-run-in-mlb-debut",
+        "https://www.mlb.com/news/players-with-walk-off-home-runs-in-mlb-debut",
+        "https://www.espn.com/mlb/recap/_/gameId/401815689",
+        "https://apnews.com/article/braves-white-sox-score-braden-montgomery-e1b0cf230afcc7e1bf791d5ed016cece",
+        "https://statsapi.mlb.com/api/v1/game/824591/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Alimber Santa",
+      "team": "Houston Astros",
+      "opponent": "Texas Rangers",
+      "date": "2026-05-25",
+      "line": "2 IP, 0 H, 0 ER, 0 BB, 1 K (MLB debut; combined no-hitter)",
+      "headline": "First pitcher since 1900 to appear in a no-hitter in his MLB debut",
+      "previous": { "player": "Bumpus Jones", "date": "1892-10-15", "team": "Cincinnati Reds" },
+      "scope": "MLB",
+      "notes": "Elias via ESPN/MLB.com. Jones threw a solo no-hitter in his 1892 debut. Santa closed the Imai/Okert/Santa combined no-hitter with two perfect innings. The no-hitter itself is already cataloged; this is the debut-appearance first.",
+      "sources": [
+        "https://www.mlb.com/news/alimber-santa-closes-out-astros-no-hitter-in-mlb-debut",
+        "https://www.espn.com/mlb/story/_/id/48877299/astros-starter-tatsuya-imai-2-relievers-throw-combined-no-hitter-vs-rangers",
+        "https://statsapi.mlb.com/api/v1/game/822899/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Shea Langeliers",
+      "team": "Athletics",
+      "opponent": "Chicago Cubs",
+      "date": "2026-06-04",
+      "line": "2-4 | 2 HR (over the fence + inside-the-park), 3 RBI",
+      "headline": "First A's catcher with an inside-the-park homer since Terry Steinbach, 1996",
+      "previous": { "player": "Terry Steinbach", "date": "1996-09-26", "team": "Oakland Athletics" },
+      "scope": "franchise",
+      "notes": "Elias via MLB.com: 15th A's multi-HR game including an inside-the-parker; 5th in the division era (Jackson 1969, Bando 1973, Williams 1975, Butler 2025-07-08, Langeliers). 8th such game at Wrigley Field, first since Ryne Sandberg 1991-07-27. A's lost 7-6 walk-off. Catcher-primary first-since is the long-window headline; Butler 2025 is an OF, so skip as too short for the generic ITP+HR club mark.",
+      "sources": [
+        "https://www.mlb.com/news/shea-langeliers-hits-inside-the-park-home-run-in-a-s-loss-to-cubs",
+        "https://statsapi.mlb.com/api/v1/game/824672/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Hunter Goodman",
+      "team": "Colorado Rockies",
+      "opponent": "Cincinnati Reds",
+      "date": "2026-07-19",
+      "line": "3-4 | 3 HR, 5 RBI, 3 R",
+      "headline": "First Rockies player with two 3-HR games in a season",
+      "previous": null,
+      "scope": "franchise",
+      "notes": "Second 3-HR game of 2026 (also 2026-06-27 at MIN). Larry Walker (3 career), Todd Helton, and Carlos González had multiple 3-HR games but never two in one season. Rockies lost 9-6. Season-mark completed in this game.",
+      "sources": [
+        "https://www.mlb.com/news/hunter-goodman-hits-3-home-runs-in-rockies-loss-to-reds",
+        "https://www.espn.com/mlb/story/_/id/49405569/hunter-goodman-becomes-first-rockies-player-2-three-homer-games-same-season",
+        "https://statsapi.mlb.com/api/v1/game/824330/boxscore"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Milwaukee Brewers",
+      "team": "Milwaukee Brewers",
+      "opponent": "Seattle Mariners",
+      "date": "2026-08-18",
+      "line": "22-0 shutout; 22 H; 3-run HR from Yelich, Hamilton, Lara",
+      "headline": "Tied the modern-era record for largest shutout, 22-0",
+      "previous": { "player": "Cleveland Indians", "date": "2004-08-31", "team": "Cleveland Indians" },
+      "scope": "MLB",
+      "notes": "Since 1901 the only other 22-0 wins: Pittsburgh at Chicago Cubs 1975-09-16 and Cleveland at Yankees 2004-08-31. Matched a Brewers franchise record for runs in a game. Kyle Harrison 5 IP, 0 ER, 8 K in the start.",
+      "sources": [
+        "https://apnews.com/article/mariners-brewers-score-f0a01e73ee40298a59e63f02ac6916a8",
+        "https://www.espn.com/mlb/recap/_/gameId/401816583",
+        "https://www.baseball-reference.com/boxes/MIL/MIL202608180.shtml"
+      ],
+      "confidence": "high"
     }
   ],
   "skippedNotHistoric": [
@@ -600,15 +878,88 @@
       "who": "Bobby Witt Jr.",
       "fact": "3 hits and a steal @ Nationals, Jun 16",
       "reason": "Not a historic long-window feat."
+    },
+    {
+      "who": "Elly De La Cruz",
+      "fact": "4-6 | HR, 2B same night as Bleday's cycle, Aug 22",
+      "reason": "Triple shy of a cycle. Would have been first game since 1900 with two cycles — already noted on the Bleday fact. Incomplete feat; do not catalog as a first.",
+      "sources": [
+        "https://www.mlb.com/news/jj-bleday-hits-for-cycle",
+        "https://statsapi.mlb.com/api/v1/game/825044/boxscore"
+      ]
+    },
+    {
+      "who": "Andy Pages",
+      "fact": "3 HR, 6 RBI at HOU, May 6",
+      "reason": "First Dodger 3-HR since Muncy 2026-04-10 (26 days). First Dodger with 3 HR and 6 RBI since Ohtani 2024-09 vs MIA — prior-year window. Skip.",
+      "sources": [
+        "https://www.mlb.com/news/andy-pages-hits-three-home-runs-in-dodgers-win-vs-astros",
+        "https://www.espn.com/mlb/story/_/id/48696685/andy-pages-3-hrs-6-rbis-helps-dodgers-wallop-astros"
+      ]
+    },
+    {
+      "who": "Junior Caminero",
+      "fact": "3 HR, 6 RBI vs KC, Jun 25",
+      "reason": "8th Rays 3-HR game; first career 3-HR. No long-window franchise first-since sourced (franchise has had several).",
+      "sources": ["https://www.mlb.com/news/junior-caminero-hits-three-home-runs-in-rays-win-vs-royals"]
+    },
+    {
+      "who": "Jakob Marsee",
+      "fact": "4 SB vs CIN, Apr 7",
+      "reason": "Career high; tied Marlins franchise record rather than setting a first. Not a club first or long first-since.",
+      "sources": ["https://www.mlb.com/marlins/video/jakob-marsee-snags-a-career-high-four-stolen-bases"]
+    },
+    {
+      "who": "Spencer Steer",
+      "fact": "HR + inside-the-park HR at COL, Jul 17",
+      "reason": "Confirmed 2-HR night including an ITP. No sourced long-window franchise/MLB first-since.",
+      "sources": ["https://www.nytimes.com/athletic/7453803/2026/07/18/spencer-steer-reds-itp-hr-2-home-runs/"]
+    },
+    {
+      "who": "Jung Hoo Lee",
+      "fact": "5-6 at COL, May 31",
+      "reason": "First Korean-born MLB player with 5 hits (Korean press). Nationality first, not a Giants/MLB long-window game feat for this catalog.",
+      "sources": ["https://www.starnewskorea.com/en/sports/2026/06/01/2026060108081649184"]
+    },
+    {
+      "who": "Justin Martinez",
+      "fact": "Immaculate 6th vs TEX, Sep 11",
+      "reason": "Second D-backs immaculate of 2026 after Soroka Mar 30. Same-season first-since; skip.",
+      "sources": ["https://www.baseball-almanac.com/feats/feats17.shtml"]
+    },
+    {
+      "who": "Gavin Williams",
+      "fact": "Immaculate 4th vs MIN, Jul 23",
+      "reason": "No sourced Guardians club-first or 7+ year first-since.",
+      "sources": ["https://www.baseball-almanac.com/feats/feats17.shtml"]
+    },
+    {
+      "who": "Chase DeLauter / José Fernández",
+      "fact": "2 HR in MLB debut, Mar 26 / Mar 31",
+      "reason": "7th and 8th players to do it. Rare but not a first, and two in one week. Báez's 3-HR debut is the historic debut-HR mark.",
+      "sources": ["https://en.wikipedia.org/wiki/2026_Major_League_Baseball_season"]
+    },
+    {
+      "who": "Pittsburgh Pirates",
+      "fact": "7 consecutive walks in the 2nd vs CIN, May 2",
+      "reason": "Tied the MLB record last done 1983-05-25 (also vs Atlanta pitching to Pittsburgh) and 1909-08-28. Historic, but a team walk sequence with no single-player hero for a live box join. Left out of facts[].",
+      "sources": [
+        "https://www.mlb.com/news/reds-walk-seven-consecutive-pirates-batters",
+        "https://apnews.com/article/reds-pirates-seven-walks-mlb-record-007a6ec25cbceb1154a46b5922ab80b8"
+      ]
     }
   ],
   "searchedNotFound": [
-    "No 4-HR games in 2026 through Sep 19 (StatMuse: season high is 3 HR, 13 players).",
+    "No 4-HR games in 2026 through Sep 19 (MLB.com four-HR history page still ends with Schwarber 2025-08-28 / Kurtz 2025-07-25; StatMuse season high is 3 HR).",
     "No 3 HR + 2 doubles games found in 2026; listed 3-HR boxes all show 0 doubles.",
-    "No sourced 6-hit games in 2026.",
-    "Payton Tolle immaculate 1st inning vs Royals ~Sep 13 2026 mentioned in search snippets; first-since not verified — leave out.",
-    "Andy Pages 3 HR 2026-05-06 is first Dodger 3-HR since Muncy 2026-04-10 (too short a window).",
-    "Last Dodgers 3-HR game before 2026 not sourced."
+    "No sourced 6-hit games in 2026 (MLB.com six-hit list; StatMuse 5-hit log tops out at 5).",
+    "No 3-triple games in 2026 (StatMuse last: Xavier Edwards 2024-09-27).",
+    "No additional cycles after Bleday 2026-08-22 (AP 2026 cycle list; Wikipedia cycle list through Bleday as #353).",
+    "No walk-off cycle in 2026.",
+    "No complete-game no-hitter in 2026; only the Astros combined no-hitter May 25 (ESPN no-hitters / 2026).",
+    "Andy Pages 3 HR 2026-05-06 is first Dodger 3-HR since Muncy 2026-04-10 (too short).",
+    "Last Dodgers regular-season 3-HR game before 2026: Will Smith 2024-07-05 vs MIL; Ohtani also had 3 HR + 10 RBI vs MIA in September 2024. Muncy 2026-04-10 is already cataloged.",
+    "No sourced Mets/Giants/Yankees (aside from Wells pinch-2HR) long-window 2026 single-game firsts that clear the bar."
   ],
   "unverifiedOrConflicting": [
     "Acuña '23rd player since 1898 with 2 HR and 2 SB' (Grant McAuley / Baseball-Reference tweet) conflicts with StatMuse rows for Soto (2025-08-30), Moniak (2025-09-14), and Ohtani (2024-09-19). Use franchise first-since Inciarte 2017; do not publish the 23rd-ever number.",

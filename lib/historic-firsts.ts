@@ -434,7 +434,7 @@ export const LAST_3_HR: HistoricLine[] = [
   line("Fernando Tatis Jr.", 2021, "SD", { date: "2021-06-25" }),
   line("Wilmer Flores", 2025, "SF", { date: "2025-05-16" }),
   line("Dominic Canzone", 2025, "SEA", { date: "2025-09-16" }),
-  line("Joshua Báez", 2026, "STL", { date: "2026-08-15", notes: "MLB debut" }),
+  line("Joshua Báez", 2026, "STL", { date: "2026-08-15", notes: "MLB debut; first 3-HR debut in MLB history" }),
   line("Junior Caminero", 2026, "TB", { date: "2026-06-25" }),
   line("Adolis García", 2023, "TEX", { date: "2023-04-22", uncertain: true }),
   line("Bo Bichette", 2022, "TOR", { date: "2022-09-05", uncertain: true }),
