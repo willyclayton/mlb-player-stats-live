@@ -120,23 +120,26 @@ describe("rarity ranker", () => {
     assert.ok(rarity(ranked[0]!) > rarity(ranked[1]!));
   });
 
-  it("keeps two-way rarer than a career-best ERA", () => {
-    assert.ok(rarity({
-      id: "two-way",
-      score: 0,
-      stamp: "TWO-WAY",
-      headline: "",
-      body: "",
-      category: "two-way",
-      receipts: [],
-    }) > rarity({
-      id: "career-best-era",
-      score: 0,
-      stamp: "CAREER ERA",
-      headline: "",
-      body: "",
-      category: "pitching",
-      receipts: [],
-    }));
+  it("ranks a career-best ERA above a two-way line that restates the box", () => {
+    assert.ok(
+      rarity({
+        id: "career-best-era",
+        score: 0,
+        stamp: "CAREER ERA",
+        headline: "",
+        body: "",
+        category: "pitching",
+        receipts: [],
+      }) >
+        rarity({
+          id: "two-way",
+          score: 0,
+          stamp: "TWO-WAY",
+          headline: "",
+          body: "",
+          category: "two-way",
+          receipts: [],
+        }),
+    );
   });
 });

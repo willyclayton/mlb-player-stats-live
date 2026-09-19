@@ -115,6 +115,11 @@ function daysBetween(from?: string, to?: string): number {
   return Math.round(ms / 86_400_000);
 }
 
+function dayReceipt(prev: { date: string } | undefined, date?: string) {
+  if (!prev || !date) return [] as { label: string; value: string }[];
+  return [{ label: "Days", value: String(daysBetween(prev.date, date)) }];
+}
+
 function joinList(items: string[]): string {
   if (items.length === 1) return items[0] ?? "";
   if (items.length === 2) return `${items[0]} and ${items[1]}`;
@@ -502,7 +507,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         category: "rare",
         headline: `Hit for the cycle ${vs}`,
         body: since(prev, "cycle"),
-        receipts: [{ label: "H", value: String(hit.hits) }],
+        receipts: [{ label: "H", value: String(hit.hits) }, ...dayReceipt(prev, input.date)],
       }),
     );
   }
@@ -524,6 +529,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         receipts: [
           { label: "H", value: String(hit.hits) },
           { label: "SB", value: String(hit.stolenBases) },
+          ...dayReceipt(prev, input.date),
         ],
       }),
     );
@@ -545,7 +551,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
           category: "heater",
           headline: `${hit.hits} hits ${vs}`,
           body: since(prev, `${high} game`),
-          receipts: [{ label: "H", value: String(hit.hits) }],
+          receipts: [{ label: "H", value: String(hit.hits) }, ...dayReceipt(prev, input.date)],
         }),
       );
     } else if (seasonHigh) {
@@ -579,6 +585,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         receipts: [
           { label: "HR", value: String(hit.homeRuns) },
           { label: "RBI", value: String(hit.rbi) },
+          ...dayReceipt(prev, input.date),
         ],
       }),
     );
@@ -603,7 +610,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         category: "power",
         headline: `Home run ${vs}`,
         body: since(prev, "home run"),
-        receipts: [{ label: "HR", value: "1" }],
+        receipts: [{ label: "HR", value: "1" }, ...dayReceipt(prev, input.date)],
       }),
     );
   }
@@ -642,7 +649,10 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
           category: "speed",
           headline: `Only ${team} steal ${vs}`,
           body: since(prev, "stolen base"),
-          receipts: [{ label: "SB", value: String(hit.stolenBases) }],
+          receipts: [
+            { label: "SB", value: String(hit.stolenBases) },
+            ...dayReceipt(prev, input.date),
+          ],
         }),
       );
     }
@@ -657,7 +667,10 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
           category: "power",
           headline: `Only ${team} home run ${vs}`,
           body: since(prev, "home run"),
-          receipts: [{ label: "HR", value: String(hit.homeRuns) }],
+          receipts: [
+            { label: "HR", value: String(hit.homeRuns) },
+            ...dayReceipt(prev, input.date),
+          ],
         }),
       );
     }
@@ -726,6 +739,7 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
             { label: "IP", value: fmtIp(pitch.innings) },
             { label: "ER", value: String(pitch.earnedRuns) },
             { label: "K", value: String(pitch.strikeOuts) },
+            ...dayReceipt(prev, input.date),
           ],
         }),
       );
