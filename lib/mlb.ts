@@ -1,4 +1,5 @@
-import { shiftEt, teamAbbrFromName, todayEt } from "./format";
+import { shiftEt, startEt, teamAbbrFromName, todayEt } from "./format";
+import { slateBlocks } from "./slate";
 import {
   generateCrazyStats,
   generateGameCrazyStats,
@@ -83,17 +84,21 @@ function mapScheduleGame(game: Record<string, unknown>): HomeGame {
     gamePk: Number(game.gamePk),
     status: String(status.detailedState ?? status.abstractGameState ?? ""),
     abstractState: String(status.abstractGameState ?? ""),
+    start: startEt(game.gameDate ? String(game.gameDate) : undefined),
     home: sideFromTeam(rec(homeSide.team), homeSide.score),
     away: sideFromTeam(rec(awaySide.team), awaySide.score),
   };
 }
 
-async function schedule(date: string): Promise<HomeGame[]> {
-  const data = await mlb<{ dates?: { games?: Record<string, unknown>[] }[] }>(
-    `/schedule?sportId=1&date=${date}&hydrate=team`,
-    60,
+async function scheduleRange(start: string, end: string): Promise<{ date: string; games: HomeGame[] }[]> {
+  const data = await mlb<{ dates?: { date?: string; games?: Record<string, unknown>[] }[] }>(
+    `/schedule?sportId=1&startDate=${start}&endDate=${end}&hydrate=team`,
+    30,
   );
-  return (data.dates?.[0]?.games ?? []).map(mapScheduleGame);
+  return (data.dates ?? []).map((day) => ({
+    date: String(day.date ?? ""),
+    games: (day.games ?? []).map(mapScheduleGame),
+  }));
 }
 
 async function heaters(): Promise<Heater[]> {
@@ -153,20 +158,20 @@ async function heaters(): Promise<Heater[]> {
 
 export async function getHome(): Promise<HomePayload> {
   const today = todayEt();
-  const [games, board] = await Promise.all([schedule(today), heaters()]);
-  let slate = games;
-  let slateLabel = "Today";
+  const yesterday = shiftEt(-1);
+  const tomorrow = shiftEt(1);
+  const [days, board] = await Promise.all([
+    scheduleRange(yesterday, tomorrow),
+    heaters(),
+  ]);
+  const byDate = new Map(days.map((day) => [day.date, day.games]));
+  const blocks = slateBlocks({
+    yesterday: byDate.get(yesterday) ?? [],
+    today: byDate.get(today) ?? [],
+    tomorrow: byDate.get(tomorrow) ?? [],
+  });
 
-  if (slate.length === 0) {
-    slate = await schedule(shiftEt(-1));
-    slateLabel = "Last night";
-  } else if (slate.some((g) => g.abstractState === "Live")) {
-    slateLabel = "Live";
-  } else if (slate.every((g) => g.abstractState === "Final")) {
-    slateLabel = "Final";
-  }
-
-  return { asOf: today, slateLabel, games: slate, heaters: board };
+  return { asOf: today, blocks, heaters: board };
 }
 
 export async function searchPlayers(query: string): Promise<PlayerRef[]> {

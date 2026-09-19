@@ -6,9 +6,8 @@ export function AppHeader() {
     <header className="shell">
       <div className="shell-row">
         <Link href="/" className="brand-link">
-          Crazy Stats
+          MLB
         </Link>
-        <span className="live-dot">Live</span>
       </div>
       <SearchBox />
     </header>

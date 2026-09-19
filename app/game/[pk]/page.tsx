@@ -76,7 +76,7 @@ export default async function GamePage({
         </div>
       </div>
 
-      <p className="lede">Tap a name for the live line and a fact.</p>
+      <p className="lede">Tap a name.</p>
 
       <Lineup side={game.away} gamePk={game.gamePk} />
       <Lineup side={game.home} gamePk={game.gamePk} />

@@ -112,8 +112,14 @@ export type HomeGame = {
   gamePk: number;
   status: string;
   abstractState: string;
+  start?: string;
   home: TeamSide;
   away: TeamSide;
+};
+
+export type SlateBlock = {
+  label: string;
+  games: HomeGame[];
 };
 
 export type GameSide = TeamSide & { players: PlayerRef[] };
@@ -132,7 +138,6 @@ export type Heater = PlayerRef & { value: string; label: string };
 
 export type HomePayload = {
   asOf: string;
-  slateLabel: string;
-  games: HomeGame[];
+  blocks: SlateBlock[];
   heaters: Heater[];
 };

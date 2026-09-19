@@ -1,19 +1,19 @@
 :root {
-  --ink: #070b12;
-  --ink-2: #0e1522;
-  --card: #141c2c;
-  --card-2: #1b2538;
-  --line: rgba(244, 237, 224, 0.1);
-  --cream: #f4ede0;
-  --mist: rgba(244, 237, 224, 0.78);
-  --dim: rgba(244, 237, 224, 0.5);
-  --gold: #f0c14b;
-  --gold-2: #ffd56a;
-  --stitch: #d7263d;
-  --grass: #3d9b6e;
-  --live: #39d98a;
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  --font-display: var(--font-display-g), "Archivo Black", Impact, sans-serif;
+  --ink: #000;
+  --ink-2: #000;
+  --card: #111;
+  --card-2: #111;
+  --line: #2a2a2a;
+  --cream: #fff;
+  --mist: #c8c8c8;
+  --dim: #8a8a8a;
+  --gold: #fff;
+  --gold-2: #fff;
+  --stitch: #fff;
+  --grass: #fff;
+  --live: #fff;
+  --shadow: none;
+  --font-display: var(--font-sans-g), "DM Sans", system-ui, sans-serif;
   --font-sans: var(--font-sans-g), "DM Sans", system-ui, sans-serif;
   --max: 430px;
 }
@@ -32,10 +32,7 @@ body {
 }
 
 body {
-  background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(215, 38, 61, 0.16), transparent 50%),
-    radial-gradient(800px 400px at 100% 20%, rgba(240, 193, 75, 0.08), transparent 40%),
-    var(--ink);
+  background: #000;
 }
 
 a {
@@ -64,8 +61,7 @@ img {
   position: sticky;
   top: 0;
   z-index: 12;
-  background: rgba(7, 11, 18, 0.94);
-  backdrop-filter: blur(14px);
+  background: #000;
   margin: 0 -16px 8px;
   padding: 12px 16px 10px;
   border-bottom: 1px solid var(--line);
@@ -79,9 +75,9 @@ img {
 }
 
 .brand-link {
-  font-family: var(--font-display);
-  font-size: 22px;
-  letter-spacing: -0.02em;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .crumb {
@@ -121,10 +117,9 @@ img {
 
 .kicker {
   font-size: 11px;
-  letter-spacing: 0.16em;
-  word-spacing: 0.28em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--dim);
   font-weight: 700;
 }
 
@@ -178,15 +173,15 @@ img {
 .search input {
   width: 100%;
   border: 1px solid var(--line);
-  background: rgba(20, 28, 44, 0.85);
+  background: #000;
   color: var(--cream);
-  border-radius: 16px;
-  padding: 14px 16px;
+  border-radius: 0;
+  padding: 12px 0;
   outline: none;
 }
 
 .search input:focus {
-  border-color: rgba(240, 193, 75, 0.55);
+  border-color: #fff;
 }
 
 .search-list {
@@ -194,12 +189,10 @@ img {
   left: 0;
   right: 0;
   top: calc(100% + 6px);
-  background: #101827;
+  background: #000;
   border: 1px solid var(--line);
-  border-radius: 14px;
   overflow: hidden;
   z-index: 8;
-  box-shadow: var(--shadow);
 }
 
 .search-item {
@@ -252,7 +245,7 @@ img {
 .scoreboard {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
 .score-row {
@@ -260,11 +253,11 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 12px 14px;
-  min-height: 64px;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 12px 0;
+  min-height: 56px;
 }
 
 .score-teams {
@@ -310,10 +303,10 @@ img {
   grid-template-columns: 18px 40px 1fr auto;
   gap: 10px;
   align-items: center;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 8px 12px;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 10px 0;
   min-height: 52px;
 }
 
@@ -332,10 +325,10 @@ img {
   align-items: center;
   gap: 12px;
   min-width: 210px;
-  background: linear-gradient(180deg, var(--card-2), var(--card));
+  background: transparent;
   border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 10px 12px 10px 8px;
+  border-radius: 0;
+  padding: 8px 10px;
 }
 
 .player-card img,
@@ -365,10 +358,10 @@ img {
 }
 
 .leader {
-  background: var(--card);
+  background: transparent;
   border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 12px;
+  border-radius: 0;
+  padding: 10px;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -427,8 +420,8 @@ img {
 
 .pill {
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 4px 9px;
+  border-radius: 0;
+  padding: 3px 7px;
   font-size: 11px;
   color: var(--mist);
 }
@@ -464,50 +457,28 @@ img {
 
 .take {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(240, 193, 75, 0.12), transparent 40%),
-    var(--card-2);
-  border: 1px solid rgba(240, 193, 75, 0.38);
-  border-radius: 22px;
-  padding: 16px 16px 14px;
-  box-shadow: var(--shadow);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 14px 0;
   overflow: hidden;
-}
-
-.take::before {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border: 1px dashed rgba(240, 193, 75, 0.22);
-  border-radius: 16px;
-  pointer-events: none;
 }
 
 .take .stamp {
   display: inline-block;
   font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  color: var(--ink);
-  background: var(--gold);
-  border-radius: 999px;
-  padding: 5px 9px;
-}
-
-.take-slot-game .take {
-  background:
-    linear-gradient(180deg, rgba(61, 155, 110, 0.16), transparent 40%),
-    var(--card-2);
-  border-color: rgba(61, 155, 110, 0.42);
-}
-
-.take-slot-game .take::before {
-  border-color: rgba(61, 155, 110, 0.22);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #fff;
+  background: transparent;
+  border: 1px solid #fff;
+  border-radius: 0;
+  padding: 4px 8px;
 }
 
 .take-slot-game .take .stamp {
-  background: var(--grass);
-  color: var(--cream);
+  color: #000;
+  background: #fff;
 }
 
 .take h2 {
@@ -534,9 +505,10 @@ img {
 }
 
 .receipt {
-  background: rgba(7, 11, 18, 0.35);
-  border-radius: 12px;
-  padding: 8px;
+  background: transparent;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  padding: 8px 0;
 }
 
 .receipt .lbl {
@@ -559,11 +531,11 @@ img {
 }
 
 .btn {
-  border: 0;
-  border-radius: 999px;
-  padding: 10px 14px;
-  background: var(--cream);
-  color: var(--ink);
+  border: 1px solid #fff;
+  border-radius: 0;
+  padding: 8px 12px;
+  background: #fff;
+  color: #000;
   font-weight: 700;
   cursor: pointer;
 }
@@ -586,9 +558,9 @@ img {
 }
 
 .stat {
-  background: var(--card);
+  background: transparent;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 0;
   padding: 10px 8px;
   text-align: center;
 }
@@ -617,10 +589,10 @@ img {
   grid-template-columns: 72px 1fr auto;
   gap: 8px;
   align-items: center;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 10px 12px;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 10px 0;
   font-size: 13px;
 }
 
