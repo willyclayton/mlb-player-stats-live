@@ -36,4 +36,14 @@ describe("historic game catalog", () => {
   it("returns nothing for a quiet night", () => {
     assert.deepEqual(joinHistoricGame("Matt Olson", "2026-09-18"), []);
   });
+
+  it("joins Burleson's Yankee Stadium 3-HR game as an Interleague-era first", () => {
+    const joins = joinHistoricGame("Alec Burleson", "2026-08-03");
+    assert.ok(joins.some((j) => /Yankee Stadium|Interleague|1997/i.test(`${j.headline} ${j.body}`)));
+  });
+
+  it("joins Caminero's 3-HR game as first Rays since Paredes 2022", () => {
+    const joins = joinHistoricGame("Junior Caminero", "2026-06-25");
+    assert.ok(joins.some((j) => /Paredes|2022/i.test(`${j.headline} ${j.body}`)));
+  });
 });

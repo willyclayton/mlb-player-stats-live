@@ -833,6 +833,40 @@
     },
     {
       "kind": "game",
+      "player": "Alec Burleson",
+      "team": "St. Louis Cardinals",
+      "opponent": "New York Yankees",
+      "date": "2026-08-03",
+      "line": "3-5 | 3 HR, 6 RBI, 3 R",
+      "headline": "First NL 3-HR game at Yankee Stadium since Interleague began in 1997",
+      "previous": null,
+      "scope": "MLB",
+      "notes": "MLB.com. First visiting 3-HR game at Yankee Stadium since Jordan Diaz 2023-05-09 (too short). First Cardinals 3-HR game since Iván Herrera 2025-04-02 (too short). The Interleague-era NL mark is the long window. 0 doubles / 0 triples / 0 SB / 0 BB.",
+      "sources": [
+        "https://www.mlb.com/news/alec-burleson-has-first-three-homer-game-of-career",
+        "https://apnews.com/article/cardinals-burleson-3-home-runs-yankees-99af597bda8081ef45876934114b369e"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
+      "player": "Junior Caminero",
+      "team": "Tampa Bay Rays",
+      "opponent": "Kansas City Royals",
+      "date": "2026-06-25",
+      "line": "3-5 | 3 HR, 6 RBI, 3 R",
+      "headline": "First Rays 3-HR game since Isaac Paredes, 2022",
+      "previous": { "player": "Isaac Paredes", "date": "2022-06-21", "team": "Tampa Bay Rays" },
+      "scope": "franchise",
+      "notes": "8th three-homer game in Rays history. First career 3-HR game. 0 doubles / 0 triples / 0 SB / 0 BB. Earlier skip of this game is superseded now that the Paredes date is sourced.",
+      "sources": [
+        "https://mlbdailydingers.com/2023/04/3-home-runs-in-a-game/",
+        "https://www.mlb.com/news/junior-caminero-hits-three-home-runs-in-rays-win-vs-royals"
+      ],
+      "confidence": "high"
+    },
+    {
+      "kind": "game",
       "player": "Milwaukee Brewers",
       "team": "Milwaukee Brewers",
       "opponent": "Seattle Mariners",
@@ -898,10 +932,13 @@
       ]
     },
     {
-      "who": "Junior Caminero",
-      "fact": "3 HR, 6 RBI vs KC, Jun 25",
-      "reason": "8th Rays 3-HR game; first career 3-HR. No long-window franchise first-since sourced (franchise has had several).",
-      "sources": ["https://www.mlb.com/news/junior-caminero-hits-three-home-runs-in-rays-win-vs-royals"]
+      "who": "Jake McCarthy",
+      "fact": "2 HR and 2 SB at STL, Aug 8",
+      "reason": "Confirmed 4-5 | 2 HR, 2 SB. MLB last before this is Acuña 2026-05-30 (70 days). No sourced Rockies long-window first-since. Combo table lastPlayer is McCarthy; do not catalog as a first-since.",
+      "sources": [
+        "https://www.baseball-reference.com/boxes/SLN/SLN202608080.shtml",
+        "https://www.statmuse.com/mlb/ask/mlb-players-with-2-home-runs-and-2-stolen-bases-in-the-same-game"
+      ]
     },
     {
       "who": "Jakob Marsee",
@@ -950,9 +987,13 @@
     }
   ],
   "searchedNotFound": [
-    "No 4-HR games in 2026 through Sep 19 (MLB.com four-HR history page still ends with Schwarber 2025-08-28 / Kurtz 2025-07-25; StatMuse season high is 3 HR).",
-    "No 3 HR + 2 doubles games found in 2026; listed 3-HR boxes all show 0 doubles.",
-    "No sourced 6-hit games in 2026 (MLB.com six-hit list; StatMuse 5-hit log tops out at 5).",
+    "No 4-HR games in 2026 through Sep 19 (Wikipedia 21 all-time, last Kyle Schwarber 2025-08-28; StatMuse season high is 3 HR, 13 players / 15 games).",
+    "No 3 HR + 2 doubles in 2026. Last: Shohei Ohtani 2024-09-19. Five ever since 1901 (Bryant 2016, Carpenter 2018, Dickerson 2020, García 2023, Ohtani 2024). Not first-since-1918; Bryant was the modern-era first.",
+    "No 3 HR + triple in 2026. Last: Kendrys Morales 2015-09-20 (7 since 1901).",
+    "No 3 HR + steal in 2026. Last: Shohei Ohtani 2024-09-19 (also the only 3 HR + 2 SB). Previous 3 HR + 1 SB: Paul Goldschmidt 2023-05-07.",
+    "No sourced 6-hit games in 2026 (StatMuse: 15 players tied at 5 hits). Last 6-hit: Nick Kurtz 2025-07-25.",
+    "No 5 extra-base-hit games in 2026 (season high 4, Jac Caglianone 2026-08-08). Last 5 XBH: Nick Kurtz 2025-07-25 (16 since 1901).",
+    "No cycle + steal in 2026 (PCA, Harper, Peters, Bleday all 0 SB). Last: Elly De La Cruz 2023-06-23. Previous: Trea Turner 2021-06-30 (2 SB).",
     "No 3-triple games in 2026 (StatMuse last: Xavier Edwards 2024-09-27).",
     "No additional cycles after Bleday 2026-08-22 (AP 2026 cycle list; Wikipedia cycle list through Bleday as #353).",
     "No walk-off cycle in 2026.",

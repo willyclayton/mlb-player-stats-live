@@ -135,6 +135,8 @@ describe("historic franchise tables", () => {
     assert.equal(last3Hr("NYM")?.player, "Francisco Lindor");
     assert.equal(last3Hr("CHC")?.player, "Alex Bregman");
     assert.equal(last3Hr("PHI")?.player, "Kyle Schwarber");
+    assert.equal(last3Hr("SEA")?.player, "Cal Raleigh");
+    assert.equal(last3Hr("CHC")?.date, "2026-08-31");
   });
 });
 

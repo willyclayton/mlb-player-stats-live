@@ -580,6 +580,30 @@ describe("game crazy stat engine", () => {
     assert.equal(crazy[0]?.id, "historic-game");
   });
 
+  it("names a 3 HR + 2 doubles night as first since Ohtani 2024", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Matt Olson",
+      team: "Atlanta Braves",
+      opponent: "Mets",
+      isHome: true,
+      date: "2026-09-19",
+      hit: hit({
+        atBats: 5,
+        plateAppearances: 5,
+        hits: 5,
+        doubles: 2,
+        homeRuns: 3,
+        rbi: 6,
+        totalBases: 16,
+      }),
+    });
+    const combo = crazy.find((s) => s.id === "game-combo");
+    assert.ok(combo);
+    assert.match(combo!.headline, /3 HR and 2\+ doubles/);
+    assert.match(combo!.body, /Shohei Ohtani/);
+    assert.match(combo!.body, /2024/);
+  });
+
   it("names a multi-homer night and the last time it happened", () => {
     const crazy = generateGameCrazyStats({
       name: "Shohei Ohtani",

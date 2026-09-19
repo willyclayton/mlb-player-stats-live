@@ -1,6 +1,7 @@
 import { writeCareerFacts } from "./fact-writer";
 import { rankFacts } from "./fact-ranker";
 import { fmtAvg, fmtEra, fmtIp, fmtOps, slash, prettyDate, shortTeamName } from "./format";
+import { joinGameCombo } from "./game-combos";
 import { join3Hr, joinCycle, joinSeasonLine, resolveTeamAbbr } from "./historic-firsts";
 import { joinHistoricGame } from "./historic-games";
 import { aggregateHits, hittingStreak, homerStreak, lastN } from "./stats";
@@ -574,7 +575,8 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
       (pitch && pitch.innings > 0),
   );
 
-  for (const join of joinHistoricGame(full, input.date)) {
+  const historic = joinHistoricGame(full, input.date);
+  for (const join of historic) {
     stats.push(
       take({
         id: join.id,
@@ -586,6 +588,21 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
         receipts: join.receipts,
       }),
     );
+  }
+  if (!historic.length && hit) {
+    for (const join of joinGameCombo(hit, input.date)) {
+      stats.push(
+        take({
+          id: join.id,
+          score: join.stamp === "FIRST EVER" ? 100 : 97,
+          stamp: join.stamp,
+          category: "rare",
+          headline: join.headline,
+          body: join.body,
+          receipts: join.receipts,
+        }),
+      );
+    }
   }
 
   if (
@@ -919,7 +936,9 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
       s.id === "game-pitch" ||
       s.id === "game-season-high" ||
       s.id === "game-hr-3b" ||
-      s.id === "game-hr-sb",
+      s.id === "game-hr-sb" ||
+      s.id === "game-combo" ||
+      s.id === "game-combo-2",
   );
   if (played && hit && (!feat || quiet)) {
     const prevMulti = lastMatch(logs, (g) => g.hits >= 2, input.date);

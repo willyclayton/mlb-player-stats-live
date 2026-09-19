@@ -136,6 +136,12 @@ export function rarity(stat: CrazyStat): number {
     case "historic-game-2":
       score = 91;
       break;
+    case "game-combo":
+      score = stat.stamp === "FIRST EVER" ? 100 : 97;
+      break;
+    case "game-combo-2":
+      score = 91;
+      break;
     case "career-first-strikeOuts":
       score = 88;
       break;
