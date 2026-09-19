@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Headshot } from "@/components/Headshot";
 import { PlayerCard } from "@/components/PlayerCard";
 import { PlayerTake } from "@/components/PlayerTake";
-import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate, slash } from "@/lib/format";
+import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate } from "@/lib/format";
 import { gameHref } from "@/lib/href";
 import { getGame, getPlayer } from "@/lib/mlb";
 
@@ -75,39 +75,29 @@ export default async function PlayerPage({
         </div>
       </div>
 
+      {data.seasonHit ? (
+        <div className="strip live-strip">
+          <Stat label="AVG" value={fmtAvg(data.seasonHit.avg)} />
+          <Stat label="OPS" value={fmtOps(data.seasonHit.ops)} />
+          <Stat label="HR" value={String(data.seasonHit.homeRuns)} />
+          <Stat label="SB" value={String(data.seasonHit.stolenBases)} />
+        </div>
+      ) : null}
+
+      {data.seasonPitch ? (
+        <div className="strip live-strip">
+          <Stat label="ERA" value={fmtEra(data.seasonPitch.era)} />
+          <Stat label="WHIP" value={data.seasonPitch.whip.toFixed(2)} />
+          <Stat label="K" value={String(data.seasonPitch.strikeOuts)} />
+          <Stat label="IP" value={fmtIp(data.seasonPitch.innings)} />
+        </div>
+      ) : null}
+
       <PlayerTake
         season={data.seasonTakes}
         game={data.gameTakes}
         gameLabel={data.gameLabel}
       />
-
-      {data.seasonHit ? (
-        <section className="section">
-          <h2>Season</h2>
-          <div className="strip">
-            <Stat label="AVG" value={fmtAvg(data.seasonHit.avg)} />
-            <Stat label="OPS" value={fmtOps(data.seasonHit.ops)} />
-            <Stat label="HR" value={String(data.seasonHit.homeRuns)} />
-            <Stat label="SB" value={String(data.seasonHit.stolenBases)} />
-          </div>
-          <p className="hint">
-            {slash(data.seasonHit)} · {data.seasonHit.rbi} RBI
-            {data.recentHit.last15 ? ` · last 15 OPS ${fmtOps(data.recentHit.last15.ops)}` : ""}
-          </p>
-        </section>
-      ) : null}
-
-      {data.seasonPitch ? (
-        <section className="section">
-          <h2>Pitching</h2>
-          <div className="strip">
-            <Stat label="ERA" value={fmtEra(data.seasonPitch.era)} />
-            <Stat label="WHIP" value={data.seasonPitch.whip.toFixed(2)} />
-            <Stat label="K" value={String(data.seasonPitch.strikeOuts)} />
-            <Stat label="IP" value={fmtIp(data.seasonPitch.innings)} />
-          </div>
-        </section>
-      ) : null}
 
       {data.lastHitGames.length ? (
         <section className="section">

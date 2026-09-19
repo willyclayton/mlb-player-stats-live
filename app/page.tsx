@@ -10,8 +10,7 @@ export default async function HomePage() {
   return (
     <>
       <p className="lede">
-        Pick a game, then a player. Official season line, official this-game
-        line — then Another if you want a new fact.
+        Pick a game, then a player. Live numbers, then a fact.
       </p>
 
       <section className="section">

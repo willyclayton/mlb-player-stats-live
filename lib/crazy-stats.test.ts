@@ -79,10 +79,9 @@ describe("stat math", () => {
 });
 
 describe("crazy stat engine", () => {
-  it("leads with the two-way stat when a player hits and pitches", () => {
+  it("states the two-way line in numbers", () => {
     const crazy = generateCrazyStats({
       name: "Shohei Ohtani",
-      nickname: "Showtime",
       position: "TWP",
       seasonHit: hit({
         avg: 0.277,
@@ -120,13 +119,15 @@ describe("crazy stat engine", () => {
       pitchGames: [],
     });
     assert.equal(crazy[0]?.id, "two-way");
-    assert.match(crazy[0].body, /1\.79/);
-    assert.match(crazy[0].body, /30 homers/);
+    assert.match(crazy[0].headline, /30 HR/);
+    assert.match(crazy[0].headline, /1\.79/);
   });
 
-  it("flags a 30-30 season", () => {
+  it("flags a 30-30 season and only-on-team when the board is passed", () => {
     const crazy = generateCrazyStats({
+      id: 1,
       name: "Jazz Chisholm Jr.",
+      team: "New York Yankees",
       seasonHit: hit({
         homeRuns: 32,
         stolenBases: 31,
@@ -138,12 +139,19 @@ describe("crazy stat engine", () => {
       }),
       hitGames: [],
       pitchGames: [],
+      teamHitters: [
+        { id: 1, name: "Jazz Chisholm Jr.", line: hit({ homeRuns: 32, stolenBases: 31 }) },
+        { id: 2, name: "Aaron Judge", line: hit({ homeRuns: 48, stolenBases: 4 }) },
+      ],
     });
-    assert.ok(crazy.some((s) => s.id === "club-20-20"));
-    assert.match(crazy.find((s) => s.id === "club-20-20")!.stamp, /30-30/);
+    const club = crazy.find((s) => s.id === "club-20-20");
+    assert.ok(club);
+    assert.equal(club!.stamp, "30-30");
+    assert.match(club!.body, /Only Yankees player/);
+    assert.ok(crazy.some((s) => s.id === "team-lead"));
   });
 
-  it("scores a last-15 heater above the season line", () => {
+  it("states a last-15 OPS split against the season", () => {
     const games: GameHit[] = Array.from({ length: 15 }, (_, i) =>
       game({
         date: `2026-09-${String(i + 1).padStart(2, "0")}`,
@@ -170,6 +178,7 @@ describe("crazy stat engine", () => {
       pitchGames: [],
     });
     assert.ok(crazy.some((s) => s.id === "heater-15"));
+    assert.match(crazy.find((s) => s.id === "heater-15")!.headline, /Last 15/);
   });
 
   it("returns a thin-file fallback when there is no volume", () => {
@@ -183,12 +192,13 @@ describe("crazy stat engine", () => {
 });
 
 describe("game crazy stat engine", () => {
-  it("flags an 0-fer with punchouts and still has another fact to cycle", () => {
+  it("states an 0-fer and points at the last multi-hit game", () => {
     const crazy = generateGameCrazyStats({
-      name: "Patrick Bailey",
-      nickname: "PCA",
+      name: "Pete Crow-Armstrong",
+      team: "Chicago Cubs",
       opponent: "Cincinnati Reds",
-      isHome: true,
+      isHome: false,
+      date: "2026-09-18",
       hit: {
         ...hit({
           atBats: 5,
@@ -200,33 +210,33 @@ describe("game crazy stat engine", () => {
           walks: 0,
         }),
         summary: "0-5, 3 K",
-        leftOnBase: 6,
       },
-      seasonHit: hit({
-        avg: 0.23,
-        obp: 0.3,
-        slg: 0.4,
-        ops: 0.7,
-        homeRuns: 12,
-        games: 130,
-        atBats: 420,
-      }),
+      hitGames: [
+        game({
+          date: "2026-09-14",
+          opponent: "Braves",
+          isHome: true,
+          hits: 4,
+          atBats: 5,
+          summary: "4-5 | HR",
+        }),
+      ],
     });
     const ids = crazy.map((s) => s.id);
     assert.ok(ids.includes("game-ohfer"));
     assert.ok(ids.includes("game-line"));
-    assert.ok(ids.includes("game-lob"));
-    assert.ok(ids.includes("game-vs-season"));
-    assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /3 punchouts/);
+    assert.match(crazy.find((s) => s.id === "game-ohfer")!.headline, /0-for-5/);
+    assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /Sep 14/);
     assert.ok(crazy.length >= 2);
   });
 
-  it("leads a multi-homer night and names the season total", () => {
+  it("names a multi-homer night and the last time it happened", () => {
     const crazy = generateGameCrazyStats({
       name: "Shohei Ohtani",
-      nickname: "Showtime",
+      team: "Los Angeles Dodgers",
       opponent: "Cubs",
       isHome: false,
+      date: "2026-09-01",
       hit: {
         ...hit({
           atBats: 4,
@@ -239,23 +249,59 @@ describe("game crazy stat engine", () => {
         }),
         summary: "3-4, 2 HR, 4 RBI",
       },
-      seasonHit: hit({
-        avg: 0.277,
-        obp: 0.38,
-        slg: 0.522,
-        ops: 0.902,
-        homeRuns: 30,
-        games: 134,
-        atBats: 502,
-      }),
+      seasonHit: hit({ homeRuns: 30, games: 134, atBats: 502 }),
+      hitGames: [
+        game({
+          date: "2026-06-11",
+          opponent: "Giants",
+          isHome: true,
+          hits: 3,
+          homeRuns: 2,
+          atBats: 4,
+          summary: "3-4 | 2 HR",
+        }),
+      ],
     });
     const hr = crazy.find((s) => s.id === "game-hr");
     assert.ok(hr);
     assert.equal(hr!.stamp, "MULTI-HR");
-    assert.match(hr!.body, /30 on the season/);
-    assert.ok(crazy.some((s) => s.id === "game-multi"));
-    assert.ok(crazy.some((s) => s.id === "game-rbi"));
-    assert.ok(crazy.length >= 2);
+    assert.match(hr!.body, /Jun 11/);
+    assert.match(hr!.body, /Season HR: 30/);
+  });
+
+  it("flags a 5-hit game with a steal and the previous one", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Elly De La Cruz",
+      team: "Cincinnati Reds",
+      opponent: "Cubs",
+      isHome: true,
+      date: "2026-09-18",
+      hit: {
+        ...hit({
+          atBats: 5,
+          plateAppearances: 5,
+          hits: 5,
+          stolenBases: 1,
+          homeRuns: 0,
+        }),
+        summary: "5-5 | SB",
+      },
+      hitGames: [
+        game({
+          date: "2025-07-04",
+          opponent: "Pirates",
+          isHome: false,
+          hits: 5,
+          stolenBases: 1,
+          atBats: 5,
+          summary: "5-5 | SB",
+        }),
+      ],
+    });
+    const feat = crazy.find((s) => s.id === "game-hits-sb");
+    assert.ok(feat);
+    assert.match(feat!.headline, /5 hits and 1 SB/);
+    assert.match(feat!.body, /2025/);
   });
 
   it("returns a no-line fallback when they have not played", () => {
