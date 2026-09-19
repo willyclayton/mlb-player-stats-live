@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { generateCrazyStats } from "./crazy-stats";
+import { generateCrazyStats, generateGameCrazyStats } from "./crazy-stats";
 import { fmtAvg, parseInnings } from "./format";
 import {
   aggregateHits,
@@ -8,6 +8,7 @@ import {
   hittingStreak,
   iso,
   lastN,
+  mostRecent,
 } from "./stats";
 import type { GameHit, HitLine, PitchLine } from "./types";
 
@@ -48,6 +49,16 @@ describe("stat math", () => {
     assert.equal(line.atBats, 7);
     assert.equal(line.games, 2);
     assert.ok(Math.abs(line.avg - 3 / 7) < 1e-9);
+  });
+
+  it("takes the newest games even if the feed is out of order", () => {
+    const games = [
+      game({ date: "2026-09-10", hits: 0, atBats: 3 }),
+      game({ date: "2026-09-18", hits: 3, atBats: 4 }),
+      game({ date: "2026-04-01", hits: 1, atBats: 4 }),
+    ];
+    const recent = mostRecent(games, 2);
+    assert.deepEqual(recent.map((g) => g.date), ["2026-09-10", "2026-09-18"]);
   });
 
   it("counts a hitting streak from the most recent games", () => {
@@ -168,5 +179,91 @@ describe("crazy stat engine", () => {
       pitchGames: [],
     });
     assert.equal(crazy[0]?.id, "thin");
+  });
+});
+
+describe("game crazy stat engine", () => {
+  it("flags an 0-fer with punchouts and still has another fact to cycle", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Patrick Bailey",
+      nickname: "PCA",
+      opponent: "Cincinnati Reds",
+      isHome: true,
+      hit: {
+        ...hit({
+          atBats: 5,
+          plateAppearances: 5,
+          hits: 0,
+          strikeOuts: 3,
+          homeRuns: 0,
+          rbi: 0,
+          walks: 0,
+        }),
+        summary: "0-5, 3 K",
+        leftOnBase: 6,
+      },
+      seasonHit: hit({
+        avg: 0.23,
+        obp: 0.3,
+        slg: 0.4,
+        ops: 0.7,
+        homeRuns: 12,
+        games: 130,
+        atBats: 420,
+      }),
+    });
+    const ids = crazy.map((s) => s.id);
+    assert.ok(ids.includes("game-ohfer"));
+    assert.ok(ids.includes("game-line"));
+    assert.ok(ids.includes("game-lob"));
+    assert.ok(ids.includes("game-vs-season"));
+    assert.match(crazy.find((s) => s.id === "game-ohfer")!.body, /3 punchouts/);
+    assert.ok(crazy.length >= 2);
+  });
+
+  it("leads a multi-homer night and names the season total", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Shohei Ohtani",
+      nickname: "Showtime",
+      opponent: "Cubs",
+      isHome: false,
+      hit: {
+        ...hit({
+          atBats: 4,
+          plateAppearances: 5,
+          hits: 3,
+          homeRuns: 2,
+          rbi: 4,
+          walks: 1,
+          strikeOuts: 1,
+        }),
+        summary: "3-4, 2 HR, 4 RBI",
+      },
+      seasonHit: hit({
+        avg: 0.277,
+        obp: 0.38,
+        slg: 0.522,
+        ops: 0.902,
+        homeRuns: 30,
+        games: 134,
+        atBats: 502,
+      }),
+    });
+    const hr = crazy.find((s) => s.id === "game-hr");
+    assert.ok(hr);
+    assert.equal(hr!.stamp, "MULTI-HR");
+    assert.match(hr!.body, /30 on the season/);
+    assert.ok(crazy.some((s) => s.id === "game-multi"));
+    assert.ok(crazy.some((s) => s.id === "game-rbi"));
+    assert.ok(crazy.length >= 2);
+  });
+
+  it("returns a no-line fallback when they have not played", () => {
+    const crazy = generateGameCrazyStats({
+      name: "Bench Bat",
+      opponent: "Mets",
+      isHome: true,
+    });
+    assert.equal(crazy[0]?.id, "game-dnp");
   });
 });

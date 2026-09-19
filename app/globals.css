@@ -57,7 +57,58 @@ img {
   width: min(100%, var(--max));
   margin: 0 auto;
   min-height: 100dvh;
-  padding: 20px 16px 48px;
+  padding: 0 16px 48px;
+}
+
+.shell {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background: rgba(7, 11, 18, 0.94);
+  backdrop-filter: blur(14px);
+  margin: 0 -16px 8px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.shell-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand-link {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  color: var(--dim);
+  font-size: 13px;
+  margin: 8px 0 14px;
+}
+
+.crumb a {
+  color: var(--cream);
+  font-weight: 600;
+}
+
+.match {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin: 6px 0 0;
+}
+
+.match span {
+  color: var(--dim);
+  font-size: 0.7em;
 }
 
 .topbar {
@@ -120,7 +171,7 @@ img {
 }
 
 .search {
-  margin: 18px 0 14px;
+  margin: 10px 0 0;
   position: relative;
 }
 
@@ -159,6 +210,10 @@ img {
   border-bottom: 1px solid var(--line);
 }
 
+.search-item .name {
+  font-weight: 700;
+}
+
 .search-item:last-child {
   border-bottom: 0;
 }
@@ -168,10 +223,12 @@ img {
 }
 
 .section h2 {
-  font-family: var(--font-display);
-  font-size: 20px;
-  letter-spacing: -0.02em;
-  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin: 0 0 10px;
 }
 
 .hint {
@@ -192,25 +249,82 @@ img {
   display: none;
 }
 
-.game-chip {
-  min-width: 168px;
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: 12px;
+  padding: 12px 14px;
+  min-height: 64px;
 }
 
-.game-chip .meta {
-  color: var(--dim);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.score-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 120px;
 }
 
-.game-chip .score {
+.score-teams .abbr {
+  font-weight: 700;
+  width: 42px;
+  display: inline-block;
+}
+
+.score-teams .pts {
   font-family: var(--font-display);
   font-size: 22px;
-  margin-top: 6px;
+}
+
+.score-meta {
+  text-align: right;
+  color: var(--dim);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chev {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.lineup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lineup-row {
+  display: grid;
+  grid-template-columns: 18px 40px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 12px;
+  min-height: 52px;
+}
+
+.lineup-row img {
+  width: 40px;
+  height: 40px;
+}
+
+.lineup-row .name {
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .player-card {
@@ -319,6 +433,35 @@ img {
   color: var(--mist);
 }
 
+.takes {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 8px 0 8px;
+}
+
+.take-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.take-head h2 {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mist);
+  margin: 0;
+}
+
+.take-head .btn {
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
 .take {
   position: relative;
   background:
@@ -326,7 +469,7 @@ img {
     var(--card-2);
   border: 1px solid rgba(240, 193, 75, 0.38);
   border-radius: 22px;
-  padding: 20px 18px 16px;
+  padding: 16px 16px 14px;
   box-shadow: var(--shadow);
   overflow: hidden;
 }
@@ -349,6 +492,22 @@ img {
   background: var(--gold);
   border-radius: 999px;
   padding: 5px 9px;
+}
+
+.take-slot-game .take {
+  background:
+    linear-gradient(180deg, rgba(61, 155, 110, 0.16), transparent 40%),
+    var(--card-2);
+  border-color: rgba(61, 155, 110, 0.42);
+}
+
+.take-slot-game .take::before {
+  border-color: rgba(61, 155, 110, 0.22);
+}
+
+.take-slot-game .take .stamp {
+  background: var(--grass);
+  color: var(--cream);
 }
 
 .take h2 {

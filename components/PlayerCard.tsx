@@ -3,9 +3,15 @@ import { Headshot } from "./Headshot";
 import { playerHref } from "@/lib/href";
 import type { Heater, PlayerRef } from "@/lib/types";
 
-export function PlayerCard({ player }: { player: PlayerRef }) {
+export function PlayerCard({
+  player,
+  gamePk,
+}: {
+  player: PlayerRef;
+  gamePk?: number;
+}) {
   return (
-    <Link className="player-card" href={playerHref(player)}>
+    <Link className="player-card" href={playerHref(player, gamePk)}>
       <Headshot id={player.id} name={player.name} />
       <div>
         <div className="name">{player.name}</div>

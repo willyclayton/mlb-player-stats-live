@@ -23,41 +23,54 @@ function TakeCard({ stat }: { stat: CrazyStat }) {
   );
 }
 
-export function PlayerTake({
-  crazy,
-  liveNote,
+function TakeSlot({
+  label,
+  stats,
+  tone,
 }: {
-  crazy: CrazyStat[];
-  liveNote?: string;
+  label: string;
+  stats: CrazyStat[];
+  tone: "season" | "game";
 }) {
   const [index, setIndex] = useState(0);
-  const featured = crazy[index];
-  if (!featured) return null;
+  const stat = stats[index];
 
   return (
-    <>
-      <TakeCard stat={featured} />
-      <div className="actions">
-        {crazy.length > 1 ? (
+    <section className={`take-slot take-slot-${tone}`}>
+      <div className="take-head">
+        <h2>{label}</h2>
+        {stats.length > 1 ? (
           <button
             className="btn"
             type="button"
-            onClick={() => setIndex((i) => (i + 1) % crazy.length)}
+            onClick={() => setIndex((i) => (i + 1) % stats.length)}
           >
-            Another take
+            Another
           </button>
         ) : null}
-        <button
-          className="btn ghost"
-          type="button"
-          onClick={() => {
-            void navigator.clipboard.writeText(`${featured.stamp}: ${featured.body}`);
-          }}
-        >
-          Copy
-        </button>
       </div>
-      {liveNote ? <p className="hint">{liveNote}</p> : null}
-    </>
+      {stat ? (
+        <TakeCard stat={stat} />
+      ) : (
+        <p className="hint">No official line for this one yet.</p>
+      )}
+    </section>
+  );
+}
+
+export function PlayerTake({
+  season,
+  game,
+  gameLabel,
+}: {
+  season: CrazyStat[];
+  game: CrazyStat[];
+  gameLabel: string;
+}) {
+  return (
+    <div className="takes">
+      <TakeSlot label="Season" stats={season} tone="season" />
+      <TakeSlot label={`This game · ${gameLabel}`} stats={game} tone="game" />
+    </div>
   );
 }

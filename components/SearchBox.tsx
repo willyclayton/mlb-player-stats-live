@@ -61,7 +61,9 @@ export function SearchBox() {
               <Headshot id={player.id} name={player.name} size={80} />
               <div>
                 <div className="name">{player.name}</div>
-                <div className="muted">{player.position || "MLB"}</div>
+                <div className="muted">
+                  {[player.position, player.teamAbbr || player.team].filter(Boolean).join(" · ") || "MLB"}
+                </div>
               </div>
             </Link>
           ))}

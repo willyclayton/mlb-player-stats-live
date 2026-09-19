@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Headshot } from "@/components/Headshot";
+import { PlayerCard } from "@/components/PlayerCard";
 import { PlayerTake } from "@/components/PlayerTake";
 import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate, slash } from "@/lib/format";
-import { getPlayer } from "@/lib/mlb";
+import { gameHref } from "@/lib/href";
+import { getGame, getPlayer } from "@/lib/mlb";
 
 export const revalidate = 45;
 
@@ -18,29 +20,46 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 export default async function PlayerPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ game?: string }>;
 }) {
   const id = Number((await params).id);
+  const gamePk = Number((await searchParams).game);
   if (!Number.isFinite(id)) notFound();
 
   let data;
   try {
-    data = await getPlayer(id);
+    data = await getPlayer(id, Number.isFinite(gamePk) ? gamePk : undefined);
   } catch {
     notFound();
   }
+
+  const game = Number.isFinite(gamePk)
+    ? await getGame(gamePk).catch(() => null)
+    : null;
+  const mates = game
+    ? [...game.away.players, ...game.home.players].filter((p) => p.id !== id).slice(0, 8)
+    : [];
 
   const { player } = data;
 
   return (
     <>
-      <div className="topbar">
-        <Link className="back" href="/">
-          ← Players
-        </Link>
-        <div className="live-dot">Live</div>
-      </div>
+      <nav className="crumb">
+        <Link href="/">Games</Link>
+        {game ? (
+          <>
+            <span>/</span>
+            <Link href={gameHref(game.gamePk)}>
+              {game.away.abbr} @ {game.home.abbr}
+            </Link>
+          </>
+        ) : null}
+        <span>/</span>
+        <span>{player.name}</span>
+      </nav>
 
       <div className="hero">
         <Headshot id={player.id} name={player.name} size={360} />
@@ -56,7 +75,11 @@ export default async function PlayerPage({
         </div>
       </div>
 
-      <PlayerTake crazy={data.crazy} liveNote={data.liveNote} />
+      <PlayerTake
+        season={data.seasonTakes}
+        game={data.gameTakes}
+        gameLabel={data.gameLabel}
+      />
 
       {data.seasonHit ? (
         <section className="section">
@@ -69,7 +92,7 @@ export default async function PlayerPage({
           </div>
           <p className="hint">
             {slash(data.seasonHit)} · {data.seasonHit.rbi} RBI
-            {data.recentHit.last15 ? ` · L15 OPS ${fmtOps(data.recentHit.last15.ops)}` : ""}
+            {data.recentHit.last15 ? ` · last 15 OPS ${fmtOps(data.recentHit.last15.ops)}` : ""}
           </p>
         </section>
       ) : null}
@@ -98,6 +121,17 @@ export default async function PlayerPage({
                 </div>
                 <div>{g.line}</div>
               </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {mates.length ? (
+        <section className="section">
+          <h2>Same game</h2>
+          <div className="row-scroll">
+            {mates.map((mate) => (
+              <PlayerCard key={mate.id} player={mate} gamePk={game?.gamePk} />
             ))}
           </div>
         </section>
