@@ -116,7 +116,7 @@ export function rarity(stat: CrazyStat): number {
       score = 90;
       break;
     case "franchise-since-30-30":
-      score = 88;
+      score = 90;
       break;
     case "franchise-first-40-30":
       score = 96;
