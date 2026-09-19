@@ -453,24 +453,37 @@ async function lineFromBox(
     : null;
 }
 
-export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayload> {
-  const hydrate = `currentTeam,stats(group=[hitting,pitching],type=[season,gameLog],season=${SEASON}),stats(group=[hitting],type=[gameLog],season=${SEASON - 1})`;
-  const data = await mlb<{ people?: Record<string, unknown>[] }>(
-    `/people/${id}?hydrate=${encodeURIComponent(hydrate)}`,
-    45,
+async function getHitLog(id: number, season: number): Promise<GameHit[]> {
+  const data = await mlb<{ stats?: { splits?: Record<string, unknown>[] }[] }>(
+    `/people/${id}/stats?stats=gameLog&group=hitting&season=${season}&gameType=R`,
+    120,
   );
+  const out: GameHit[] = [];
+  for (const split of data.stats?.[0]?.splits ?? []) {
+    const g = mapHitGame(rec(split));
+    if (g) out.push(g);
+  }
+  return out;
+}
+
+export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayload> {
+  const hydrate = `currentTeam,stats(group=[hitting,pitching],type=[season,gameLog],season=${SEASON})`;
+  const [data, priorHits, boxedEarly] = await Promise.all([
+    mlb<{ people?: Record<string, unknown>[] }>(
+      `/people/${id}?hydrate=${encodeURIComponent(hydrate)}`,
+      45,
+    ),
+    getHitLog(id, SEASON - 1).catch(() => [] as GameHit[]),
+    gamePk ? lineFromBox(gamePk, id) : Promise.resolve(null),
+  ]);
   const person = data.people?.[0];
   if (!person) throw new Error(`Player ${id} not found`);
 
   const player = playerRef(person);
   const bat = rec(person.batSide);
   const throwH = rec(person.pitchHand);
-  const extras = await Promise.all([
-    player.teamId ? getTeamHitters(player.teamId) : Promise.resolve([] as TeamHitter[]),
-    gamePk ? lineFromBox(gamePk, id) : Promise.resolve(null),
-  ]);
-  const teamHitters = extras[0];
-  const boxed = extras[1];
+  const teamHitters = player.teamId ? await getTeamHitters(player.teamId).catch(() => [] as TeamHitter[]) : [];
+  const boxed = boxedEarly;
 
   let seasonHit;
   let seasonPitch;
@@ -498,6 +511,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
       }
     }
   }
+  for (const g of priorHits) hitGames.push(g);
 
   const seasonHits = hitGames.filter((g) => g.date.startsWith(String(SEASON)));
   const recentHits = mostRecent(seasonHits, 40);
