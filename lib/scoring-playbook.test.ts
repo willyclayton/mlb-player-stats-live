@@ -105,7 +105,7 @@ describe("Will's A/B playbook", () => {
   it("first 0-for-4 in two weeks and nobody-had-a-hit beat leftover last HR", () => {
     assert.ok(rarity(stat("game-ohfer-first")) > rarity(stat("game-last-hr")));
     assert.ok(rarity(stat("game-nobody")) > rarity(stat("game-ohfer")));
-    assert.ok(rarity(stat("game-mate")) > rarity(stat("game-ohfer")));
+    assert.ok(rarity(stat("game-ohfer")) > rarity(stat("game-dnp")));
   });
 
   it("10B career-best ERA beats a club-only 30-30, and it was close", () => {

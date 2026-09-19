@@ -23,7 +23,7 @@ import type { CrazyStat } from "./types";
  * Quiet leftovers
  * 1. Season: last multi > last HR. Last HR only if that’s all we have.
  * 2. Game: 0-fer with last-multi footnote (G22Y). No last-HR leftover (G23N).
- * 3. 0-fer footnote is last multi, short. Teammate is its own take.
+ * 3. 0-fer footnote is last multi, short. Never another player's line.
  * 4. Nobody had a hit if the team is 0.
  * 5. Last-15 / team-chase / multi-HR beat a leftover last HR.
  *
@@ -299,9 +299,6 @@ export function rarity(stat: CrazyStat): number {
       break;
     case "game-last-hr":
       score = 38;
-      break;
-    case "game-mate":
-      score = 34;
       break;
     case "last-multi":
       score = 32;
