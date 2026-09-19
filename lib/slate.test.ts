@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { slateBlocks } from "./slate";
+import { isLive, slateBlocks } from "./slate";
 import type { HomeGame } from "./types";
 
 function game(over: Partial<HomeGame> & { abstractState: string }): HomeGame {
@@ -44,6 +44,11 @@ describe("home slate", () => {
       blocks[0]?.games.map((g) => g.abstractState),
       ["Live", "Preview"],
     );
+  });
+
+  it("treats In Progress as live even without the Live state", () => {
+    assert.equal(isLive(game({ abstractState: "Preview", status: "In Progress" })), true);
+    assert.equal(isLive(game({ abstractState: "Final", status: "Final" })), false);
   });
 
   it("falls forward to tomorrow on an empty weeknight", () => {

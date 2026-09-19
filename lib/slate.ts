@@ -1,13 +1,18 @@
 import type { HomeGame } from "./types";
 
+export function isLive(game: { abstractState: string; status: string }): boolean {
+  if (game.abstractState === "Live") return true;
+  return /in progress|warmup|delayed|challenge|review/i.test(game.status);
+}
+
 export function sortGames(games: HomeGame[]): HomeGame[] {
-  const rank = (state: string) => {
-    if (state === "Live") return 0;
-    if (state === "Preview") return 1;
-    if (state === "Final") return 2;
+  const rank = (game: HomeGame) => {
+    if (isLive(game)) return 0;
+    if (game.abstractState === "Preview") return 1;
+    if (game.abstractState === "Final") return 2;
     return 3;
   };
-  return [...games].sort((a, b) => rank(a.abstractState) - rank(b.abstractState));
+  return [...games].sort((a, b) => rank(a) - rank(b));
 }
 
 export function slateBlocks(input: {

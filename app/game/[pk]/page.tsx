@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Headshot } from "@/components/Headshot";
 import { playerHref } from "@/lib/href";
 import { getGame } from "@/lib/mlb";
+import { isLive } from "@/lib/slate";
 import type { GameSide } from "@/lib/types";
 
 export const revalidate = 30;
@@ -66,7 +67,11 @@ export default async function GamePage({
 
       <div className="game-hero">
         <div>
-          <div className="kicker">{game.status}</div>
+          {isLive(game) ? (
+            <div className="live-tag">Live</div>
+          ) : (
+            <div className="kicker">{game.status}</div>
+          )}
           <h1 className="match">
             {game.away.abbr} {game.away.score ?? ""}
             <span> @ </span>

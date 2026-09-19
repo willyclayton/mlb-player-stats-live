@@ -27,10 +27,13 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
+const themeBoot = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang="en" className={sans.variable} suppressHydrationWarning>
       <body>
+        <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
         <div className="app">
           <AppHeader />
           {children}
