@@ -140,7 +140,13 @@ async function heaters(): Promise<Heater[]> {
 
   const out: Heater[] = [];
   const seen = new Set<number>();
-  for (const block of [...(hit.leagueLeaders ?? []), ...(pitch.leagueLeaders ?? [])]) {
+  const order = Object.keys(LEADER_LABEL);
+  const blocks = [...(hit.leagueLeaders ?? []), ...(pitch.leagueLeaders ?? [])].sort(
+    (a, b) =>
+      order.indexOf(String(a.leaderCategory ?? "")) -
+      order.indexOf(String(b.leaderCategory ?? "")),
+  );
+  for (const block of blocks) {
     const category = String(block.leaderCategory ?? "");
     const label = LEADER_LABEL[category] ?? category;
     for (const row of block.leaders ?? []) {
