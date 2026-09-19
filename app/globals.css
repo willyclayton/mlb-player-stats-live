@@ -8,6 +8,8 @@ html[data-theme="dark"] {
   --line: #2a2a2a;
   --live: #3ddc84;
   --live-bg: rgba(61, 220, 132, 0.12);
+  --top: #f5c518;
+  --top-bg: rgba(245, 197, 24, 0.14);
   --invert: #fff;
   --invert-fg: #000;
   --ink: #000;
@@ -34,6 +36,8 @@ html[data-theme="light"] {
   --line: #d6d6d1;
   --live: #0b8f45;
   --live-bg: rgba(11, 143, 69, 0.1);
+  --top: #c49200;
+  --top-bg: rgba(196, 146, 0, 0.12);
   --invert: #111;
   --invert-fg: #f4f4f1;
   --ink: #f4f4f1;
@@ -198,6 +202,16 @@ img {
   animation: pulse 1.6s infinite;
 }
 
+.top-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--top);
+  font-weight: 800;
+}
+
 @keyframes pulse {
   70% {
     box-shadow: 0 0 0 8px transparent;
@@ -306,6 +320,17 @@ img {
   padding-right: 16px;
 }
 
+.score-row.top {
+  box-shadow: inset 3px 0 0 var(--top);
+}
+
+.score-row.top:not(.live) {
+  background: var(--top-bg);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .score-teams {
   display: flex;
   flex-direction: column;
@@ -366,6 +391,14 @@ img {
   font-size: 14px;
 }
 
+.lineup-row.top {
+  background: var(--top-bg);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-shadow: inset 3px 0 0 var(--top);
+}
+
 .player-card {
   display: flex;
   align-items: center;
@@ -395,6 +428,39 @@ img {
 .muted {
   color: var(--dim);
   font-size: 12px;
+}
+
+.player-card.top {
+  border-color: var(--top);
+  background: var(--top-bg);
+}
+
+.top-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--top-bg);
+  border: 1px solid var(--top);
+  padding: 12px;
+}
+
+.top-card img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.top-card .name {
+  font-weight: 700;
+  font-size: 18px;
+  margin: 4px 0 2px;
+}
+
+.top-card .feat {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--top);
 }
 
 .grid {
@@ -526,6 +592,26 @@ img {
   color: var(--invert-fg);
   background: var(--invert);
   border-color: var(--invert);
+}
+
+.take.top {
+  border-color: var(--top);
+}
+
+.take.top .stamp {
+  color: #111;
+  background: var(--top);
+  border-color: var(--top);
+}
+
+.take.top .top-tag {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.hero.top {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--top);
 }
 
 .take h2 {

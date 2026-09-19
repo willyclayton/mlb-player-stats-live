@@ -1,4 +1,4 @@
-import { LeaderCard } from "@/components/PlayerCard";
+import { LeaderCard, TopCard } from "@/components/PlayerCard";
 import { Scoreboard } from "@/components/Scoreboard";
 import { getHome } from "@/lib/mlb";
 
@@ -9,6 +9,13 @@ export default async function HomePage() {
 
   return (
     <>
+      {data.top ? (
+        <section className="section">
+          <h2>Top stat</h2>
+          <TopCard player={data.top} />
+        </section>
+      ) : null}
+
       {data.blocks.length === 0 ? (
         <p className="hint">No games on the board. Search a player.</p>
       ) : (

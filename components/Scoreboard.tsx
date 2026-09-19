@@ -13,9 +13,10 @@ export function Scoreboard({ games }: { games: HomeGame[] }) {
       {games.map((game) => {
         const preview = game.abstractState === "Preview" && !isLive(game);
         const live = isLive(game);
+        const top = Boolean(game.topPlayer);
         return (
           <Link
-            className={`score-row${live ? " live" : ""}`}
+            className={`score-row${live ? " live" : ""}${top ? " top" : ""}`}
             key={game.gamePk}
             href={gameHref(game.gamePk)}
           >
@@ -31,6 +32,8 @@ export function Scoreboard({ games }: { games: HomeGame[] }) {
             </div>
             <div className="score-meta">
               {live ? <span className="live-tag">Live</span> : null}
+              {top ? <span className="top-tag">Top stat</span> : null}
+              {top ? <span>{game.topPlayer}</span> : null}
               <span>{preview && game.start ? game.start : game.status}</span>
               <span className="chev">→</span>
             </div>

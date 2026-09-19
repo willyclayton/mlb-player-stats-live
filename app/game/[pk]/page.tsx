@@ -20,16 +20,18 @@ function Lineup({ side, gamePk }: { side: GameSide; gamePk: number }) {
         {side.players.map((player, i) => (
           <Link
             key={player.id}
-            className="lineup-row"
+            className={`lineup-row${player.topStat ? " top" : ""}`}
             href={playerHref(player, gamePk)}
           >
             <span className="muted">{i + 1}</span>
             <Headshot id={player.id} name={player.name} size={80} />
             <div>
               <div className="name">{player.name}</div>
-              <div className="muted">{player.position || "—"}</div>
+              <div className="muted">
+                {player.topStat || player.position || "—"}
+              </div>
             </div>
-            <span className="chev">→</span>
+            {player.topStat ? <span className="top-tag">Top stat</span> : <span className="chev">→</span>}
           </Link>
         ))}
         {side.players.length === 0 ? (
@@ -54,6 +56,8 @@ export default async function GamePage({
   } catch {
     notFound();
   }
+
+  const flagged = [...game.away.players, ...game.home.players].find((p) => p.topStat);
 
   return (
     <>
@@ -81,7 +85,13 @@ export default async function GamePage({
         </div>
       </div>
 
-      <p className="lede">Tap a name.</p>
+      {flagged ? (
+        <p className="lede">
+          <span className="top-tag">Top stat</span> {flagged.name} · {flagged.topStat}
+        </p>
+      ) : (
+        <p className="lede">Tap a name.</p>
+      )}
 
       <Lineup side={game.away} gamePk={game.gamePk} />
       <Lineup side={game.home} gamePk={game.gamePk} />

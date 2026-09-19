@@ -1,5 +1,6 @@
 import { shiftEt, startEt, teamAbbrFromName, todayEt } from "./format";
-import { slateBlocks } from "./slate";
+import { isLive, slateBlocks } from "./slate";
+import { isTopTake, rareGameFeat } from "./top-stat";
 import {
   generateCrazyStats,
   generateGameCrazyStats,
@@ -18,6 +19,7 @@ import type {
   PlayerPayload,
   PlayerRef,
   TeamSide,
+  TopStatCard,
 } from "./types";
 
 const MLB = "https://statsapi.mlb.com/api/v1";
@@ -60,7 +62,18 @@ function playerRef(
     teamAbbr: extras.teamAbbr ?? (team.abbreviation ? String(team.abbreviation) : teamName ? teamAbbrFromName(teamName) : undefined),
     position: String(pos.abbreviation ?? extras.position ?? ""),
     number: person.primaryNumber ? String(person.primaryNumber) : extras.number,
+    topStat: extras.topStat,
   };
+}
+
+function featFromBoxRow(row: Record<string, unknown>): { feat: string; score: number } | null {
+  const stats = rec(row.stats);
+  const batting = rec(stats.batting);
+  const pitching = rec(stats.pitching);
+  const hit = Object.keys(batting).length ? hitFromApi(batting) : undefined;
+  const pitch = Object.keys(pitching).length ? pitchFromApi(pitching) : undefined;
+  const feat = rareGameFeat(hit, pitch);
+  return feat ? { feat: feat.line, score: feat.score } : null;
 }
 
 function sideFromTeam(
@@ -170,8 +183,18 @@ export async function getHome(): Promise<HomePayload> {
     today: byDate.get(today) ?? [],
     tomorrow: byDate.get(tomorrow) ?? [],
   });
+  const marked = await markTopOnBoard(blocks.flatMap((block) => block.games));
+  const byPk = new Map(marked.games.map((game) => [game.gamePk, game]));
 
-  return { asOf: today, blocks, heaters: board };
+  return {
+    asOf: today,
+    blocks: blocks.map((block) => ({
+      ...block,
+      games: block.games.map((game) => byPk.get(game.gamePk) ?? game),
+    })),
+    heaters: board,
+    top: marked.top,
+  };
 }
 
 export async function searchPlayers(query: string): Promise<PlayerRef[]> {
@@ -221,6 +244,7 @@ function playersFromBox(
     const person = rec(row.person);
     if (!person.id) return;
     seen.add(id);
+    const found = featFromBoxRow(row);
     out.push(
       playerRef(person, {
         team: team.name,
@@ -228,6 +252,7 @@ function playersFromBox(
         teamAbbr: team.abbr,
         position: String(rec(row.position).abbreviation ?? fallbackPos ?? ""),
         number: row.jerseyNumber ? String(row.jerseyNumber) : undefined,
+        topStat: found?.feat,
       }),
     );
   };
@@ -578,11 +603,15 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     mates,
   }).slice(0, 6);
 
+  const boxedFeat = rareGameFeat(focusHit, focusPitch);
+  const topTake = [...gameTakes, ...seasonTakes].find(isTopTake);
+
   return {
     player: {
       ...player,
       bats: bat.description ? String(bat.description) : undefined,
       throws: throwH.description ? String(throwH.description) : undefined,
+      topStat: boxedFeat?.line ?? topTake?.stamp,
     },
     seasonHit: seasonHitUse,
     seasonPitch: seasonPitchUse,
@@ -606,4 +635,75 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
 function packHit(games: GameHit[], n: number) {
   const line = aggregateHits(mostRecent(games, n));
   return line.games > 0 ? line : undefined;
+}
+
+async function markTopOnBoard(games: HomeGame[]): Promise<{
+  top?: TopStatCard;
+  games: HomeGame[];
+}> {
+  const playable = games.filter((game) => isLive(game) || game.abstractState === "Final");
+  const live = playable.filter(isLive);
+  const rest = playable.filter((game) => !isLive(game));
+  const scan = [...live, ...rest].slice(0, 6);
+  if (!scan.length) return { games };
+
+  const boxes = await Promise.all(
+    scan.map(async (game) => {
+      try {
+        const box = await mlb<{
+          teams?: { home?: Record<string, unknown>; away?: Record<string, unknown> };
+        }>(`/game/${game.gamePk}/boxscore`, 30);
+        return { game, box };
+      } catch {
+        return { game, box: null };
+      }
+    }),
+  );
+
+  let best: { card: TopStatCard; score: number } | null = null;
+  const byGame = new Map<number, string>();
+
+  for (const { game, box } of boxes) {
+    if (!box?.teams) continue;
+    for (const [sideKey, team] of [
+      ["away", game.away],
+      ["home", game.home],
+    ] as const) {
+      const boxSide = box.teams[sideKey];
+      if (!boxSide) continue;
+      for (const raw of Object.values(rec(boxSide.players))) {
+        const row = rec(raw);
+        const person = rec(row.person);
+        if (!person.id) continue;
+        const found = featFromBoxRow(row);
+        if (!found) continue;
+        if (!byGame.has(game.gamePk)) byGame.set(game.gamePk, String(person.fullName ?? person.name ?? ""));
+        if (!best || found.score > best.score) {
+          best = {
+            score: found.score,
+            card: {
+              ...playerRef(person, {
+                team: team.name,
+                teamId: team.id,
+                teamAbbr: team.abbr,
+                topStat: found.feat,
+              }),
+              feat: found.feat,
+              gamePk: game.gamePk,
+            },
+          };
+          byGame.set(game.gamePk, best.card.name);
+        }
+      }
+    }
+  }
+
+  if (!best) return { games };
+
+  return {
+    top: best.card,
+    games: games.map((game) =>
+      byGame.has(game.gamePk) ? { ...game, topPlayer: byGame.get(game.gamePk) } : game,
+    ),
+  };
 }

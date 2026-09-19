@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { isTopTake } from "@/lib/top-stat";
 import type { CrazyStat } from "@/lib/types";
 
 function TakeCard({ stat }: { stat: CrazyStat }) {
+  const top = isTopTake(stat);
   return (
-    <article className="take">
+    <article className={`take${top ? " top" : ""}`}>
+      {top ? <span className="top-tag">Top stat</span> : null}
       <span className="stamp">{stat.stamp}</span>
       <h2>{stat.headline}</h2>
       <p>{stat.body}</p>
@@ -32,7 +35,8 @@ function TakeSlot({
   stats: CrazyStat[];
   tone: "season" | "game";
 }) {
-  const [index, setIndex] = useState(0);
+  const start = stats.findIndex(isTopTake);
+  const [index, setIndex] = useState(start >= 0 ? start : 0);
   const stat = stats[index];
 
   return (

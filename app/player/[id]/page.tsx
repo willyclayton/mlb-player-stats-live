@@ -61,11 +61,13 @@ export default async function PlayerPage({
         <span>{player.name}</span>
       </nav>
 
-      <div className="hero">
+      <div className={`hero${player.topStat ? " top" : ""}`}>
         <Headshot id={player.id} name={player.name} size={360} />
         <div>
+          {player.topStat ? <div className="top-tag">Top stat</div> : null}
           <div className="kicker">{player.team || "MLB"}</div>
           <h1>{player.name}</h1>
+          {player.topStat ? <p className="lede">{player.topStat}</p> : null}
           <div className="pills">
             {player.position ? <span className="pill">{player.position}</span> : null}
             {player.number ? <span className="pill">#{player.number}</span> : null}
