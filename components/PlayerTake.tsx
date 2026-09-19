@@ -45,7 +45,7 @@ function TakeSlot({
       {stat ? (
         <TakeCard stat={stat} />
       ) : (
-        <p className="hint">No official line for this one yet.</p>
+        <p className="hint">Nothing yet.</p>
       )}
     </section>
   );

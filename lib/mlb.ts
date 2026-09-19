@@ -1,4 +1,4 @@
-import { shiftEt, startEt, teamAbbrFromName, todayEt } from "./format";
+import { shiftEt, shortTeamName, startEt, teamAbbrFromName, todayEt } from "./format";
 import { appearanceIds, appearedIn } from "./lineup";
 import { isLive, slateBlocks } from "./slate";
 import { isTopTake, rareGameFeat } from "./top-stat";
@@ -577,10 +577,12 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
   let opponent = focusHit?.opponent ?? focusPitch?.opponent ?? "Opp";
   let isHome = focusHit?.isHome ?? focusPitch?.isHome ?? true;
   let gameDate = latestDate;
+  const vsLabel = (home: boolean, opp: string) =>
+    `${home ? "vs" : "@"} ${shortTeamName(opp) || opp}`;
   let gameLabel = focusHit
-    ? `${focusHit.isHome ? "vs" : "@"} ${focusHit.opponent}`
+    ? vsLabel(focusHit.isHome, focusHit.opponent)
     : focusPitch
-      ? `${focusPitch.isHome ? "vs" : "@"} ${focusPitch.opponent}`
+      ? vsLabel(focusPitch.isHome, focusPitch.opponent)
       : "This game";
 
   let mates: BoxMate[] = [];
@@ -590,7 +592,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     opponent = boxed.opponent;
     isHome = boxed.isHome;
     gameDate = boxed.date;
-    gameLabel = `${isHome ? "vs" : "@"} ${opponent}`;
+    gameLabel = vsLabel(isHome, opponent);
     mates = boxed.mates;
   }
 
@@ -606,6 +608,7 @@ export async function getPlayer(id: number, gamePk?: number): Promise<PlayerPayl
     seasonHit: seasonHitUse,
     seasonPitch: seasonPitchUse,
     hitGames,
+    pitchGames: recentPitches,
     mates,
   }).slice(0, 6);
 
