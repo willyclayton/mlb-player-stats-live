@@ -784,3 +784,105 @@ html[data-names="full"] .score-teams {
   font-size: 12px;
   text-align: center;
 }
+
+.judge-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.judge-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.judge-pop h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.judge-code {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.judge-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+  min-height: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.judge-card:active {
+  background: var(--invert);
+  color: var(--invert-fg);
+}
+
+.judge-letter {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.judge-card:active .judge-letter,
+.judge-card:active .judge-note,
+.judge-card:active .judge-who {
+  color: inherit;
+}
+
+.judge-who {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.judge-card strong {
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.judge-note {
+  font-size: 14px;
+  color: var(--soft);
+}
+
+.judge-copy {
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
+.judge-log {
+  flex: 1;
+  overflow: auto;
+  margin: 8px 0 0;
+  padding: 0 0 0 18px;
+  color: var(--soft);
+  font-size: 13px;
+}
+
+.judge-log b {
+  color: var(--fg);
+}
