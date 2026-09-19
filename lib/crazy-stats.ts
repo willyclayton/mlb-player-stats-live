@@ -1,6 +1,8 @@
+import { writeCareerFacts } from "./fact-writer";
+import { rankFacts } from "./fact-ranker";
 import { fmtAvg, fmtEra, fmtIp, slash, prettyDate, shortTeamName } from "./format";
 import { aggregateHits, hittingStreak, homerStreak, lastN } from "./stats";
-import type { CrazyStat, GameHit, GamePitch, HitLine, PitchLine } from "./types";
+import type { CrazyStat, GameHit, GamePitch, HitLine, PitchLine, YearLine } from "./types";
 
 export type TeamHitter = { id: number; name: string; line: HitLine };
 export type BoxMate = { id: number; name: string; hit?: HitLine };
@@ -17,6 +19,7 @@ type Input = {
   hitGames: GameHit[];
   pitchGames: GamePitch[];
   teamHitters?: TeamHitter[];
+  years?: YearLine[];
 };
 
 type GameInput = {
@@ -402,6 +405,12 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
     }
   }
 
+  stats.push(...writeCareerFacts({
+    seasonHit: hit,
+    seasonPitch: pitch,
+    years: input.years,
+  }));
+
   if (stats.length === 0) {
     const lastMulti = lastMatch(input.hitGames, (g) => g.hits >= 2);
     if (lastHr) {
@@ -455,7 +464,7 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
     }
   }
 
-  return stats.sort((a, b) => b.score - a.score);
+  return rankFacts(stats);
 }
 
 export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
@@ -779,5 +788,5 @@ export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
     );
   }
 
-  return stats.sort((a, b) => b.score - a.score);
+  return rankFacts(stats);
 }

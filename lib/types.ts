@@ -74,6 +74,12 @@ export type GamePitch = PitchLine & {
   summary?: string;
 };
 
+export type YearLine = {
+  year: number;
+  hit?: HitLine;
+  pitch?: PitchLine;
+};
+
 export type CrazyStat = {
   id: string;
   score: number;
