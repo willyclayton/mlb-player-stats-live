@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Headshot } from "./Headshot";
+import { TeamLabel } from "./TeamLabel";
 import { playerHref } from "@/lib/href";
-import type { Heater, PlayerRef } from "@/lib/types";
+import type { PlayerRef, TopStatCard } from "@/lib/types";
 
 export function PlayerCard({
   player,
@@ -11,29 +12,36 @@ export function PlayerCard({
   gamePk?: number;
 }) {
   return (
-    <Link className="player-card" href={playerHref(player, gamePk)}>
+    <Link className={`player-card${player.topStat ? " top" : ""}`} href={playerHref(player, gamePk)}>
       <Headshot id={player.id} name={player.name} />
       <div>
+        {player.topStat ? <div className="top-tag">Top stat</div> : null}
         <div className="name">{player.name}</div>
         <div className="sub">
-          {[player.teamAbbr || player.team, player.position].filter(Boolean).join(" · ")}
+          {player.topStat || (
+            <>
+              <TeamLabel abbr={player.teamAbbr} name={player.team} />
+              {player.position ? ` · ${player.position}` : ""}
+            </>
+          )}
         </div>
       </div>
     </Link>
   );
 }
 
-export function LeaderCard({ player }: { player: Heater }) {
+export function TopCard({ player }: { player: TopStatCard }) {
   return (
-    <Link className="leader" href={playerHref(player)}>
+    <Link className="top-card" href={playerHref(player, player.gamePk)}>
       <Headshot id={player.id} name={player.name} size={180} />
       <div>
-        <div className="val">
-          {player.value}
-          {player.label ? ` ${player.label}` : ""}
-        </div>
+        <div className="top-tag">Top stat</div>
         <div className="name">{player.name}</div>
-        <div className="muted">{player.teamAbbr || player.team}</div>
+        <div className="feat">{player.feat}</div>
+        <div className="muted">
+          <TeamLabel abbr={player.teamAbbr} name={player.team} />
+          {player.position ? ` · ${player.position}` : ""}
+        </div>
       </div>
     </Link>
   );

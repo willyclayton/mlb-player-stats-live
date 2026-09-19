@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { isLive, slateBlocks } from "./slate";
+import { isLive, slateBlocks, uniqueTeams } from "./slate";
 import type { HomeGame } from "./types";
 
 function game(over: Partial<HomeGame> & { abstractState: string }): HomeGame {
@@ -58,5 +58,46 @@ describe("home slate", () => {
       tomorrow: [game({ gamePk: 20, abstractState: "Preview" })],
     });
     assert.equal(blocks[0]?.label, "Tomorrow");
+  });
+
+  it("lists each club once for the team filter", () => {
+    const teams = uniqueTeams([
+      {
+        label: "Today",
+        games: [
+          game({
+            gamePk: 1,
+            abstractState: "Final",
+            away: { id: 2, name: "Cincinnati Reds", abbr: "CIN" },
+            home: { id: 1, name: "Chicago Cubs", abbr: "CHC" },
+          }),
+        ],
+      },
+    ]);
+    assert.deepEqual(
+      teams.map((t) => t.abbr),
+      ["ATL", "CHC", "CIN"],
+    );
+    assert.equal(teams[0]?.name, "Atlanta Braves");
+  });
+
+  it("keeps Braves first when they are already on the slate", () => {
+    const teams = uniqueTeams([
+      {
+        label: "Today",
+        games: [
+          game({
+            gamePk: 2,
+            abstractState: "Preview",
+            away: { id: 144, name: "Atlanta Braves", abbr: "ATL" },
+            home: { id: 1, name: "Chicago Cubs", abbr: "CHC" },
+          }),
+        ],
+      },
+    ]);
+    assert.deepEqual(
+      teams.map((t) => t.abbr),
+      ["ATL", "CHC"],
+    );
   });
 });

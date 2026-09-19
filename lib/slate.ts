@@ -1,4 +1,11 @@
-import type { HomeGame } from "./types";
+import { shortTeamName } from "./format";
+import type { HomeGame, SlateBlock, TeamSide } from "./types";
+
+export const BRAVES: TeamSide = {
+  id: 144,
+  name: "Atlanta Braves",
+  abbr: "ATL",
+};
 
 export function isLive(game: { abstractState: string; status: string }): boolean {
   if (game.abstractState === "Live") return true;
@@ -48,4 +55,26 @@ export function slateBlocks(input: {
     blocks.push({ label: "Tomorrow", games: sortGames(tomorrow) });
   }
   return blocks;
+}
+
+export function uniqueTeams(blocks: SlateBlock[]): TeamSide[] {
+  const map = new Map<number, TeamSide>();
+  for (const block of blocks) {
+    for (const game of block.games) {
+      map.set(game.away.id, {
+        id: game.away.id,
+        name: game.away.name,
+        abbr: game.away.abbr,
+      });
+      map.set(game.home.id, {
+        id: game.home.id,
+        name: game.home.name,
+        abbr: game.home.abbr,
+      });
+    }
+  }
+  const rest = [...map.values()]
+    .filter((team) => team.id !== BRAVES.id)
+    .sort((a, b) => shortTeamName(a.name).localeCompare(shortTeamName(b.name)));
+  return [map.get(BRAVES.id) ?? BRAVES, ...rest];
 }

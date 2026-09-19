@@ -1,12 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Headshot } from "./Headshot";
+import { TeamLabel } from "./TeamLabel";
 import { playerHref } from "@/lib/href";
 import type { PlayerRef } from "@/lib/types";
 
+function gameFromPath(path: string, gameParam: string | null): number | undefined {
+  const fromPath = path.match(/^\/game\/(\d+)/);
+  const raw = fromPath?.[1] ?? gameParam;
+  const id = Number(raw);
+  return Number.isFinite(id) && id > 0 ? id : undefined;
+}
+
 export function SearchBox() {
+  const path = usePathname();
+  const params = useSearchParams();
+  const gamePk = gameFromPath(path, params.get("game"));
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<PlayerRef[]>([]);
   const [searching, setSearching] = useState(false);
@@ -22,7 +34,8 @@ export function SearchBox() {
     const handle = window.setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`, {
+        const game = gamePk ? `&game=${gamePk}` : "";
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}${game}`, {
           signal: ac.signal,
         });
         const data = (await res.json()) as { players?: PlayerRef[] };
@@ -38,15 +51,15 @@ export function SearchBox() {
       window.clearTimeout(handle);
       ac.abort();
     };
-  }, [query]);
+  }, [query, gamePk]);
 
   return (
     <div className="search">
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search a player"
-        aria-label="Search players"
+        placeholder={gamePk ? "Search this game" : "Search a player"}
+        aria-label={gamePk ? "Search players in this game" : "Search players"}
       />
       {query.trim().length >= 2 ? (
         <div className="search-list" role="listbox">
@@ -57,12 +70,13 @@ export function SearchBox() {
             <div className="search-item muted">No players found</div>
           ) : null}
           {results.map((player) => (
-            <Link key={player.id} className="search-item" href={playerHref(player)}>
+            <Link key={player.id} className="search-item" href={playerHref(player, gamePk)}>
               <Headshot id={player.id} name={player.name} size={80} />
               <div>
                 <div className="name">{player.name}</div>
                 <div className="muted">
-                  {[player.position, player.teamAbbr || player.team].filter(Boolean).join(" · ") || "MLB"}
+                  {player.position ? `${player.position} · ` : null}
+                  <TeamLabel abbr={player.teamAbbr} name={player.team} />
                 </div>
               </div>
             </Link>

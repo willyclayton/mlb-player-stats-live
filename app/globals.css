@@ -8,6 +8,8 @@ html[data-theme="dark"] {
   --line: #2a2a2a;
   --live: #3ddc84;
   --live-bg: rgba(61, 220, 132, 0.12);
+  --top: #f5c518;
+  --top-bg: rgba(245, 197, 24, 0.14);
   --invert: #fff;
   --invert-fg: #000;
   --ink: #000;
@@ -34,6 +36,8 @@ html[data-theme="light"] {
   --line: #d6d6d1;
   --live: #0b8f45;
   --live-bg: rgba(11, 143, 69, 0.1);
+  --top: #c49200;
+  --top-bg: rgba(196, 146, 0, 0.12);
   --invert: #111;
   --invert-fg: #f4f4f1;
   --ink: #f4f4f1;
@@ -103,6 +107,12 @@ img {
   gap: 12px;
 }
 
+.shell-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .brand-link {
   font-size: 18px;
   font-weight: 700;
@@ -131,9 +141,22 @@ img {
   margin: 6px 0 0;
 }
 
-.match span {
+.match .at {
   color: var(--dim);
   font-size: 0.7em;
+}
+
+html[data-names="abbr"] .team-name {
+  display: none;
+}
+
+html[data-names="full"] .team-abbr,
+html:not([data-names]) .team-abbr {
+  display: none;
+}
+
+html[data-names="full"] .score-teams {
+  min-width: 150px;
 }
 
 .topbar {
@@ -177,6 +200,42 @@ img {
   cursor: pointer;
 }
 
+.theme-toggle.on {
+  background: var(--invert);
+  color: var(--invert-fg);
+  border-color: var(--invert);
+}
+
+.team-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin: 12px 0 0;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.team-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.team-chip {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.team-chip.on {
+  background: var(--invert);
+  color: var(--invert-fg);
+  border-color: var(--invert);
+}
+
 .live-tag {
   display: inline-flex;
   align-items: center;
@@ -196,6 +255,16 @@ img {
   background: var(--live);
   box-shadow: 0 0 0 0 color-mix(in srgb, var(--live) 70%, transparent);
   animation: pulse 1.6s infinite;
+}
+
+.top-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--top);
+  font-weight: 800;
 }
 
 @keyframes pulse {
@@ -306,6 +375,17 @@ img {
   padding-right: 16px;
 }
 
+.score-row.top {
+  box-shadow: inset 3px 0 0 var(--top);
+}
+
+.score-row.top:not(.live) {
+  background: var(--top-bg);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .score-teams {
   display: flex;
   flex-direction: column;
@@ -313,9 +393,22 @@ img {
   min-width: 120px;
 }
 
+.score-side {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.score-teams .team-abbr,
 .score-teams .abbr {
   font-weight: 700;
   width: 42px;
+  display: inline-block;
+}
+
+.score-teams .team-name {
+  font-weight: 700;
+  min-width: 72px;
   display: inline-block;
 }
 
@@ -366,6 +459,14 @@ img {
   font-size: 14px;
 }
 
+.lineup-row.top {
+  background: var(--top-bg);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-shadow: inset 3px 0 0 var(--top);
+}
+
 .player-card {
   display: flex;
   align-items: center;
@@ -395,6 +496,50 @@ img {
 .muted {
   color: var(--dim);
   font-size: 12px;
+}
+
+.player-card.top {
+  border-color: var(--top);
+  background: var(--top-bg);
+}
+
+.top-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.top-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--top-bg);
+  border: 1px solid var(--top);
+  padding: 12px;
+}
+
+.top-card img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.top-card .name {
+  font-weight: 700;
+  font-size: 18px;
+  margin: 4px 0 2px;
+}
+
+.top-card .feat {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--top);
 }
 
 .grid {
@@ -526,6 +671,26 @@ img {
   color: var(--invert-fg);
   background: var(--invert);
   border-color: var(--invert);
+}
+
+.take.top {
+  border-color: var(--top);
+}
+
+.take.top .stamp {
+  color: #111;
+  background: var(--top);
+  border-color: var(--top);
+}
+
+.take.top .top-tag {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.hero.top {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--top);
 }
 
 .take h2 {

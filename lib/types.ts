@@ -7,6 +7,7 @@ export type PlayerRef = {
   teamAbbr?: string;
   position?: string;
   number?: string;
+  topStat?: string;
 };
 
 export type HitLine = {
@@ -113,6 +114,7 @@ export type HomeGame = {
   status: string;
   abstractState: string;
   start?: string;
+  topPlayer?: string;
   home: TeamSide;
   away: TeamSide;
 };
@@ -134,10 +136,14 @@ export type GamePayload = {
   away: GameSide;
 };
 
-export type Heater = PlayerRef & { value: string; label: string };
+export type TopStatCard = PlayerRef & {
+  feat: string;
+  gamePk?: number;
+  scope?: "game" | "season";
+};
 
 export type HomePayload = {
   asOf: string;
   blocks: SlateBlock[];
-  heaters: Heater[];
+  top: TopStatCard[];
 };
