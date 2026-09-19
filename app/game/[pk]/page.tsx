@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Headshot } from "@/components/Headshot";
+import { Matchup, TeamLabel } from "@/components/TeamLabel";
 import { playerHref } from "@/lib/href";
 import { getGame } from "@/lib/mlb";
 import { isLive } from "@/lib/slate";
@@ -12,7 +13,7 @@ function Lineup({ side, gamePk }: { side: GameSide; gamePk: number }) {
   return (
     <section className="section">
       <h2>
-        {side.abbr}
+        <TeamLabel abbr={side.abbr} name={side.name} />
         {side.score != null ? ` ${side.score}` : ""}
       </h2>
       <p className="hint">{side.name}</p>
@@ -65,7 +66,7 @@ export default async function GamePage({
         <Link href="/">Games</Link>
         <span>/</span>
         <span>
-          {game.away.abbr} @ {game.home.abbr}
+          <Matchup away={game.away} home={game.home} />
         </span>
       </nav>
 
@@ -77,9 +78,11 @@ export default async function GamePage({
             <div className="kicker">{game.status}</div>
           )}
           <h1 className="match">
-            {game.away.abbr} {game.away.score ?? ""}
-            <span> @ </span>
-            {game.home.abbr} {game.home.score ?? ""}
+            <TeamLabel abbr={game.away.abbr} name={game.away.name} />{" "}
+            {game.away.score ?? ""}
+            <span className="at"> @ </span>
+            <TeamLabel abbr={game.home.abbr} name={game.home.name} />{" "}
+            {game.home.score ?? ""}
           </h1>
           {game.venue ? <p className="hint">{game.venue}</p> : null}
         </div>

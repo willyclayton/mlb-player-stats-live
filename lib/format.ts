@@ -87,6 +87,15 @@ export function teamAbbrFromName(name?: string): string {
   return map[name] ?? name.split(" ").pop()?.slice(0, 3).toUpperCase() ?? "MLB";
 }
 
+export function shortTeamName(name?: string): string {
+  if (!name) return "";
+  if (/white sox/i.test(name)) return "White Sox";
+  if (/red sox/i.test(name)) return "Red Sox";
+  if (/blue jays/i.test(name)) return "Blue Jays";
+  if (/athletics/i.test(name)) return "Athletics";
+  return name.split(" ").pop() || name;
+}
+
 export function headshotUrl(id: number, size = 213): string {
   return `https://img.mlbstatic.com/mlb-photos/image/upload/d_people:generic:headshot:silo:current.png/w_${size},q_auto:best/v1/people/${id}/headshot/silo/current`;
 }

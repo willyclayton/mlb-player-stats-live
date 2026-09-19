@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Headshot } from "@/components/Headshot";
 import { PlayerCard } from "@/components/PlayerCard";
 import { PlayerTake } from "@/components/PlayerTake";
+import { Matchup } from "@/components/TeamLabel";
 import { fmtAvg, fmtEra, fmtIp, fmtOps, prettyDate } from "@/lib/format";
 import { gameHref } from "@/lib/href";
 import { getGame, getPlayer } from "@/lib/mlb";
@@ -39,8 +40,11 @@ export default async function PlayerPage({
   const game = Number.isFinite(gamePk)
     ? await getGame(gamePk).catch(() => null)
     : null;
-  const mates = game
-    ? [...game.away.players, ...game.home.players].filter((p) => p.id !== id).slice(0, 8)
+  const inGame = game
+    ? [...game.away.players, ...game.home.players].some((p) => p.id === id)
+    : false;
+  const mates = game && inGame
+    ? [...game.away.players, ...game.home.players].filter((p) => p.id !== id)
     : [];
 
   const { player } = data;
@@ -49,11 +53,11 @@ export default async function PlayerPage({
     <>
       <nav className="crumb">
         <Link href="/">Games</Link>
-        {game ? (
+        {game && inGame ? (
           <>
             <span>/</span>
             <Link href={gameHref(game.gamePk)}>
-              {game.away.abbr} @ {game.home.abbr}
+              <Matchup away={game.away} home={game.home} />
             </Link>
           </>
         ) : null}

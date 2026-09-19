@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { generateCrazyStats, generateGameCrazyStats } from "./crazy-stats";
-import { fmtAvg, parseInnings, startEt } from "./format";
+import { fmtAvg, parseInnings, shortTeamName, startEt } from "./format";
 import {
   aggregateHits,
   emptyHit,
@@ -39,6 +39,12 @@ describe("format helpers", () => {
 
   it("prints first pitch in Eastern time", () => {
     assert.equal(startEt("2026-09-19T17:10:00Z"), "1:10 PM");
+  });
+
+  it("shortens club names for the board", () => {
+    assert.equal(shortTeamName("Pittsburgh Pirates"), "Pirates");
+    assert.equal(shortTeamName("Chicago White Sox"), "White Sox");
+    assert.equal(shortTeamName("Athletics"), "Athletics");
   });
 });
 

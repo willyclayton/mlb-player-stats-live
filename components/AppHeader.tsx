@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { NameToggle } from "./NameToggle";
 import { SearchBox } from "./SearchBox";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -9,9 +11,14 @@ export function AppHeader() {
         <Link href="/" className="brand-link">
           MLB
         </Link>
-        <ThemeToggle />
+        <div className="shell-actions">
+          <NameToggle />
+          <ThemeToggle />
+        </div>
       </div>
-      <SearchBox />
+      <Suspense fallback={null}>
+        <SearchBox />
+      </Suspense>
     </header>
   );
 }

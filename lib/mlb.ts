@@ -1,4 +1,5 @@
 import { shiftEt, startEt, teamAbbrFromName, todayEt } from "./format";
+import { appearanceIds, appearedIn } from "./lineup";
 import { isLive, slateBlocks } from "./slate";
 import { isTopTake, rareGameFeat } from "./top-stat";
 import {
@@ -197,9 +198,16 @@ export async function getHome(): Promise<HomePayload> {
   };
 }
 
-export async function searchPlayers(query: string): Promise<PlayerRef[]> {
+export async function searchPlayers(query: string, gamePk?: number): Promise<PlayerRef[]> {
   const q = query.trim();
   if (q.length < 2) return [];
+  if (gamePk) {
+    const game = await getGame(gamePk);
+    const needle = q.toLowerCase();
+    return [...game.away.players, ...game.home.players]
+      .filter((player) => player.name.toLowerCase().includes(needle))
+      .slice(0, 8);
+  }
   const data = await mlb<{ people?: Record<string, unknown>[] }>(
     `/people/search?names=${encodeURIComponent(q)}`,
     30,
@@ -232,34 +240,24 @@ function playersFromBox(
   team: TeamSide,
 ): PlayerRef[] {
   const dict = rec(boxSide.players);
-  const order = Array.isArray(boxSide.battingOrder)
-    ? boxSide.battingOrder.map((id) => Number(id))
-    : [];
   const out: PlayerRef[] = [];
-  const seen = new Set<number>();
 
-  const fromId = (id: number, fallbackPos?: string) => {
-    if (!id || seen.has(id)) return;
+  for (const id of appearanceIds(boxSide)) {
     const row = rec(dict[`ID${id}`] ?? dict[String(id)]);
     const person = rec(row.person);
-    if (!person.id) return;
-    seen.add(id);
+    if (!person.id) continue;
     const found = featFromBoxRow(row);
+    const pitcher = Array.isArray(boxSide.pitchers) && boxSide.pitchers.map(Number).includes(id);
     out.push(
       playerRef(person, {
         team: team.name,
         teamId: team.id,
         teamAbbr: team.abbr,
-        position: String(rec(row.position).abbreviation ?? fallbackPos ?? ""),
+        position: String(rec(row.position).abbreviation ?? (pitcher ? "P" : "")),
         number: row.jerseyNumber ? String(row.jerseyNumber) : undefined,
         topStat: found?.feat,
       }),
     );
-  };
-
-  for (const id of order) fromId(id);
-  for (const id of Array.isArray(boxSide.pitchers) ? boxSide.pitchers : []) {
-    fromId(Number(id), "P");
   }
   return out;
 }
@@ -304,8 +302,10 @@ export async function getGame(gamePk: number): Promise<GamePayload> {
         30,
       );
       const boxTeams = box.teams ?? {};
-      if (boxTeams.away) awayPlayers = playersFromBox(boxTeams.away, awayBase);
-      if (boxTeams.home) homePlayers = playersFromBox(boxTeams.home, homeBase);
+      const awayBox = boxTeams.away ? playersFromBox(boxTeams.away, awayBase) : [];
+      const homeBox = boxTeams.home ? playersFromBox(boxTeams.home, homeBase) : [];
+      if (awayBox.length) awayPlayers = awayBox;
+      if (homeBox.length) homePlayers = homeBox;
     } catch {
       /* posted lineup is fine */
     }
@@ -380,12 +380,13 @@ function matesFromBox(
   boxSide: Record<string, unknown>,
   skipId: number,
 ): BoxMate[] {
+  const dict = rec(boxSide.players);
   const out: BoxMate[] = [];
-  for (const raw of Object.values(rec(boxSide.players))) {
-    const row = rec(raw);
+  for (const id of appearanceIds(boxSide)) {
+    if (id === skipId) continue;
+    const row = rec(dict[`ID${id}`] ?? dict[String(id)]);
     const person = rec(row.person);
-    const id = Number(person.id);
-    if (!id || id === skipId) continue;
+    if (!person.id) continue;
     const batting = rec(rec(row.stats).batting);
     const hit = Object.keys(batting).length ? hitFromApi(batting) : undefined;
     if (hit) out.push({ id, name: String(person.fullName ?? person.name ?? ""), hit });
@@ -442,6 +443,7 @@ async function lineFromBox(
     ["home", box.teams?.home],
   ] as const) {
     if (!boxSide) continue;
+    if (!appearedIn(boxSide, playerId)) continue;
     const row = rec(rec(boxSide.players)[`ID${playerId}`]);
     const person = rec(row.person);
     if (Number(person.id) !== playerId) continue;
@@ -478,9 +480,7 @@ async function lineFromBox(
       mates: matesFromBox(boxSide, playerId),
     };
   }
-  return header
-    ? { opponent: header.away.name, isHome: true, date, mates: [] }
-    : null;
+  return null;
 }
 
 async function getHitLog(id: number, season: number): Promise<GameHit[]> {

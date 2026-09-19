@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TeamLabel } from "./TeamLabel";
 import { gameHref } from "@/lib/href";
 import { isLive } from "@/lib/slate";
 import type { HomeGame } from "@/lib/types";
@@ -21,12 +22,12 @@ export function Scoreboard({ games }: { games: HomeGame[] }) {
             href={gameHref(game.gamePk)}
           >
             <div className="score-teams">
-              <div>
-                <span className="abbr">{game.away.abbr}</span>
+              <div className="score-side">
+                <TeamLabel abbr={game.away.abbr} name={game.away.name} />
                 <span className="pts">{preview ? "" : (game.away.score ?? "—")}</span>
               </div>
-              <div>
-                <span className="abbr">{game.home.abbr}</span>
+              <div className="score-side">
+                <TeamLabel abbr={game.home.abbr} name={game.home.name} />
                 <span className="pts">{preview ? "" : (game.home.score ?? "—")}</span>
               </div>
             </div>

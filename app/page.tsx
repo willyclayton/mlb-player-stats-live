@@ -1,5 +1,5 @@
 import { LeaderCard, TopCard } from "@/components/PlayerCard";
-import { Scoreboard } from "@/components/Scoreboard";
+import { Slate } from "@/components/Slate";
 import { getHome } from "@/lib/mlb";
 
 export const revalidate = 30;
@@ -19,12 +19,7 @@ export default async function HomePage() {
       {data.blocks.length === 0 ? (
         <p className="hint">No games on the board. Search a player.</p>
       ) : (
-        data.blocks.map((block) => (
-          <section className="section" key={block.label}>
-            <h2>{block.label}</h2>
-            <Scoreboard games={block.games} />
-          </section>
-        ))
+        <Slate blocks={data.blocks} />
       )}
 
       {data.heaters.length ? (

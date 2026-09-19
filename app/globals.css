@@ -107,6 +107,12 @@ img {
   gap: 12px;
 }
 
+.shell-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .brand-link {
   font-size: 18px;
   font-weight: 700;
@@ -135,9 +141,22 @@ img {
   margin: 6px 0 0;
 }
 
-.match span {
+.match .at {
   color: var(--dim);
   font-size: 0.7em;
+}
+
+html[data-names="abbr"] .team-name {
+  display: none;
+}
+
+html[data-names="full"] .team-abbr,
+html:not([data-names]) .team-abbr {
+  display: none;
+}
+
+html[data-names="full"] .score-teams {
+  min-width: 150px;
 }
 
 .topbar {
@@ -179,6 +198,42 @@ img {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.theme-toggle.on {
+  background: var(--invert);
+  color: var(--invert-fg);
+  border-color: var(--invert);
+}
+
+.team-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  margin: 12px 0 0;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.team-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.team-chip {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.team-chip.on {
+  background: var(--invert);
+  color: var(--invert-fg);
+  border-color: var(--invert);
 }
 
 .live-tag {
@@ -338,9 +393,22 @@ img {
   min-width: 120px;
 }
 
+.score-side {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.score-teams .team-abbr,
 .score-teams .abbr {
   font-weight: 700;
   width: 42px;
+  display: inline-block;
+}
+
+.score-teams .team-name {
+  font-weight: 700;
+  min-width: 72px;
   display: inline-block;
 }
 

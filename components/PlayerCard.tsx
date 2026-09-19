@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Headshot } from "./Headshot";
+import { TeamLabel } from "./TeamLabel";
 import { playerHref } from "@/lib/href";
 import type { Heater, PlayerRef, TopStatCard } from "@/lib/types";
 
@@ -17,7 +18,12 @@ export function PlayerCard({
         {player.topStat ? <div className="top-tag">Top stat</div> : null}
         <div className="name">{player.name}</div>
         <div className="sub">
-          {player.topStat || [player.teamAbbr || player.team, player.position].filter(Boolean).join(" · ")}
+          {player.topStat || (
+            <>
+              <TeamLabel abbr={player.teamAbbr} name={player.team} />
+              {player.position ? ` · ${player.position}` : ""}
+            </>
+          )}
         </div>
       </div>
     </Link>
@@ -33,7 +39,8 @@ export function TopCard({ player }: { player: TopStatCard }) {
         <div className="name">{player.name}</div>
         <div className="feat">{player.feat}</div>
         <div className="muted">
-          {[player.teamAbbr || player.team, player.position].filter(Boolean).join(" · ")}
+          <TeamLabel abbr={player.teamAbbr} name={player.team} />
+          {player.position ? ` · ${player.position}` : ""}
         </div>
       </div>
     </Link>
@@ -50,7 +57,9 @@ export function LeaderCard({ player }: { player: Heater }) {
           {player.label ? ` ${player.label}` : ""}
         </div>
         <div className="name">{player.name}</div>
-        <div className="muted">{player.teamAbbr || player.team}</div>
+        <div className="muted">
+          <TeamLabel abbr={player.teamAbbr} name={player.team} />
+        </div>
       </div>
     </Link>
   );
