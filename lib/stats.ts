@@ -184,6 +184,10 @@ export function lastN<T>(items: T[], n: number): T[] {
   return items.slice(-n);
 }
 
+export function mostRecent<T extends { date: string }>(items: T[], n: number): T[] {
+  return [...items].sort((a, b) => a.date.localeCompare(b.date)).slice(-n);
+}
+
 export function hittingStreak(games: GameHit[]): number {
   let streak = 0;
   for (let i = games.length - 1; i >= 0; i--) {

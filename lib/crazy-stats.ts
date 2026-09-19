@@ -485,3 +485,219 @@ export function generateCrazyStats(input: Input): CrazyStat[] {
 
   return stats.sort((a, b) => b.score - a.score);
 }
+
+type GameInput = {
+  name: string;
+  nickname?: string;
+  opponent: string;
+  isHome: boolean;
+  date?: string;
+  hit?: HitLine & { summary?: string; leftOnBase?: number };
+  pitch?: PitchLine & { summary?: string };
+  seasonHit?: HitLine;
+  seasonPitch?: PitchLine;
+};
+
+export function generateGameCrazyStats(input: GameInput): CrazyStat[] {
+  const stats: CrazyStat[] = [];
+  const first = input.nickname || input.name.split(" ").pop() || input.name;
+  const vs = `${input.isHome ? "vs" : "@"} ${input.opponent}`;
+  const hit = input.hit;
+  const pitch = input.pitch;
+  const played = Boolean(
+    (hit && (hit.plateAppearances > 0 || hit.atBats > 0)) ||
+      (pitch && pitch.innings > 0),
+  );
+
+  if (hit && hit.atBats + hit.walks + hit.plateAppearances > 0) {
+    const line = hit.summary || `${hit.hits}-${hit.atBats}`;
+    stats.push(
+      take({
+        id: "game-line",
+        score: 40 + hit.hits * 8 + hit.homeRuns * 12 + hit.rbi * 4,
+        stamp: "THIS GAME",
+        category: "heater",
+        headline: `${first} went ${line} ${vs}`,
+        body: `${input.name} is ${hit.hits}-for-${hit.atBats} with ${hit.homeRuns} HR, ${hit.rbi} RBI, ${hit.walks} BB and ${hit.strikeOuts} K ${vs}. That's the official box, not a guess.`,
+        receipts: [
+          { label: "Line", value: line },
+          { label: "HR", value: String(hit.homeRuns) },
+          { label: "RBI", value: String(hit.rbi) },
+          { label: "K", value: String(hit.strikeOuts) },
+        ],
+      }),
+    );
+  }
+
+  if (hit && hit.hits === 0 && hit.atBats >= 4) {
+    stats.push(
+      take({
+        id: "game-ohfer",
+        score: 48 + hit.strikeOuts * 4,
+        stamp: "OH-FER",
+        category: "split",
+        headline: `${first} got nothing ${vs}`,
+        body: `${hit.atBats} at-bats, ${hit.hits} hits${hit.strikeOuts ? `, ${hit.strikeOuts} punchouts` : ""}. The box score is a blank stare.`,
+        receipts: [
+          { label: "AB", value: String(hit.atBats) },
+          { label: "H", value: "0" },
+          { label: "K", value: String(hit.strikeOuts) },
+        ],
+      }),
+    );
+  }
+
+  if (hit && hit.leftOnBase != null && hit.leftOnBase >= 5) {
+    stats.push(
+      take({
+        id: "game-lob",
+        score: 44 + hit.leftOnBase,
+        stamp: "TRAFFIC JAM",
+        category: "split",
+        headline: `${hit.leftOnBase} left on base ${vs}`,
+        body: `${first} stranded ${hit.leftOnBase}. The runners came. The hits did not RSVP.`,
+        receipts: [{ label: "LOB", value: String(hit.leftOnBase) }],
+      }),
+    );
+  }
+
+  if (hit && hit.hits >= 2) {
+    stats.push(
+      take({
+        id: "game-multi",
+        score: 62 + hit.hits * 6 + hit.homeRuns * 10,
+        stamp: "MULTI-HIT",
+        category: "heater",
+        headline: `${hit.hits} hits ${vs}`,
+        body: `${input.name} went ${hit.hits}-for-${hit.atBats}${hit.homeRuns ? ` with ${hit.homeRuns} gone` : ""}${hit.rbi ? ` and ${hit.rbi} driven in` : ""}. That's a night.`,
+        receipts: [
+          { label: "H", value: String(hit.hits) },
+          { label: "AB", value: String(hit.atBats) },
+          { label: "RBI", value: String(hit.rbi) },
+        ],
+      }),
+    );
+  }
+
+  if (hit && hit.homeRuns >= 1) {
+    const seasonHr = input.seasonHit?.homeRuns;
+    stats.push(
+      take({
+        id: "game-hr",
+        score: 70 + hit.homeRuns * 12,
+        stamp: hit.homeRuns >= 2 ? "MULTI-HR" : "WENT DEEP",
+        category: "power",
+        headline:
+          hit.homeRuns >= 2
+            ? `${hit.homeRuns} bombs ${vs}`
+            : `${first} went deep ${vs}`,
+        body: `${hit.homeRuns} home run${hit.homeRuns > 1 ? "s" : ""} tonight${
+          seasonHr ? ` — ${seasonHr} on the season` : ""
+        }. The official scorer did not need a replay.`,
+        receipts: [
+          { label: "HR", value: String(hit.homeRuns) },
+          { label: "RBI", value: String(hit.rbi) },
+          ...(seasonHr ? [{ label: "Season HR", value: String(seasonHr) }] : []),
+        ],
+      }),
+    );
+  }
+
+  if (hit && hit.stolenBases >= 1) {
+    stats.push(
+      take({
+        id: "game-sb",
+        score: 58,
+        stamp: "RAN",
+        category: "speed",
+        headline: `${hit.stolenBases} steal${hit.stolenBases > 1 ? "s" : ""} ${vs}`,
+        body: `${first} took a bag${hit.stolenBases > 1 ? " (and another)" : ""}. Catcher threw. The bag won.`,
+        receipts: [{ label: "SB", value: String(hit.stolenBases) }],
+      }),
+    );
+  }
+
+  if (hit && hit.rbi >= 3) {
+    stats.push(
+      take({
+        id: "game-rbi",
+        score: 64 + hit.rbi,
+        stamp: "DROVE THEM IN",
+        category: "heater",
+        headline: `${hit.rbi} RBI ${vs}`,
+        body: `${input.name} knocked in ${hit.rbi}. The lineup card did its job. So did ${first}.`,
+        receipts: [{ label: "RBI", value: String(hit.rbi) }],
+      }),
+    );
+  }
+
+  if (pitch && pitch.innings > 0) {
+    stats.push(
+      take({
+        id: "game-pitch",
+        score: 55 + pitch.strikeOuts * 4 - pitch.earnedRuns * 6,
+        stamp: "ON THE MOUND",
+        category: "pitching",
+        headline: `${fmtIp(pitch.innings)} IP, ${pitch.strikeOuts} K ${vs}`,
+        body: `${input.name} threw ${fmtIp(pitch.innings)} innings, ${pitch.earnedRuns} ER, ${pitch.strikeOuts} K, ${pitch.walks} BB${pitch.summary ? ` (${pitch.summary})` : ""}.`,
+        receipts: [
+          { label: "IP", value: fmtIp(pitch.innings) },
+          { label: "ER", value: String(pitch.earnedRuns) },
+          { label: "K", value: String(pitch.strikeOuts) },
+        ],
+      }),
+    );
+  }
+
+  if (pitch && pitch.earnedRuns === 0 && pitch.innings >= 5) {
+    stats.push(
+      take({
+        id: "game-zeros",
+        score: 80,
+        stamp: "ZEROS",
+        category: "pitching",
+        headline: `No earned runs ${vs}`,
+        body: `${fmtIp(pitch.innings)} innings, zero earned. The lineup can thank ${first} later.`,
+        receipts: [
+          { label: "IP", value: fmtIp(pitch.innings) },
+          { label: "ER", value: "0" },
+        ],
+      }),
+    );
+  }
+
+  if (hit && input.seasonHit && hit.atBats >= 1 && input.seasonHit.games >= 10) {
+    const season = input.seasonHit;
+    stats.push(
+      take({
+        id: "game-vs-season",
+        score: 34,
+        stamp: "VS THE YEAR",
+        category: "split",
+        headline: `Tonight vs ${first}'s 2026`,
+        body: `This game: ${hit.hits}-for-${hit.atBats}, ${hit.homeRuns} HR. Season: ${slash(season)} with ${season.homeRuns} homers in ${season.games} games. One night in the file.`,
+        receipts: [
+          { label: "Tonight", value: `${hit.hits}-${hit.atBats}` },
+          { label: "Season AVG", value: fmtAvg(season.avg) },
+          { label: "Season HR", value: String(season.homeRuns) },
+        ],
+      }),
+    );
+  }
+
+  if (!played) {
+    stats.push(
+      take({
+        id: "game-dnp",
+        score: 8,
+        stamp: "NO LINE",
+        category: "rare",
+        headline: `${input.name} has no box yet ${vs}`,
+        body: `The official game file does not have a plate appearance or an inning for ${first} yet. Check back when they play.`,
+        receipts: [],
+      }),
+    );
+  }
+
+  return stats.sort((a, b) => b.score - a.score);
+}

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo_Black, DM_Sans } from "next/font/google";
+import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
 
 const display = Archivo_Black({
@@ -15,7 +16,7 @@ const sans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "MLB Live — Crazy Stats",
-  description: "Tap a player. Live MLB numbers. One insane stat.",
+  description: "Tap a game or a player. Live MLB numbers. One insane stat.",
   applicationName: "MLB Crazy Stats",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -36,7 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body>
-        <div className="app">{children}</div>
+        <div className="app">
+          <AppHeader />
+          {children}
+        </div>
       </body>
     </html>
   );

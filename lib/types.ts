@@ -61,6 +61,7 @@ export type GameHit = HitLine & {
   isHome: boolean;
   isWin?: boolean;
   summary?: string;
+  leftOnBase?: number;
 };
 
 export type GamePitch = PitchLine & {
@@ -95,16 +96,36 @@ export type PlayerPayload = {
   seasonPitch?: PitchLine;
   recentHit: { last7?: HitLine; last15?: HitLine; last30?: HitLine };
   lastHitGames: LogRow[];
-  crazy: CrazyStat[];
-  liveNote?: string;
+  seasonTakes: CrazyStat[];
+  gameTakes: CrazyStat[];
+  gameLabel: string;
+};
+
+export type TeamSide = {
+  id: number;
+  name: string;
+  abbr: string;
+  score?: number;
 };
 
 export type HomeGame = {
   gamePk: number;
   status: string;
   abstractState: string;
-  home: { abbr: string; score?: number };
-  away: { abbr: string; score?: number };
+  home: TeamSide;
+  away: TeamSide;
+};
+
+export type GameSide = TeamSide & { players: PlayerRef[] };
+
+export type GamePayload = {
+  gamePk: number;
+  status: string;
+  abstractState: string;
+  date?: string;
+  venue?: string;
+  home: GameSide;
+  away: GameSide;
 };
 
 export type Heater = PlayerRef & { value: string; label: string };
@@ -113,6 +134,5 @@ export type HomePayload = {
   asOf: string;
   slateLabel: string;
   games: HomeGame[];
-  players: PlayerRef[];
   heaters: Heater[];
 };
