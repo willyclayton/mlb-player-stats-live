@@ -1,8 +1,6 @@
 export type PlayerRef = {
   id: number;
   name: string;
-  firstName?: string;
-  lastName?: string;
   nickname?: string;
   team?: string;
   teamId?: number;
@@ -84,21 +82,20 @@ export type CrazyStat = {
   receipts: { label: string; value: string }[];
 };
 
+export type LogRow = {
+  date: string;
+  opponent: string;
+  isHome: boolean;
+  line: string;
+};
+
 export type PlayerPayload = {
-  player: PlayerRef & {
-    age?: number;
-    bats?: string;
-    throws?: string;
-    positionName?: string;
-  };
+  player: PlayerRef & { bats?: string; throws?: string };
   seasonHit?: HitLine;
   seasonPitch?: PitchLine;
   recentHit: { last7?: HitLine; last15?: HitLine; last30?: HitLine };
-  recentPitch: { last3?: PitchLine; last5?: PitchLine };
-  lastHitGames: GameHit[];
-  lastPitchGames: GamePitch[];
+  lastHitGames: LogRow[];
   crazy: CrazyStat[];
-  featured: CrazyStat;
   liveNote?: string;
 };
 
@@ -106,21 +103,16 @@ export type HomeGame = {
   gamePk: number;
   status: string;
   abstractState: string;
-  venue?: string;
-  home: { id: number; name: string; abbr?: string; score?: number };
-  away: { id: number; name: string; abbr?: string; score?: number };
-  players: PlayerRef[];
+  home: { abbr: string; score?: number };
+  away: { abbr: string; score?: number };
 };
+
+export type Heater = PlayerRef & { value: string; label: string };
 
 export type HomePayload = {
   asOf: string;
   slateLabel: string;
   games: HomeGame[];
-  heaters: {
-    homeRuns: (PlayerRef & { value: string })[];
-    ops: (PlayerRef & { value: string })[];
-    stolenBases: (PlayerRef & { value: string })[];
-    era: (PlayerRef & { value: string })[];
-    strikeouts: (PlayerRef & { value: string })[];
-  };
+  players: PlayerRef[];
+  heaters: Heater[];
 };

@@ -15,7 +15,6 @@
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   --font-display: var(--font-display-g), "Archivo Black", Impact, sans-serif;
   --font-sans: var(--font-sans-g), "DM Sans", system-ui, sans-serif;
-  --font-serif: var(--font-serif-g), "Newsreader", Georgia, serif;
   --max: 430px;
 }
 
@@ -121,7 +120,7 @@ img {
 }
 
 .search {
-  margin: 22px 0 10px;
+  margin: 18px 0 14px;
   position: relative;
 }
 
@@ -175,10 +174,10 @@ img {
   margin: 0 0 4px;
 }
 
-.section .hint {
+.hint {
   color: var(--dim);
   font-size: 13px;
-  margin: 0 0 14px;
+  margin: 10px 0 0;
 }
 
 .row-scroll {
@@ -269,8 +268,13 @@ img {
 .leader .val {
   color: var(--gold);
   font-family: var(--font-display);
-  font-size: 22px;
-  line-height: 1;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.leader .name {
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .back {
@@ -357,10 +361,10 @@ img {
 }
 
 .take p {
-  font-family: var(--font-serif);
-  font-size: 18px;
-  line-height: 1.35;
+  font-size: 16px;
+  line-height: 1.4;
   margin: 0;
+  color: var(--mist);
 }
 
 .receipts {
@@ -415,11 +419,7 @@ img {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-top: 16px;
-}
-
-.strip.three {
-  grid-template-columns: repeat(3, 1fr);
+  margin-top: 12px;
 }
 
 .stat {
@@ -459,45 +459,6 @@ img {
   border-radius: 12px;
   padding: 10px 12px;
   font-size: 13px;
-}
-
-.more-take {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 14px;
-  margin-bottom: 10px;
-}
-
-.more-take strong {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
-}
-
-.feed {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 16px;
-  min-height: 180px;
-}
-
-.feed .line {
-  color: var(--mist);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 13px;
-  margin: 6px 0;
-}
-
-.err {
-  color: #ff8b98;
-  background: rgba(215, 38, 61, 0.12);
-  border: 1px solid rgba(215, 38, 61, 0.35);
-  border-radius: 12px;
-  padding: 12px;
 }
 
 .footer {

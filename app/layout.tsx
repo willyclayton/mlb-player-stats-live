@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo_Black, DM_Sans, Newsreader } from "next/font/google";
+import { Archivo_Black, DM_Sans } from "next/font/google";
 import "./globals.css";
 
 const display = Archivo_Black({
@@ -13,15 +13,9 @@ const sans = DM_Sans({
   variable: "--font-sans-g",
 });
 
-const serif = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-serif-g",
-});
-
 export const metadata: Metadata = {
   title: "MLB Live — Crazy Stats",
-  description:
-    "Tap a player. We pull live MLB numbers. Then we find the stat that shouldn't be real.",
+  description: "Tap a player. Live MLB numbers. One insane stat.",
   applicationName: "MLB Crazy Stats",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -40,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${serif.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body>
         <div className="app">{children}</div>
       </body>

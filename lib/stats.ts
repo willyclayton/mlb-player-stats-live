@@ -225,11 +225,6 @@ export function iso(line: HitLine): number {
   return Math.max(0, line.slg - line.avg);
 }
 
-export function isPitcherPos(position?: string): boolean {
-  if (!position) return false;
-  return ["P", "SP", "RP", "LHP", "RHP"].includes(position);
-}
-
 export function isTwoWay(position?: string, hit?: HitLine, pitch?: PitchLine): boolean {
   if (position === "TWP") return true;
   const bats = (hit?.plateAppearances ?? 0) >= 40 || (hit?.homeRuns ?? 0) >= 3;
