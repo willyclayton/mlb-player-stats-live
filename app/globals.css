@@ -812,9 +812,20 @@ html[data-names="full"] .score-teams {
 
 .judge-code {
   margin: 0;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.judge-actions {
+  display: flex;
+  gap: 10px;
+  flex: 0 0 26vh;
+}
+
+.judge-actions .judge-card {
+  flex: 1;
 }
 
 .judge-card {
@@ -851,6 +862,14 @@ html[data-names="full"] .score-teams {
 .judge-card:active .judge-note,
 .judge-card:active .judge-who {
   color: inherit;
+}
+
+.judge-card.judge-stat {
+  flex: 1;
+  cursor: default;
+  pointer-events: none;
+  justify-content: flex-start;
+  padding-top: 28px;
 }
 
 .judge-who {
